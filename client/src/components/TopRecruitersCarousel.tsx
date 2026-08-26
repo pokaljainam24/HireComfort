@@ -198,7 +198,6 @@ const RecruiterCard = ({ recruiter }: RecruiterCardProps) => {
     >
       <div
         style={{
-          height: "134px",
           padding: "20px 18px",
           border: "1px solid #e1e5eb",
           borderRadius: "10px",
