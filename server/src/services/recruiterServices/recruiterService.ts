@@ -30,7 +30,7 @@ export async function getRecruitersService() {
 export async function getRecruiterByIdService(id: string) {
   try {
     return await Recruiter.findOne({
-      id,
+      _id: id,
       isActive: true,
       isDisplay: true,
     });
@@ -43,15 +43,19 @@ export async function getRecruiterByIdService(id: string) {
 export async function updateRecruiterService(
   id: string,
   updateData: Partial<IRecruiter>,
+  updatedBy: string,
 ) {
   try {
     return await Recruiter.findOneAndUpdate(
       {
-        id,
+        _id: id,
         isActive: true,
         isDisplay: true,
       },
-      updateData,
+      {
+        ...updateData,
+        updatedBy: updatedBy,
+      },
       {
         new: true,
         runValidators: true,
@@ -67,7 +71,7 @@ export async function deleteRecruiterService(id: string, deleteBy: string) {
   try {
     return await Recruiter.findOneAndUpdate(
       {
-        id,
+        _id: id,
         isActive: true,
       },
       {

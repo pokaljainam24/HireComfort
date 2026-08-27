@@ -1,7 +1,7 @@
 import express from "express";
 import recruiterRouter from "./routes/RecruiterRoutes/recruiterRoutes.js";
 import applicantRoutes from "./routes/applicantRoutes/applicantRoutes.js";
-import authRouter from "./routes/auth.routes.js";
+// import authRouter from "./routes/auth.routes.js";
 import adminRouter from "./routes/adminRoutes.js";
 
 import cors from "cors";
@@ -20,7 +20,7 @@ app.use(express.json());
 app.use("/api/admin", adminRouter);
 
 // Auth routes
-app.use("/api/auth", authRouter);
+// app.use("/api/auth", authRouter);
 
 // Applicant routes
 app.use("/api/applicants", applicantRoutes);

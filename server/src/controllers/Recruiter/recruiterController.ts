@@ -10,6 +10,7 @@ import {
 
 export const createRecruiter = async (req: Request, res: Response) => {
   try {
+    // TODO: Replace "admin" with the actual user ID from the request (e.g., req.user.id) when authentication is implemented.
     const recruiter = await createRecruiterService({
       ...req.body,
       createdBy: "admin",
@@ -81,13 +82,25 @@ export const updateRecruiter = async (req: Request, res: Response) => {
       });
     }
 
-    const recruiter = await updateRecruiterService(recruiterId, req.body);
+    const recruiter = await updateRecruiterService(
+      recruiterId,
+      req.body,
+      "admin",
+    );
+
+    if (!recruiter) {
+      return res.status(404).json({
+        message: "Recruiter not found",
+      });
+    }
 
     return res.status(200).json({
       message: "Recruiter updated successfully",
       recruiter,
     });
   } catch (error) {
+    console.error("Error updating recruiter:", error);
+
     return res.status(500).json({
       message: "Error updating recruiter",
       error,

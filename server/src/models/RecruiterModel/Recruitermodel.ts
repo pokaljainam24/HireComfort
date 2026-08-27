@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface IRecruiter {
-  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -31,11 +30,6 @@ export interface IRecruiter {
 
 const recruiterSchema = new Schema<IRecruiter>(
   {
-    id: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     firstName: {
       type: String,
       required: true,
