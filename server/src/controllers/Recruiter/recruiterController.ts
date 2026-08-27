@@ -8,6 +8,10 @@ import {
   deleteRecruiterService,
 } from "../../services/recruiterServices/recruiterService.js";
 
+/* =========================
+   CREATE
+========================= */
+
 export const createRecruiter = async (req: Request, res: Response) => {
   try {
     // TODO: Replace "admin" with the actual user ID from the request (e.g., req.user.id) when authentication is implemented.
@@ -28,6 +32,10 @@ export const createRecruiter = async (req: Request, res: Response) => {
   }
 };
 
+/* =========================
+    GET ALL
+========================= */
+
 export const getRecruiters = async (req: Request, res: Response) => {
   try {
     const recruiters = await getRecruitersService();
@@ -42,6 +50,10 @@ export const getRecruiters = async (req: Request, res: Response) => {
     });
   }
 };
+
+/* =========================
+    GET BY ID
+========================= */
 
 export const getRecruiter = async (req: Request, res: Response) => {
   try {
@@ -71,6 +83,12 @@ export const getRecruiter = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+
+/* =========================
+    UPDATE
+========================= */
 
 export const updateRecruiter = async (req: Request, res: Response) => {
   try {
@@ -107,6 +125,12 @@ export const updateRecruiter = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+
+/* =========================
+   DELETE
+========================= */
 
 export const deleteRecruiter = async (req: Request, res: Response) => {
   try {
