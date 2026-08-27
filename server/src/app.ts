@@ -1,15 +1,26 @@
 import express from "express";
-import userRoutes from "./routes/user.routes.js";
 import recruiterRouter from "./routes/RecruiterRoutes/recruiterRoutes.js";
-import applicantRoutes from "./routes/applicantRoutes/applicantRoutes.js"; 
+import applicantRoutes from "./routes/applicantRoutes/applicantRoutes.js";
+import authRouter from "./routes/auth.routes.js";
+import adminRouter from "./routes/adminRoutes.js";
 
+import cors from "cors";
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 app.use(express.json());
+app.use("/api/auth", authRouter);
+app.use("/api/recruiter", recruiterRouter);
 
-app.use("/api/users", userRoutes);
-app.use("/api/applicants", applicantRoutes);
+// routes
 app.use("/api/recruiters", recruiterRouter);
+app.use("/api/applicants", applicantRoutes);
+app.use("/api/admin", adminRouter);
 
 export default app;
