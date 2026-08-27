@@ -1,4 +1,4 @@
-import Recruiter from "../models/RecruiterModel/Recruitermodel.js";
+import Recruiter from "../../models/RecruiterModel/Recruitermodel.js";
 
 export type IRecruiter = InstanceType<typeof Recruiter>;
 

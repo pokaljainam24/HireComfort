@@ -6,7 +6,7 @@ import {
   getRecruiterByIdService,
   updateRecruiterService,
   deleteRecruiterService,
-} from "../../services/recruiterService.js";
+} from "../../services/recruiterServices/recruiterService.js";
 
 export const createRecruiter = async (req: Request, res: Response) => {
   try {
