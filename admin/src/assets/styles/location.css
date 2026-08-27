@@ -1,266 +1,189 @@
+@import "tailwindcss";
+
 .admin-location-page {
-  min-height: 720px;
-  padding: 56px 0 90px;
-  background: #f7f8f5;
-  color: #17211b;
+  @apply min-h-screen bg-slate-50 p-4 text-slate-900 sm:p-6 lg:p-8;
 }
+
+.admin-location-page .container {
+  @apply mx-auto max-w-7xl;
+}
+
 .admin-location-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 24px;
-  margin-bottom: 32px;
+  @apply mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end;
 }
+
 .admin-kicker {
-  color: #5a8068;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+  @apply text-xs font-bold uppercase tracking-[0.18em] text-emerald-700;
 }
+
 .admin-location-heading h1 {
-  margin: 8px 0 8px;
-  color: #17211b;
-  font-size: 38px;
-  line-height: 1.1;
+  @apply mt-2 text-3xl font-bold tracking-tight text-slate-900;
 }
-.admin-location-heading p,
-.form-heading p,
-.list-toolbar p {
-  margin: 0;
-  color: #718078;
-  font-size: 14px;
+
+.admin-location-heading p {
+  @apply mt-2 text-sm text-slate-500;
 }
+
 .location-count {
-  color: #2f7251;
-  font-size: 30px;
-  font-weight: 700;
-  text-align: right;
+  @apply text-right text-3xl font-bold text-emerald-700;
 }
+
 .location-count span {
-  display: block;
-  color: #7a8880;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
+  @apply mt-1 block text-xs font-semibold uppercase tracking-wider text-slate-400;
 }
+
+.location-alert {
+  @apply mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700;
+}
+
 .location-workspace {
-  overflow: hidden;
-  border: 1px solid #dfe7e0;
-  background: #fff;
-  box-shadow: 0 12px 38px rgba(32, 61, 43, 0.07);
+  @apply overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm;
 }
+
 .location-tabs {
-  display: flex;
-  gap: 4px;
-  padding: 8px;
-  border-bottom: 1px solid #e5ebe6;
-  background: #fbfcfa;
+  @apply flex border-b border-slate-200 bg-slate-50 p-2;
 }
+
 .location-tabs button {
-  border: 0;
-  padding: 14px 22px;
-  background: transparent;
-  color: #6b786f;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
+  @apply rounded-xl px-4 py-3 text-sm font-semibold capitalize text-slate-500 transition hover:bg-white hover:text-emerald-700;
 }
+
 .location-tabs button.active {
-  background: #e4f1e7;
-  color: #286642;
+  @apply bg-emerald-100 text-emerald-800 shadow-sm;
 }
+
 .location-tabs button span {
-  display: inline-block;
-  margin-left: 8px;
-  color: #84948a;
-  font-size: 12px;
+  @apply ml-1 rounded-full bg-white/70 px-2 py-0.5 text-xs text-slate-500;
 }
+
 .location-content {
-  display: grid;
-  grid-template-columns: 290px 1fr;
-  gap: 42px;
-  padding: 32px;
+  @apply grid gap-8 p-5 lg:grid-cols-[280px_1fr] lg:p-7;
 }
+
+.location-form {
+  @apply space-y-5;
+}
+
 .form-heading {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 26px;
+  @apply mb-6 flex items-start gap-3;
 }
+
 .form-number {
-  color: #63a17a;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1px;
+  @apply text-xs font-bold text-emerald-700;
 }
-.form-heading h2,
-.list-toolbar h2 {
-  margin: 0 0 5px;
-  color: #203228;
-  font-size: 20px;
+
+.form-heading h2 {
+  @apply text-lg font-bold capitalize text-slate-900;
 }
+
+.form-heading p {
+  @apply mt-1 text-sm text-slate-500;
+}
+
 .location-form label {
-  display: block;
-  margin-bottom: 16px;
-  color: #56645b;
-  font-size: 12px;
-  font-weight: 700;
+  @apply block text-xs font-bold uppercase tracking-wide text-slate-600;
 }
+
 .location-form input,
 .location-form select,
 .list-toolbar input {
-  display: block;
-  width: 100%;
-  margin-top: 7px;
-  border: 1px solid #d8e1da;
-  padding: 12px 13px;
-  background: #fff;
-  color: #213127;
-  font: inherit;
-  font-size: 14px;
-  outline: 0;
+  @apply mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10;
 }
-.location-form input:focus,
-.location-form select:focus,
-.list-toolbar input:focus {
-  border-color: #5e9b75;
-  box-shadow: 0 0 0 3px #e2f0e6;
-}
+
 .form-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 25px;
+  @apply flex flex-wrap gap-3 pt-2;
 }
-.primary-action,
-.cancel-action {
-  border: 0;
-  padding: 12px 16px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
+
 .primary-action {
-  background: #286642;
-  color: #fff;
+  @apply rounded-lg bg-emerald-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60;
 }
-.primary-action:disabled {
-  opacity: 0.55;
-  cursor: wait;
-}
+
 .cancel-action {
-  background: #eef2ee;
-  color: #536259;
+  @apply rounded-lg border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50;
 }
+
+.location-list-panel {
+  @apply min-w-0;
+}
+
 .list-toolbar {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 18px;
+  @apply mb-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-end;
 }
+
+.list-toolbar h2 {
+  @apply text-lg font-bold capitalize text-slate-900;
+}
+
+.list-toolbar p {
+  @apply mt-1 text-sm text-slate-500;
+}
+
 .list-toolbar input {
-  max-width: 220px;
-  margin: 0;
+  @apply mt-0 w-full sm:max-w-xs;
 }
+
 .location-table-wrap {
-  overflow-x: auto;
-  border-top: 1px solid #e8eee9;
+  @apply overflow-x-auto rounded-xl border border-slate-200;
 }
-table {
-  width: 100%;
-  border-collapse: collapse;
+
+.location-table-wrap table {
+  @apply w-full min-w-[520px] border-collapse text-left;
 }
-th,
-td {
-  padding: 15px 12px;
-  border-bottom: 1px solid #edf1ed;
-  text-align: left;
-  font-size: 13px;
+
+.location-table-wrap th {
+  @apply border-b border-slate-200 bg-slate-50 px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-500;
 }
-th {
-  color: #7b8980;
-  font-size: 11px;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
+
+.location-table-wrap td {
+  @apply border-b border-slate-100 px-4 py-4 text-sm;
 }
-td strong {
-  color: #26372d;
+
+.location-table-wrap tbody tr:last-child td {
+  @apply border-b-0;
 }
+
+.location-table-wrap tbody tr {
+  @apply transition hover:bg-emerald-50/40;
+}
+
+.location-table-wrap td strong {
+  @apply font-semibold text-slate-800;
+}
+
+.actions-heading {
+  @apply text-right;
+}
+
 .code-chip {
-  display: inline-block;
-  padding: 4px 8px;
-  background: #f0f5f0;
-  color: #48715a;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.6px;
+  @apply rounded-md bg-emerald-50 px-2 py-1 text-xs font-bold uppercase text-emerald-700;
 }
-.actions-heading,
+
 .row-actions {
-  text-align: right;
+  @apply whitespace-nowrap text-right;
 }
+
 .row-actions button {
-  border: 0;
-  padding: 6px 8px;
-  background: transparent;
-  color: #347553;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
+  @apply ml-3 text-sm font-semibold text-emerald-700 transition hover:text-emerald-900;
 }
+
 .row-actions .delete-action {
-  color: #b5574e;
+  @apply text-red-600 hover:text-red-800;
 }
+
 .empty-state {
-  padding: 58px 20px;
-  color: #849088;
-  text-align: center;
-  font-size: 14px;
+  @apply rounded-xl border border-dashed border-slate-200 px-5 py-12 text-center text-sm text-slate-500;
 }
-.location-alert {
-  margin-bottom: 20px;
-  border-left: 4px solid #c15b50;
-  padding: 13px 16px;
-  background: #fff1ef;
-  color: #98443c;
-  font-size: 14px;
-}
-@media (max-width: 767px) {
-  .admin-location-page {
-    padding: 32px 0 60px;
-  }
-  .admin-location-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .admin-location-heading h1 {
-    font-size: 30px;
-  }
-  .location-count {
-    text-align: left;
-  }
-  .location-content {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    padding: 20px;
-  }
+
+@media (max-width: 640px) {
   .location-tabs {
-    overflow-x: auto;
+    @apply overflow-x-auto;
   }
+
   .location-tabs button {
-    flex: 0 0 auto;
-    padding: 12px 15px;
+    @apply shrink-0 px-3;
   }
-  .list-toolbar {
-    align-items: stretch;
-    flex-direction: column;
-  }
-  .list-toolbar input {
-    max-width: none;
-  }
-  .row-actions {
-    white-space: nowrap;
+
+  .location-content {
+    @apply p-4;
   }
 }

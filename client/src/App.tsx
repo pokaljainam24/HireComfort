@@ -22,6 +22,7 @@ import BlogResumeTips from "./pages/BlogResumeTips";
 import BlogInterviewTips from "./pages/BlogInterviewTips";
 import Login from "./pages/Login";
 import BlogDetails from "./pages/BlogDetails";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/blog-interview-tips" element={<BlogInterviewTips />} />
         <Route path="/blog-resume-tips" element={<BlogResumeTips />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/blog-details" element={<BlogDetails />} />
       </Routes>
       <Footer />

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
-import "../assets/css/AdminLocation.css";
-
+import "../assets/styles/location.css";
 type LocationKind = "countries" | "states" | "cities";
 type LocationItem = {
   _id: string;

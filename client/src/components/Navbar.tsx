@@ -219,10 +219,7 @@ function Navbar() {
                 >
                   Login / Register
                 </Link>
-                <Link
-                  to="login?tab=register&amp;type=recruiter"
-                  className="btn btn-brand-1"
-                >
+                <Link to="/signup" className="btn btn-brand-1">
                   Post a Job
                 </Link>
               </div>
@@ -230,61 +227,6 @@ function Navbar() {
           </div>
         </div>
       </header>
-
-      {/* 
-
-Interview Master
-
-Field
-
-Datatype
-
-Id
-
-ObjectId
-
-application id
-
-ObjectId
-
-interview type
-
-Enum(Online, Offline)
-
-interviewtime
-
-Date
-
-interview date
-
-Date
-
-interview location
-
-String
-
-meeting link 
-
-String
-
-report
-
-String
-
-feedback
-
-String
-
-recruiter id
-
-objectid
-
-
-
-
-
-this is my interview table. Now i want to track the history of the interview rounds and the applicant should be able to see the  */}
-
       <div className="mobile-header-active mobile-header-wrapper-style perfect-scrollbar">
         <div className="mobile-header-wrapper-inner">
           <div className="mobile-header-content-area">
@@ -377,13 +319,10 @@ this is my interview table. Now i want to track the history of the interview rou
               <div className="mobile-account">
                 <h6 className="mb-15">Account</h6>
                 <div className="d-grid gap-2">
-                  <Link to="login.html" className="btn btn-default btn-sm">
+                  <Link to="/login" className="btn btn-default btn-sm">
                     Login / Register
                   </Link>
-                  <Link
-                    to="/login?tab=register&amp;type=recruiter"
-                    className="btn btn-brand-1 btn-sm mt-10"
-                  >
+                  <Link to="/signup" className="btn btn-brand-1 btn-sm mt-10">
                     Post a Job
                   </Link>
                 </div>
