@@ -6,7 +6,7 @@ import {
   getRecruiter,
   updateRecruiter,
   deleteRecruiter,
-} from "../controllers/recruiter.controller.js";
+} from "../../controllers/Recruiter/recruiterController.js";
 
 const recruiterRouter = express.Router();
 
@@ -16,7 +16,7 @@ recruiterRouter.get("/", getRecruiters);
 
 recruiterRouter.get("/:id", getRecruiter);
 
-recruiterRouter.put("/:id", updateRecruiter);
+recruiterRouter.patch("/:id", updateRecruiter);
 
 recruiterRouter.delete("/:id", deleteRecruiter);
 

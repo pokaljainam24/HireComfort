@@ -1,6 +1,6 @@
 import express from "express";
 import userRoutes from "./routes/user.routes.js";
-import recruiterRouter from "./routes/recruiter.routes.js";
+import recruiterRouter from "./routes/RecruiterRoutes/recruiterRoutes.js";
 
 const app = express();
 
