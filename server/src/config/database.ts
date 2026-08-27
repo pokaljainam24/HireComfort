@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 const connectDB = async () => {
   try {
     const url = process.env.DB_URL;
+    console.log("Database URL:", url); // Log the database URL for debugging
+
     if (!url)
       throw Error(
         "Could not connect to the database. The Database url is empty.",
