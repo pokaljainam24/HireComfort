@@ -178,7 +178,12 @@ function Home() {
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 y-overflow-scroll">
               {[
                 ["＋", "Add service", "Create a new service", "#"],
-                ["♙", "Manage providers", "View and approve providers", "#"],
+                [
+                  "♙",
+                  "Manage job categories",
+                  "Add, edit, or remove job categories and sub categories",
+                  "/job-categories",
+                ],
                 ["▣", "View reports", "Check business performance", "#"],
                 ["⚙", "Settings", "Update platform settings", "#"],
                 ["⚙", "Locations", "Manage location information", "/location"],

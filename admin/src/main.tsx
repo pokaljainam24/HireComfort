@@ -11,3 +11,5 @@ createRoot(document.getElementById("root")!).render(
     </BrowserRouter>
   </StrictMode>,
 );
+
+// TODO: Add validation using yup in every form.

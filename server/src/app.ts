@@ -1,8 +1,8 @@
 import express from "express";
 import recruiterRouter from "./routes/RecruiterRoutes/recruiterRoutes.js";
 import applicantRoutes from "./routes/applicantRoutes/applicantRoutes.js";
-// import authRouter from "./routes/auth.routes.js";
-import adminRouter from "./routes/adminRoutes.js";
+// import authRouter from "./routes/auth/authRoutes.js";
+import adminRouter from "./routes/admin/adminRoutes.js";
 
 import cors from "cors";
 import companyRoutes from "./routes/RecruiterRoutes/companyRoutes.js";
