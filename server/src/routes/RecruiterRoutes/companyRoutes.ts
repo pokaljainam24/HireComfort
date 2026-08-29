@@ -11,13 +11,9 @@ import {
 const companyRoutes = express.Router();
 
 companyRoutes.post("/", createCompany);
-
 companyRoutes.get("/", getCompanys);
-
 companyRoutes.get("/:id", getCompany);
-
 companyRoutes.patch("/:id", updateCompany);
-
 companyRoutes.delete("/:id", deleteCompany);
 
 export default companyRoutes;

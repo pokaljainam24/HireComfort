@@ -1,0 +1,23 @@
+export type Company = {
+  _id: string;
+  recruiterId: string;
+  companyName: string;
+  address: string;
+  contactNumber: string;
+  companyEmail: string;
+  numberOfEmployee: string;
+  companyType: string;
+  website: string;
+  gstNumber: string;
+  companyLogo: string;
+  aboutCompany: string;
+  city: string;
+  state: string;
+  country: string;
+  instagram: string;
+  twitter: string;
+  linkedin: string;
+  facebook: string;
+  isActive: boolean;
+  isDisplay: boolean;
+};

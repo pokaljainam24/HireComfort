@@ -6,6 +6,8 @@ import JobCategories from "./pages/JobCategories.tsx";
 import JobCategoryDetails from "./pages/JobCategoryDetails.tsx";
 import Recruiters from "./pages/Recruiters.tsx";
 import RecruiterDetails from "./pages/RecruiterDetails.tsx";
+import CompaniesDetails from "./pages/CompaniesDetails.tsx";
+import Companies from "./pages/Companies.tsx";
 
 function App() {
   return (
@@ -16,8 +18,12 @@ function App() {
       <Route path="/job-categories/:id" element={<JobCategoryDetails />} />
       <Route path="/recruiters" element={<Recruiters />} />
       <Route path="/recruiters/:id" element={<RecruiterDetails />} />
+      <Route path="/companies/:id" element={<CompaniesDetails />} />
+      <Route path="/companies" element={<Companies />} />
+
     </Routes>
   );
 }
 
+// TODO: Test remaining for Recruiters, Companies.
 export default App;

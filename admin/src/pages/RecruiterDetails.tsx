@@ -6,6 +6,7 @@ import type { Recruiter } from "../types/recruiter";
 
 // TODO: Have not tested it yet as there are no recruiters
 // TODO: Provide a button to inActive and isDisplay button.
+// TODO: Provide a link where the user will be taken to the company details of the recrutier
 function RecruiterDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();

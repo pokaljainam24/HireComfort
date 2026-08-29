@@ -29,17 +29,14 @@ import {
   updateJobSubCategoryController,
 } from "../../controllers/admin/jobSubCategoriesController.js";
 import { createRecruiter, getRecruiter, getRecruiters, updateRecruiter, deleteRecruiter } from "../../controllers/Recruiter/recruiterController.js";
+import { createCompany, deleteCompany, getCompany, getCompanys, updateCompany } from "../../controllers/Recruiter/companyController.js";
 
 const router = Router();
 
 router.post("/recruiters", createRecruiter);
-
 router.get("/recruiters", getRecruiters);
-
 router.get("/recruiters/:id", getRecruiter);
-
 router.patch("/recruiters/:id", updateRecruiter);
-
 router.delete("/recruiters/:id", deleteRecruiter);
 
 // router.get("/applicants");
@@ -56,8 +53,12 @@ router.delete("/recruiters/:id", deleteRecruiter);
 // router.get("/interviews");
 // router.get("/interviews/:id");
 
-// router.get("/companies");
-// router.get("/companies/:id");
+
+router.post("/companies", createCompany);
+router.get("/companies", getCompanys);
+router.get("companies/:id", getCompany);
+router.delete("companies/:id", deleteCompany);
+router.patch("companies/:id", updateCompany);
 
 // Location management routes
 router.get("/countries", getCountries);
