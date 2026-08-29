@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IApplicant extends Document {
+  
   firstName: string;
   lastName: string;
   email: string;
@@ -39,6 +40,8 @@ export interface IApplicant extends Document {
 
 const applicantSchema = new Schema<IApplicant>(
   {
+   
+
     firstName: {
       type: String,
       required: true,

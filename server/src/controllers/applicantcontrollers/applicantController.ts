@@ -8,6 +8,7 @@ import {
   deleteApplicantService,
   updateActiveService,
   updateDisplayService,
+  getApplicantByUsernameService,
 } from "../../services/applicantServices/applicantService.js";
 
 
@@ -255,3 +256,37 @@ export const updateDisplay = async (
     });
   }
 };
+
+/* =========================
+   GET APPLICANT BY USERNAME
+========================= */
+
+export const getApplicantByUsername = async (
+  req: Request<{ username: string }>,
+  res: Response
+) => {
+  try {
+    const applicant = await getApplicantByUsernameService(
+      req.params.username
+    );
+
+    if (!applicant) {
+      return res.status(404).json({
+        success: false,
+        message: "Applicant not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: applicant,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+

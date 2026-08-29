@@ -23,7 +23,7 @@ app.use("/api/admin", adminRouter);
 // app.use("/api/auth", authRouter);
 
 // Applicant routes
-app.use("/api/applicants", applicantRoutes);
+app.use("/api/applicants/", applicantRoutes);
 // Recruiter routes
 app.use("/api/recruiters", recruiterRouter);
 app.use("/api/companies", companyRoutes);

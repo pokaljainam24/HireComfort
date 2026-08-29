@@ -6,6 +6,7 @@ import {
   getApplicantById,
   updateApplicant,
   deleteApplicant,
+  getApplicantByUsername,
 } from "../../controllers/applicantcontrollers/applicantController.js";
 
 import {
@@ -17,6 +18,15 @@ import {
   deleteApplicantEducation,
   updateEducationActive,
 } from "../../controllers/applicantcontrollers/educationController.js";
+
+import {
+  createCertificate,
+  getAllCertificates,
+  getCertificateById,
+  getCertificatesByApplicant,
+  updateCertificate,
+  deleteCertificate,
+} from "../../controllers/applicantcontrollers/certificateController.js";
 
 const router = Router();
 
@@ -60,6 +70,46 @@ router.patch(
   updateEducationActive
 );
 
+/* =========================
+   Applicant Certificates
+========================= */
+
+router.post(
+  "/applicant-certificates",
+  createCertificate
+);
+
+// Get all certificates
+router.get(
+  "/applicant-certificates",
+  getAllCertificates
+);
+
+// Get certificates by applicant
+// Keep this BEFORE /:id
+router.get(
+  "/applicant-certificates/applicant/:applicantId",
+  getCertificatesByApplicant
+);
+
+// Get certificate by ID
+router.get(
+  "/applicant-certificates/:id",
+  getCertificateById
+);
+
+// Update certificate
+router.patch(
+  "/applicant-certificates/:id",
+  updateCertificate
+);
+
+// Soft delete certificate
+router.delete(
+  "/applicant-certificates/:id",
+  deleteCertificate
+);
+
 
 /* =========================
    APPLICANT MASTER
@@ -89,6 +139,13 @@ router.delete(
   "/:id",
   deleteApplicant
 );
+
+router.get(
+  "/username/:username",
+  getApplicantByUsername
+);
+
+
 
 
 export default router;

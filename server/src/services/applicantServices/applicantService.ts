@@ -6,10 +6,15 @@ import { Applicant } from "../../models/ApplicantModels/applicantModel.js";
    CREATE APPLICANT
 ========================= */
 
-export const createApplicantService = async (
-  data: any
-) => {
-  // Check existing email only among non-deleted applicants
+export const createApplicantService = async (data: any) => {
+  console.log("REQUEST DATA:", data);
+  console.log("PASSWORD:", data.password);
+
+  if (!data.password) {
+    throw new Error("Password is required");
+  }
+
+  // Check existing email
   const existingEmail = await Applicant.findOne({
     email: data.email,
     deleteAt: null,
@@ -19,7 +24,7 @@ export const createApplicantService = async (
     throw new Error("Email already exists");
   }
 
-  // Check existing username only among non-deleted applicants
+  // Check existing username
   const existingUsername = await Applicant.findOne({
     userName: data.userName,
     deleteAt: null,
@@ -45,15 +50,11 @@ export const createApplicantService = async (
     resume: data.resume,
     profilePic: data.profilePic,
 
-    higherQualification:
-      data.higherQualification,
-
+    higherQualification: data.higherQualification,
     experience: data.experience,
 
     skills: data.skills || [],
-
-    preferredLocation:
-      data.preferredLocation || [],
+    preferredLocation: data.preferredLocation || [],
 
     address: data.address,
     state: data.state,
@@ -270,4 +271,14 @@ export const updateDisplayService = async (
       runValidators: true,
     }
   ).select("-password");
+};
+/* =========================
+   GET APPLICANT BY USERNAME
+   Excludes soft-deleted records
+========================= */
+export const getApplicantByUsernameService = async (username: string) => {
+  return Applicant.findOne({
+    userName: username,
+    deleteAt: null,
+  });
 };
