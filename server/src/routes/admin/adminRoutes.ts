@@ -30,9 +30,15 @@ import {
 } from "../../controllers/admin/jobSubCategoriesController.js";
 import { createRecruiter, getRecruiter, getRecruiters, updateRecruiter, deleteRecruiter } from "../../controllers/Recruiter/recruiterController.js";
 import { createCompany, deleteCompany, getCompany, getCompanys, updateCompany } from "../../controllers/Recruiter/companyController.js";
-import { deleteApplicant, getApplicantById, getApplicantByUsername, getApplicants, updateApplicant } from "../../controllers/applicantcontrollers/applicantController.js";
+import { deleteApplicant, getApplicantById, getApplicants, updateApplicant } from "../../controllers/applicantcontrollers/applicantController.js";
+import { getProfile, updateProfile } from "../../controllers/admin/profileController.js";
 
 const router = Router();
+
+router.get("/profile", getProfile);
+router.patch("/profile", updateProfile);
+
+
 
 router.post("/recruiters", createRecruiter);
 router.get("/recruiters", getRecruiters);

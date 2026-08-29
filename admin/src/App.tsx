@@ -10,6 +10,7 @@ import CompaniesDetails from "./pages/CompaniesDetails.tsx";
 import Companies from "./pages/Companies.tsx";
 import Applicants from "./pages/Applicants.tsx";
 import ApplicantDetails from "./pages/ApplicantDetails.tsx";
+import Profile from "./pages/Profile.tsx";
 
 function App() {
   return (
@@ -24,11 +25,11 @@ function App() {
       <Route path="/companies" element={<Companies />} />
       <Route path="/applicants" element={<Applicants />}></Route>
       <Route path="/applicant/:id" element={<ApplicantDetails />}></Route>
-
+      <Route path="/profile" element={<Profile />}></Route>
 
     </Routes>
   );
 }
 
-// TODO: Test remaining for Recruiters, Companies.
+// TODO: Test remaining for Recruiters, Companies, profile.
 export default App;

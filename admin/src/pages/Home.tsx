@@ -37,7 +37,7 @@ function Home() {
                 ["⚙", "Manage companies", "Manage companies", "/companies"],
                 ["⚙", "Locations", "Manage location information", "/location"],
                 ["⚙", "Applicants", "Manage Applicants", "/applicants"],
-
+                ["👤", "Profile", "Manage your profile", "/profile"],
               ].map(([icon, title, description, to], idx) => (
                 <Link
                   key={idx}
