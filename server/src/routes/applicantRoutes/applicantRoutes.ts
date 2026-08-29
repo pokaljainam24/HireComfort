@@ -28,6 +28,15 @@ import {
   deleteCertificate,
 } from "../../controllers/applicantcontrollers/certificateController.js";
 
+import {
+  createExperience,
+  getAllExperience,
+  getExperienceById,
+  getExperienceByApplicant,
+  updateExperience,
+  deleteExperience,
+} from "../../controllers/applicantcontrollers/ExperienceControllers.js";
+
 const router = Router();
 
 
@@ -108,6 +117,41 @@ router.patch(
 router.delete(
   "/applicant-certificates/:id",
   deleteCertificate
+);
+
+/* ====================
+   APPLICANT EXPERIENCE
+=======================*/
+
+
+router.post(
+  "/applicant-experience",
+  createExperience
+);
+
+router.get(
+  "/applicant-experience",
+  getAllExperience
+);
+
+router.get(
+  "/applicant-experience/applicant/:applicantId",
+  getExperienceByApplicant
+);
+
+router.get(
+  "/applicant-experience/:id",
+  getExperienceById
+);
+
+router.patch(
+  "/applicant-experience/:id",
+  updateExperience
+);
+
+router.delete(
+  "/applicant-experience/:id",
+  deleteExperience
 );
 
 

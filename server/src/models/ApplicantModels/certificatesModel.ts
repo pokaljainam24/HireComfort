@@ -35,6 +35,7 @@ const CertificatesSchema = new Schema<ICertificates>(
       type: String,
       required: true,
       trim: true,
+      unique:true
     },
 
     IssuedBy: {
