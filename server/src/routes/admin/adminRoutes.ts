@@ -28,14 +28,19 @@ import {
   getJobSubCategoryByIdController,
   updateJobSubCategoryController,
 } from "../../controllers/admin/jobSubCategoriesController.js";
+import { createRecruiter, getRecruiter, getRecruiters, updateRecruiter, deleteRecruiter } from "../../controllers/Recruiter/recruiterController.js";
 
 const router = Router();
 
-// router.get("/recruiters");
-// router.get("/recruiters/:id");
-// router.post("/recruiters");
-// router.patch("/recruiters/:id");
-// router.delete("/recruiters/:id");
+router.post("/recruiters", createRecruiter);
+
+router.get("/recruiters", getRecruiters);
+
+router.get("/recruiters/:id", getRecruiter);
+
+router.patch("/recruiters/:id", updateRecruiter);
+
+router.delete("/recruiters/:id", deleteRecruiter);
 
 // router.get("/applicants");
 // router.get("/applicants/:id");
@@ -70,6 +75,7 @@ router.get("/cities", getCities);
 router.post("/cities", createCity);
 router.delete("/cities/:id", deleteCity);
 
+// Job categories and sub categories management routes
 router.get("/job-categories", getJobCategoriesController);
 router.get("/job-categories/:id", getJobCategoryByIdController);
 router.post("/job-categories", createJobCategoryController);

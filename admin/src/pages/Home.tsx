@@ -184,7 +184,7 @@ function Home() {
                   "Add, edit, or remove job categories and sub categories",
                   "/job-categories",
                 ],
-                ["▣", "View reports", "Check business performance", "#"],
+                ["▣", "Manage recruiters", "Manage recruiters", "/recruiters"],
                 ["⚙", "Settings", "Update platform settings", "#"],
                 ["⚙", "Locations", "Manage location information", "/location"],
               ].map(([icon, title, description, to], idx) => (
