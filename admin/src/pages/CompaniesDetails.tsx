@@ -20,8 +20,8 @@ function CompaniesDetails() {
                 throw new Error("Failed to fetch company");
             }
             const data = await response.json();
-            setCompany(data.data);
-            setForm(data.data);
+            setCompany(data.company);
+            setForm(data.company);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to load data");
         } finally {

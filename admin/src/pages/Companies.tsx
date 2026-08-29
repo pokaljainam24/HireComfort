@@ -16,7 +16,7 @@ function Companies() {
                 throw new Error("Failed to fetch companies");
             }
             const data = await response.json();
-            setCompanies(data.data || []);
+            setCompanies(data.companies || data.data || []);
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "Failed to load data",

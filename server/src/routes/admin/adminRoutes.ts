@@ -64,9 +64,9 @@ router.delete("/applicants/:id", deleteApplicant);
 
 router.post("/companies", createCompany);
 router.get("/companies", getCompanys);
-router.get("companies/:id", getCompany);
-router.delete("companies/:id", deleteCompany);
-router.patch("companies/:id", updateCompany);
+router.get("/companies/:id", getCompany);
+router.delete("/companies/:id", deleteCompany);
+router.patch("/companies/:id", updateCompany);
 
 // Location management routes
 router.get("/countries", getCountries);
