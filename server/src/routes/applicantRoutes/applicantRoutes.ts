@@ -55,7 +55,7 @@ router.get(
   getApplicantEducationById
 );
 
-router.put(
+router.patch(
   "/applicant-education/:id",
   updateApplicantEducation
 );
@@ -130,7 +130,7 @@ router.get(
   getApplicantById
 );
 
-router.put(
+router.patch(
   "/:id",
   updateApplicant
 );

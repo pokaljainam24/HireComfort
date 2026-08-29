@@ -8,6 +8,8 @@ import Recruiters from "./pages/Recruiters.tsx";
 import RecruiterDetails from "./pages/RecruiterDetails.tsx";
 import CompaniesDetails from "./pages/CompaniesDetails.tsx";
 import Companies from "./pages/Companies.tsx";
+import Applicants from "./pages/Applicants.tsx";
+import ApplicantDetails from "./pages/ApplicantDetails.tsx";
 
 function App() {
   return (
@@ -20,6 +22,9 @@ function App() {
       <Route path="/recruiters/:id" element={<RecruiterDetails />} />
       <Route path="/companies/:id" element={<CompaniesDetails />} />
       <Route path="/companies" element={<Companies />} />
+      <Route path="/applicants" element={<Applicants />}></Route>
+      <Route path="/applicant/:id" element={<ApplicantDetails />}></Route>
+
 
     </Routes>
   );

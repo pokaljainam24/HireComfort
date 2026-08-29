@@ -30,6 +30,7 @@ import {
 } from "../../controllers/admin/jobSubCategoriesController.js";
 import { createRecruiter, getRecruiter, getRecruiters, updateRecruiter, deleteRecruiter } from "../../controllers/Recruiter/recruiterController.js";
 import { createCompany, deleteCompany, getCompany, getCompanys, updateCompany } from "../../controllers/Recruiter/companyController.js";
+import { deleteApplicant, getApplicantById, getApplicantByUsername, getApplicants, updateApplicant } from "../../controllers/applicantcontrollers/applicantController.js";
 
 const router = Router();
 
@@ -39,9 +40,10 @@ router.get("/recruiters/:id", getRecruiter);
 router.patch("/recruiters/:id", updateRecruiter);
 router.delete("/recruiters/:id", deleteRecruiter);
 
-// router.get("/applicants");
-// router.get("/applicants/:id");
-// router.delete("/applicants/:id");
+router.get("/applicants", getApplicants);
+router.get("/applicants/:id", getApplicantById);
+router.patch("/applicants/:id", updateApplicant);
+router.delete("/applicants/:id", deleteApplicant);
 
 // router.get("/jobs");
 // router.get("/jobs/:id");

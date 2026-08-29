@@ -36,6 +36,8 @@ function Home() {
                 ["▣", "Manage recruiters", "Manage recruiters", "/recruiters"],
                 ["⚙", "Manage companies", "Manage companies", "/companies"],
                 ["⚙", "Locations", "Manage location information", "/location"],
+                ["⚙", "Applicants", "Manage Applicants", "/applicants"],
+
               ].map(([icon, title, description, to], idx) => (
                 <Link
                   key={idx}

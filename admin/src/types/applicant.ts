@@ -1,0 +1,20 @@
+export type Applicant = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobileNumber?: string;
+  resume?: string;
+  profilePic?: string;
+  higherQualification?: string;
+  experience?: string;
+  skills: string[];
+  preferredLocation: string[];
+  address?: string;
+  state?: string;
+  userName: string;
+  dob?: string;
+  gender?: string;
+  isActive: boolean;
+  isDisplay: boolean;
+};
