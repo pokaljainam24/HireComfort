@@ -37,6 +37,15 @@ import {
   deleteExperience,
 } from "../../controllers/applicantcontrollers/ExperienceControllers.js";
 
+import {
+  createProject,
+  getAllProjects,
+  getProjectById,
+  getProjectsByApplicant,
+  updateProject,
+  deleteProject,
+} from "../../controllers/applicantcontrollers/projectController.js";
+
 const router = Router();
 
 
@@ -152,6 +161,40 @@ router.patch(
 router.delete(
   "/applicant-experience/:id",
   deleteExperience
+);
+
+/* =========================
+   APPLICANT PROJECTS
+========================= */
+
+router.post(
+  "/applicant-projects",
+  createProject
+);
+
+router.get(
+  "/applicant-projects",
+  getAllProjects
+);
+
+router.get(
+  "/applicant-projects/applicant/:applicantId",
+  getProjectsByApplicant
+);
+
+router.get(
+  "/applicant-projects/:id",
+  getProjectById
+);
+
+router.patch(
+  "/applicant-projects/:id",
+  updateProject
+);
+
+router.delete(
+  "/applicant-projects/:id",
+  deleteProject
 );
 
 
