@@ -7,7 +7,7 @@ import {
   updateApplicant,
   deleteApplicant,
   getApplicantByUsername,
-} from "../../controllers/applicantcontrollers/applicantController.js";
+} from "../../controllers/applicantController/applicantController.js";
 
 import {
   createApplicantEducation,
@@ -17,7 +17,7 @@ import {
   updateApplicantEducation,
   deleteApplicantEducation,
   updateEducationActive,
-} from "../../controllers/applicantcontrollers/educationController.js";
+} from "../../controllers/applicantController/educationController.js";
 
 import {
   createCertificate,
@@ -26,7 +26,7 @@ import {
   getCertificatesByApplicant,
   updateCertificate,
   deleteCertificate,
-} from "../../controllers/applicantcontrollers/certificateController.js";
+} from "../../controllers/applicantController/certificateController.js";
 
 import {
   createExperience,
@@ -35,7 +35,7 @@ import {
   getExperienceByApplicant,
   updateExperience,
   deleteExperience,
-} from "../../controllers/applicantcontrollers/ExperienceControllers.js";
+} from "../../controllers/applicantController/ExperienceControllers.js";
 
 import {
   createProject,
@@ -44,7 +44,7 @@ import {
   getProjectsByApplicant,
   updateProject,
   deleteProject,
-} from "../../controllers/applicantcontrollers/projectController.js";
+} from "../../controllers/applicantController/projectController.js";
 
 const router = Router();
 
