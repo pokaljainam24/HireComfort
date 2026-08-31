@@ -9,207 +9,153 @@ import {
   deleteMessageService,
 } from "../../services/Chat-MessageServices/MessageService.js";
 
-
-// =========================
-// CREATE FIRST MESSAGE
-// =========================
-
-export const createMessage = async (
-  req: Request,
-  res: Response
-) => {
-
+// Create Message
+export const createMessage = async (req: Request, res: Response) => {
   try {
-
-    const message =
-      await createMessageService(req.body);
+    const message = await createMessageService({
+      ...req.body,
+      createdBy: "admin",
+    });
 
     return res.status(201).json({
-      success: true,
-      message:
-        "Message created successfully",
-      data: message,
+      message: "Message created successfully",
+      messageData: message,
     });
-
-  } catch (error: any) {
+  } catch (error) {
+    console.error("Error creating message:", error);
 
     return res.status(500).json({
-      success: false,
-      message: error.message,
+      message: "Error creating message",
     });
   }
 };
 
-
-// =========================
-// GET ALL MESSAGES
-// =========================
-
-export const getAllMessages = async (
-  req: Request,
-  res: Response
-) => {
-
+// Get All Messages
+export const getAllMessages = async (req: Request, res: Response) => {
   try {
-
-    const messages =
-      await getAllMessagesService();
+    const messages = await getAllMessagesService();
 
     return res.status(200).json({
-      success: true,
-      data: messages,
+      messages,
     });
-
-  } catch (error: any) {
+  } catch (error) {
+    console.error("Error getting messages:", error);
 
     return res.status(500).json({
-      success: false,
-      message: error.message,
+      message: "Error getting messages",
     });
   }
 };
 
-
-// =========================
-// GET MESSAGE BY ID
-// =========================
-
-export const getMessageById = async (
-  req: Request<{ id: string }>,
-  res: Response
-) => {
-
+// Get Message By ID
+export const getMessageById = async (req: Request, res: Response) => {
   try {
+    const messageId = req.params.id;
 
-    const message =
-      await getMessageByIdService(
-        req.params.id
-      );
+    if (typeof messageId !== "string") {
+      return res.status(400).json({
+        message: "Invalid message ID",
+      });
+    }
+
+    const message = await getMessageByIdService(messageId);
 
     if (!message) {
-
       return res.status(404).json({
-        success: false,
         message: "Message not found",
       });
     }
 
     return res.status(200).json({
-      success: true,
-      data: message,
+      message,
     });
-
-  } catch (error: any) {
+  } catch (error) {
+    console.error("Error getting message:", error);
 
     return res.status(500).json({
-      success: false,
-      message: error.message,
+      message: "Error getting message",
     });
   }
 };
 
-
-// =========================
-// GET MESSAGES BY RECRUITER
-// =========================
-
-export const getMessagesByRecruiter = async (
-  req: Request<{
-    recruiterId: string;
-  }>,
-  res: Response
-) => {
-
+// Get Messages By Recruiter
+export const getMessagesByRecruiter = async (req: Request, res: Response) => {
   try {
+    const recruiterId = req.params.recruiterId;
 
-    const messages =
-      await getMessagesByRecruiterService(
-        req.params.recruiterId
-      );
+    if (typeof recruiterId !== "string") {
+      return res.status(400).json({
+        message: "Invalid recruiter ID",
+      });
+    }
+
+    const messages = await getMessagesByRecruiterService(recruiterId);
 
     return res.status(200).json({
-      success: true,
-      data: messages,
+      messages,
     });
-
-  } catch (error: any) {
+  } catch (error) {
+    console.error("Error getting recruiter messages:", error);
 
     return res.status(500).json({
-      success: false,
-      message: error.message,
+      message: "Error getting recruiter messages",
     });
   }
 };
 
-
-// =========================
-// GET MESSAGES BY APPLICANT
-// =========================
-
-export const getMessagesByApplicant = async (
-  req: Request<{
-    applicantId: string;
-  }>,
-  res: Response
-) => {
-
+// Get Messages By Applicant
+export const getMessagesByApplicant = async (req: Request, res: Response) => {
   try {
+    const applicantId = req.params.applicantId;
 
-    const messages =
-      await getMessagesByApplicantService(
-        req.params.applicantId
-      );
+    if (typeof applicantId !== "string") {
+      return res.status(400).json({
+        message: "Invalid applicant ID",
+      });
+    }
+
+    const messages = await getMessagesByApplicantService(applicantId);
 
     return res.status(200).json({
-      success: true,
-      data: messages,
+      messages,
     });
-
-  } catch (error: any) {
+  } catch (error) {
+    console.error("Error getting applicant messages:", error);
 
     return res.status(500).json({
-      success: false,
-      message: error.message,
+      message: "Error getting applicant messages",
     });
   }
 };
 
-
-// =========================
-// DELETE MESSAGE
-// =========================
-
-export const deleteMessage = async (
-  req: Request<{ id: string }>,
-  res: Response
-) => {
-
+// Delete Message
+export const deleteMessage = async (req: Request, res: Response) => {
   try {
+    const messageId = req.params.id;
 
-    const message =
-      await deleteMessageService(
-        req.params.id
-      );
+    if (typeof messageId !== "string") {
+      return res.status(400).json({
+        message: "Invalid message ID",
+      });
+    }
+
+    const message = await deleteMessageService(messageId);
 
     if (!message) {
-
       return res.status(404).json({
-        success: false,
         message: "Message not found",
       });
     }
 
     return res.status(200).json({
-      success: true,
-      message:
-        "Message deleted successfully",
+      message: "Message deleted successfully",
+      data: message,
     });
-
-  } catch (error: any) {
+  } catch (error) {
+    console.error("Error deleting message:", error);
 
     return res.status(500).json({
-      success: false,
-      message: error.message,
+      message: "Error deleting message",
     });
   }
 };
