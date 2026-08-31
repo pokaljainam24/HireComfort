@@ -29,6 +29,13 @@ import {
   updateJobSubCategoryController,
 } from "../../controllers/admin/jobSubCategoriesController.js";
 import {
+  createEventController,
+  getEventsByJobController,
+  getEventsByApplicantController,
+  getEventsByTypeController,
+  getEventsController
+} from "../../controllers/admin/analyticsEventsController.js";
+import {
   createAnalyticsController,
   deleteAnalyticsController,
   getAnalyticsByIdController,
@@ -36,30 +43,11 @@ import {
   incrementAnalyticsController,
   updateAnalyticsController,
 } from "../../controllers/admin/analyticsMasterController.js";
-import {
-  createRecruiter,
-  getRecruiter,
-  getRecruiters,
-  updateRecruiter,
-  deleteRecruiter,
-} from "../../controllers/Recruiter/recruiterController.js";
-import {
-  createCompany,
-  deleteCompany,
-  getCompany,
-  getCompanys,
-  updateCompany,
-} from "../../controllers/Recruiter/companyController.js";
-import {
-  deleteApplicant,
-  getApplicantById,
-  getApplicants,
-  updateApplicant,
-} from "../../controllers/applicantcontrollers/applicantController.js";
-import {
-  getProfile,
-  updateProfile,
-} from "../../controllers/admin/profileController.js";
+
+import { createRecruiter, getRecruiter, getRecruiters, updateRecruiter, deleteRecruiter } from "../../controllers/Recruiter/recruiterController.js";
+import { createCompany, deleteCompany, getCompany, getCompanys, updateCompany } from "../../controllers/Recruiter/companyController.js";
+import { deleteApplicant, getApplicantById, getApplicants, updateApplicant } from "../../controllers/applicantcontrollers/applicantController.js";
+import { getProfile, updateProfile } from "../../controllers/admin/profileController.js";
 
 const router = Router();
 
@@ -76,6 +64,13 @@ router.get("/applicants", getApplicants);
 router.get("/applicants/:id", getApplicantById);
 router.patch("/applicants/:id", updateApplicant);
 router.delete("/applicants/:id", deleteApplicant);
+
+
+router.get("/analytics-event", getEventsController);
+router.post("/analytics-event/", createEventController);
+router.get("/analytics-event/job/:jobId", getEventsByJobController);
+router.get("/analytics-event/applicant/:applicantId", getEventsByApplicantController);
+router.get("/analytics-event/type/:eventType", getEventsByTypeController);
 
 // router.get("/jobs");
 // router.get("/jobs/:id");
