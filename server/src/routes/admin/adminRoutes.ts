@@ -13,7 +13,6 @@ import {
   updateCountry,
   updateState,
 } from "../../controllers/admin/locationController.js";
-
 import {
   createJobCategoryController,
   deleteJobCategoryController,
@@ -28,22 +27,53 @@ import {
   getJobSubCategoryByIdController,
   updateJobSubCategoryController,
 } from "../../controllers/admin/jobSubCategoriesController.js";
+import {
+  createEventController,
+  getEventsByJobController,
+  getEventsByApplicantController,
+  getEventsByTypeController,
+  getEventsController
+} from "../../controllers/admin/analyticsEventsController.js";
+import {
+  createAnalyticsController,
+  deleteAnalyticsController,
+  getAnalyticsByIdController,
+  getAnalyticsByJobController,
+  incrementAnalyticsController,
+  updateAnalyticsController,
+} from "../../controllers/admin/analyticsMasterController.js";
+import { createRecruiter, getRecruiter, getRecruiters, updateRecruiter, deleteRecruiter } from "../../controllers/Recruiter/recruiterController.js";
+import { createCompany, deleteCompany, getCompany, getCompanys, updateCompany } from "../../controllers/Recruiter/companyController.js";
+import { deleteApplicant, getApplicantById, getApplicants, updateApplicant } from "../../controllers/applicantcontrollers/applicantController.js";
+import { getProfile, updateProfile } from "../../controllers/admin/profileController.js";
 
 const router = Router();
 
-// router.get("/recruiters");
-// router.get("/recruiters/:id");
-// router.post("/recruiters");
-// router.patch("/recruiters/:id");
-// router.delete("/recruiters/:id");
+router.get("/profile", getProfile);
+router.patch("/profile", updateProfile);
 
-// router.get("/applicants");
-// router.get("/applicants/:id");
-// router.delete("/applicants/:id");
+router.post("/recruiters", createRecruiter);
+router.get("/recruiters", getRecruiters);
+router.get("/recruiters/:id", getRecruiter);
+router.patch("/recruiters/:id", updateRecruiter);
+router.delete("/recruiters/:id", deleteRecruiter);
 
-// router.get("/jobs");
-// router.get("/jobs/:id");
-// router.delete("/jobs/:id");
+router.get("/applicants", getApplicants);
+router.get("/applicants/:id", getApplicantById);
+router.patch("/applicants/:id", updateApplicant);
+router.delete("/applicants/:id", deleteApplicant);
+
+
+router.get("/analytics-events", getEventsController);
+router.post("/analytics-events/", createEventController);
+router.get("/analytics-events/jobs/:jobId", getEventsByJobController);
+router.get("/analytics-events/applicants/:applicantId", getEventsByApplicantController);
+router.get("/analytics-events/types/:eventType", getEventsByTypeController);
+
+router.get("/jobs");
+router.get("/jobs/:id");
+router.delete("/jobs/:id");
+
 
 // router.get("/applications");
 // router.get("/applications/:id");
@@ -51,8 +81,11 @@ const router = Router();
 // router.get("/interviews");
 // router.get("/interviews/:id");
 
-// router.get("/companies");
-// router.get("/companies/:id");
+router.post("/companies", createCompany);
+router.get("/companies", getCompanys);
+router.get("/companies/:id", getCompany);
+router.delete("/companies/:id", deleteCompany);
+router.patch("/companies/:id", updateCompany);
 
 // Location management routes
 router.get("/countries", getCountries);
@@ -70,6 +103,7 @@ router.get("/cities", getCities);
 router.post("/cities", createCity);
 router.delete("/cities/:id", deleteCity);
 
+// Job categories and sub categories management routes
 router.get("/job-categories", getJobCategoriesController);
 router.get("/job-categories/:id", getJobCategoryByIdController);
 router.post("/job-categories", createJobCategoryController);
@@ -81,5 +115,13 @@ router.get("/job-subcategories/:id", getJobSubCategoryByIdController);
 router.post("/job-subcategories", createJobSubCategoryController);
 router.patch("/job-subcategories/:id", updateJobSubCategoryController);
 router.delete("/job-subcategories/:id", deleteJobSubCategoryController);
+
+router.post("/analytics/", createAnalyticsController);
+router.get("/analytics/:id", getAnalyticsByIdController);
+// Note: can provide the startDate and endDate as query params in getAnalyticsByJobController
+router.get("/analytics/job/:jobId", getAnalyticsByJobController);
+router.patch("/analytics/:id", updateAnalyticsController);
+router.patch("/analytics/job/:jobId/increment", incrementAnalyticsController);
+router.delete("/analytics/:id", deleteAnalyticsController);
 
 export default router;

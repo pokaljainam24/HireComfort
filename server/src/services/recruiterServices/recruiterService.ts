@@ -40,6 +40,19 @@ export async function getRecruiterByIdService(id: string) {
   }
 }
 
+export async function getRecruiterByUsernameService(username: string) {
+  try {
+    return await Recruiter.findOne({
+      username,
+      isActive: true,
+      isDisplay: true,
+    });
+  } catch (error) {
+    console.error(`Error getting recruiter with username ${username}:`, error);
+    throw error;
+  }
+}
+
 export async function updateRecruiterService(
   id: string,
   updateData: Partial<IRecruiter>,

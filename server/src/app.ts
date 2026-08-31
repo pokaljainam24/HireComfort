@@ -6,6 +6,7 @@ import adminRouter from "./routes/admin/adminRoutes.js";
 
 import cors from "cors";
 import companyRoutes from "./routes/RecruiterRoutes/companyRoutes.js";
+import notificationRoutes from './routes/notification/notification.js';
 
 const app = express();
 
@@ -27,5 +28,5 @@ app.use("/api/applicants/", applicantRoutes);
 // Recruiter routes
 app.use("/api/recruiters", recruiterRouter);
 app.use("/api/companies", companyRoutes);
-
+app.use("/api/notification", notificationRoutes)
 export default app;

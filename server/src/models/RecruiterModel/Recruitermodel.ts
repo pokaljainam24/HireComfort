@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-
+// TODO: Remove old stale index id_i 
 export interface IRecruiter {
   firstName: string;
   lastName: string;
