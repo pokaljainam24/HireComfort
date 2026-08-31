@@ -11,6 +11,8 @@ import Companies from "./pages/Companies.tsx";
 import Applicants from "./pages/Applicants.tsx";
 import ApplicantDetails from "./pages/ApplicantDetails.tsx";
 import Profile from "./pages/Profile.tsx";
+import Analytics from "./pages/Analytics.tsx";
+import AnalyticsEvents from "./pages/AnalyticsEvents.tsx";
 
 function App() {
   return (
@@ -26,7 +28,8 @@ function App() {
       <Route path="/applicants" element={<Applicants />}></Route>
       <Route path="/applicant/:id" element={<ApplicantDetails />}></Route>
       <Route path="/profile" element={<Profile />}></Route>
-
+      <Route path="/analytics" element={<Analytics />}></Route>
+      <Route path="/analytics-events" element={<AnalyticsEvents />}></Route>
     </Routes>
   );
 }

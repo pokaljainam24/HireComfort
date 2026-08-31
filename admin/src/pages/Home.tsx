@@ -37,6 +37,8 @@ function Home() {
                 ["⚙", "Manage companies", "Manage companies", "/companies"],
                 ["⚙", "Locations", "Manage location information", "/location"],
                 ["⚙", "Applicants", "Manage Applicants", "/applicants"],
+                ["⚙", "Analytics master", "Manage analytics master", "/analytics"],
+                ["⚙", "Analytics events", "Manage analytics events", "/analytics-events"],
                 ["👤", "Profile", "Manage your profile", "/profile"],
               ].map(([icon, title, description, to], idx) => (
                 <Link

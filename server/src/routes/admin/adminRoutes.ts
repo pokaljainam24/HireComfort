@@ -66,11 +66,11 @@ router.patch("/applicants/:id", updateApplicant);
 router.delete("/applicants/:id", deleteApplicant);
 
 
-router.get("/analytics-event", getEventsController);
-router.post("/analytics-event/", createEventController);
-router.get("/analytics-event/job/:jobId", getEventsByJobController);
-router.get("/analytics-event/applicant/:applicantId", getEventsByApplicantController);
-router.get("/analytics-event/type/:eventType", getEventsByTypeController);
+router.get("/analytics-events", getEventsController);
+router.post("/analytics-events/", createEventController);
+router.get("/analytics-events/jobs/:jobId", getEventsByJobController);
+router.get("/analytics-events/applicants/:applicantId", getEventsByApplicantController);
+router.get("/analytics-events/types/:eventType", getEventsByTypeController);
 
 // router.get("/jobs");
 // router.get("/jobs/:id");
