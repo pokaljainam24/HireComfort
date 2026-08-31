@@ -16,7 +16,7 @@ function Recruiters() {
         throw new Error("Failed to fetch recruiters");
       }
       const data = await response.json();
-      setRecruiters(data.data || []);
+      setRecruiters(data.recruiters || []);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to load data",

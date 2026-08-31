@@ -24,8 +24,8 @@ function RecruiterDetails() {
         throw new Error("Failed to fetch recruiter");
       }
       const data = await response.json();
-      setRecruiter(data.data);
-      setForm(data.data);
+      setRecruiter(data.recruiter);
+      setForm(data.recruiter);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load data");
     } finally {

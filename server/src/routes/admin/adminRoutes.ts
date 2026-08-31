@@ -13,7 +13,6 @@ import {
   updateCountry,
   updateState,
 } from "../../controllers/admin/locationController.js";
-
 import {
   createJobCategoryController,
   deleteJobCategoryController,
@@ -43,7 +42,6 @@ import {
   incrementAnalyticsController,
   updateAnalyticsController,
 } from "../../controllers/admin/analyticsMasterController.js";
-
 import { createRecruiter, getRecruiter, getRecruiters, updateRecruiter, deleteRecruiter } from "../../controllers/Recruiter/recruiterController.js";
 import { createCompany, deleteCompany, getCompany, getCompanys, updateCompany } from "../../controllers/Recruiter/companyController.js";
 import { deleteApplicant, getApplicantById, getApplicants, updateApplicant } from "../../controllers/applicantcontrollers/applicantController.js";
@@ -72,9 +70,10 @@ router.get("/analytics-events/jobs/:jobId", getEventsByJobController);
 router.get("/analytics-events/applicants/:applicantId", getEventsByApplicantController);
 router.get("/analytics-events/types/:eventType", getEventsByTypeController);
 
-// router.get("/jobs");
-// router.get("/jobs/:id");
-// router.delete("/jobs/:id");
+router.get("/jobs");
+router.get("/jobs/:id");
+router.delete("/jobs/:id");
+
 
 // router.get("/applications");
 // router.get("/applications/:id");
