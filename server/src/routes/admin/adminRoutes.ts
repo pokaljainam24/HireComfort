@@ -28,17 +28,43 @@ import {
   getJobSubCategoryByIdController,
   updateJobSubCategoryController,
 } from "../../controllers/admin/jobSubCategoriesController.js";
-import { createRecruiter, getRecruiter, getRecruiters, updateRecruiter, deleteRecruiter } from "../../controllers/Recruiter/recruiterController.js";
-import { createCompany, deleteCompany, getCompany, getCompanys, updateCompany } from "../../controllers/Recruiter/companyController.js";
-import { deleteApplicant, getApplicantById, getApplicants, updateApplicant } from "../../controllers/applicantcontrollers/applicantController.js";
-import { getProfile, updateProfile } from "../../controllers/admin/profileController.js";
+import {
+  createAnalyticsController,
+  deleteAnalyticsController,
+  getAnalyticsByIdController,
+  getAnalyticsByJobController,
+  incrementAnalyticsController,
+  updateAnalyticsController,
+} from "../../controllers/admin/analyticsMasterController.js";
+import {
+  createRecruiter,
+  getRecruiter,
+  getRecruiters,
+  updateRecruiter,
+  deleteRecruiter,
+} from "../../controllers/Recruiter/recruiterController.js";
+import {
+  createCompany,
+  deleteCompany,
+  getCompany,
+  getCompanys,
+  updateCompany,
+} from "../../controllers/Recruiter/companyController.js";
+import {
+  deleteApplicant,
+  getApplicantById,
+  getApplicants,
+  updateApplicant,
+} from "../../controllers/applicantcontrollers/applicantController.js";
+import {
+  getProfile,
+  updateProfile,
+} from "../../controllers/admin/profileController.js";
 
 const router = Router();
 
 router.get("/profile", getProfile);
 router.patch("/profile", updateProfile);
-
-
 
 router.post("/recruiters", createRecruiter);
 router.get("/recruiters", getRecruiters);
@@ -60,7 +86,6 @@ router.delete("/applicants/:id", deleteApplicant);
 
 // router.get("/interviews");
 // router.get("/interviews/:id");
-
 
 router.post("/companies", createCompany);
 router.get("/companies", getCompanys);
@@ -96,5 +121,13 @@ router.get("/job-subcategories/:id", getJobSubCategoryByIdController);
 router.post("/job-subcategories", createJobSubCategoryController);
 router.patch("/job-subcategories/:id", updateJobSubCategoryController);
 router.delete("/job-subcategories/:id", deleteJobSubCategoryController);
+
+router.post("/analytics/", createAnalyticsController);
+router.get("/analytics/:id", getAnalyticsByIdController);
+// Note: can provide the startDate and endDate as query params in getAnalyticsByJobController
+router.get("/analytics/job/:jobId", getAnalyticsByJobController);
+router.patch("/analytics/:id", updateAnalyticsController);
+router.patch("/analytics/job/:jobId/increment", incrementAnalyticsController);
+router.delete("/analytics/:id", deleteAnalyticsController);
 
 export default router;
