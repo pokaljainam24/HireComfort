@@ -1,16 +1,22 @@
 import express from "express";
-import recruiterRouter from "./routes/RecruiterRoutes/recruiterRoutes.js";
 import applicantRoutes from "./routes/applicantRoutes/applicantRoutes.js";
 // import authRouter from "./routes/auth/authRoutes.js";
 import adminRouter from "./routes/admin/adminRoutes.js";
 
 import cors from "cors";
+
+// Recruiter routes
+import recruiterRouter from "./routes/RecruiterRoutes/recruiterRoutes.js";
 import companyRoutes from "./routes/RecruiterRoutes/companyRoutes.js";
 import notificationRoutes from "./routes/notification/notification.js";
 import jobMasterRoutes from "./routes/RecruiterRoutes/JobMasterRoutes.js";
 import jobApplicationMasterRoutes from "./routes/RecruiterRoutes/JobapplicationMasterRoutes.js";
 import chatMessageRoutes from "./routes/Chat-MessageRoutes/MessageRoute.js";
 import interviewMasterRoutes from "./routes/RecruiterRoutes/InterviewMasterRoutes.js";
+
+// Website routes
+import blogRoutes from "./routes/blogRoutes/blogRoutes.js";
+import path from "path";
 
 const app = express();
 
@@ -21,6 +27,8 @@ app.use(
   }),
 );
 app.use(express.json());
+
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Admin routes
 app.use("/api/admin", adminRouter);
@@ -39,5 +47,8 @@ app.use("/api/job_master", jobMasterRoutes);
 app.use("/api/job_application_master", jobApplicationMasterRoutes);
 app.use("/api/messages", chatMessageRoutes);
 app.use("/api/interview_master", interviewMasterRoutes);
+
+// Website routes
+app.use("/api/blogs", blogRoutes);
 
 export default app;

@@ -1,6 +1,5 @@
 import BlogBigCard from "../components/BlogBigCard";
 import BlogLatestPostCard from "../components/BlogLatestPostCard";
-import { blogBigCardData, blogLatestPostsData } from "../dummy-data/BlogData";
 import trendingImg from "../assets/imgs/page/blog/img-trending.png";
 import gallery1 from "../assets/imgs/page/blog/gallery1.png";
 import gallery2 from "../assets/imgs/page/blog/gallery2.png";
@@ -17,9 +16,107 @@ import newsletterRight from "../assets/imgs/template/newsletter-right.png";
 import user1 from "../assets/imgs/page/homepage1/user1.png";
 import user2 from "../assets/imgs/page/homepage1/user2.png";
 import user3 from "../assets/imgs/page/homepage1/user3.png";
+
+import { getBlogsApi } from "../api/blog/blogApi";
+
 import { Link } from "react-router";
+import { useEffect, useState } from "react";
 
 function Blog() {
+  const [blogs, setBlogs] = useState<any[]>([]);
+
+  const [loading, setLoading] = useState(true);
+
+  const API_URL = "http://localhost:5000";
+
+  // =====================================
+  // GET BLOG DATA
+  // =====================================
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await getBlogsApi();
+
+        console.log("BLOG API RESPONSE:", response);
+
+        setBlogs(response.blogs || []);
+      } catch (error) {
+        console.error("Blog API Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getData();
+  }, []);
+
+  // =====================================
+  // BIG BLOGS
+  // =====================================
+
+  const bigBlogs = blogs
+    .filter((blog) => blog.section === "big")
+    .map((blog) => ({
+      _id: blog._id,
+
+      bgImage: blog.bgImage,
+
+      title: blog.title,
+
+      heroImage: `${API_URL}${blog.heroImage}`,
+
+      author: blog.authorName,
+
+      date: new Date(blog.date).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }),
+    }));
+
+  // =====================================
+  // LATEST BLOGS
+  // =====================================
+
+  const latestBlogs = blogs
+    .filter((blog) => blog.section === "latest")
+    .map((blog) => ({
+      _id: blog._id,
+
+      heroImg: blog.heroImg,
+
+      type: blog.type,
+
+      title: blog.title,
+
+      description: blog.description,
+
+      authorImg: blog.authorImg,
+
+      authorName: blog.authorName,
+
+      date: new Date(blog.date).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }),
+
+      durationInMin: blog.durationInMin,
+    }));
+
+  // =====================================
+  // LOADING
+  // =====================================
+
+  if (loading) {
+    return (
+      <div className="container mt-50">
+        <h3>Loading blogs...</h3>
+      </div>
+    );
+  }
+
   return (
     <main className="main">
       <section className="section-box">
@@ -49,8 +146,10 @@ function Blog() {
       <section className="section-box mt-50">
         <div className="container">
           <div className="row">
-            {blogBigCardData.map((data, ind) => (
-              <BlogBigCard key={ind} {...data} />
+            {/* Big Blogs */}
+
+            {bigBlogs.map((blog) => (
+              <BlogBigCard key={blog._id} {...blog} />
             ))}
           </div>
         </div>
@@ -69,8 +168,10 @@ function Blog() {
             <div className="row mt-30">
               <div className="col-lg-8">
                 <div className="row">
-                  {blogLatestPostsData.map((data, ind) => (
-                    <BlogLatestPostCard key={ind} {...data} />
+                  {/* Latest Blogs */}
+
+                  {latestBlogs.map((blog) => (
+                    <BlogLatestPostCard key={blog._id} {...blog} />
                   ))}
                 </div>
                 <div className="paginations">

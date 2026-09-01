@@ -108,21 +108,32 @@ function Login() {
                     Login as *
                   </label>
 
-                  <select
-                    className="form-control"
-                    id="userType"
-                    name="UserType"
-                    required
-                    defaultValue=""
-                  >
-                    <option value="" disabled>
-                      Select user type
-                    </option>
+                  <div style={{ position: "relative" }}>
+                    <select
+                      className="form-control"
+                      id="userType"
+                      name="UserType"
+                      required
+                      defaultValue=""
+                    >
+                      <option value="" disabled>
+                        Select user type
+                      </option>
+                      <option value="recruiter">Recruiter</option>
+                      <option value="applicant">Applicant</option>
+                    </select>
 
-                    <option value="recruiter">Recruiter</option>
-
-                    <option value="applicant">Applicant</option>
-                  </select>
+                    <i
+                      className="bi bi-chevron-down"
+                      style={{
+                        position: "absolute",
+                        left: "90%",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        pointerEvents: "none",
+                      }}
+                    ></i>
+                  </div>
                 </div>
 
                 {/* Remember Me */}

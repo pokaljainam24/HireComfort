@@ -57,12 +57,14 @@ const companyMasterSchema = new Schema<ICompanyMaster>(
       type: String,
       required: true,
       trim: true,
+      match: /^[6-9]\d{9}$/,
     },
 
     companyEmail: {
       type: String,
       required: true,
       trim: true,
+      match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     },
 
     numberOfEmployee: {
@@ -87,6 +89,7 @@ const companyMasterSchema = new Schema<ICompanyMaster>(
       type: String,
       default: "",
       trim: true,
+      match: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
     },
 
     companyLogo: {
