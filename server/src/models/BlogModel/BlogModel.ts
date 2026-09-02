@@ -3,6 +3,8 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IBlog extends Document {
   title: string;
   description: string;
+  metaDescription: string;
+  metaTitle: string;
   type: string;
 
   // Big Card

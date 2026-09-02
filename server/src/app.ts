@@ -1,7 +1,6 @@
 import express from "express";
 import applicantRoutes from "./routes/applicantRoutes/applicantRoutes.js";
 // import authRouter from "./routes/auth/authRoutes.js";
-import adminRouter from "./routes/admin/adminRoutes.js";
 
 import cors from "cors";
 
@@ -13,6 +12,7 @@ import jobMasterRoutes from "./routes/RecruiterRoutes/JobMasterRoutes.js";
 import jobApplicationMasterRoutes from "./routes/RecruiterRoutes/JobapplicationMasterRoutes.js";
 import chatMessageRoutes from "./routes/Chat-MessageRoutes/MessageRoute.js";
 import interviewMasterRoutes from "./routes/RecruiterRoutes/InterviewMasterRoutes.js";
+import authRouter from "./routes/adminRoutes.js";
 
 // Website routes
 import blogRoutes from "./routes/blogRoutes/blogRoutes.js";
@@ -31,10 +31,9 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Admin routes
-app.use("/api/admin", adminRouter);
 
 // Auth routes
-// app.use("/api/auth", authRouter);
+app.use("/api/admin", authRouter);
 
 // Applicant routes
 app.use("/api/applicants/", applicantRoutes);

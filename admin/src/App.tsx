@@ -1,38 +1,42 @@
-import { Route, Routes } from "react-router";
-import Location from "./pages/Location.tsx";
-import Home from "./pages/Home.tsx";
-import JobCategories from "./pages/JobCategories.tsx";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import AdminLayout from "@/components/layout/AdminLayout";
+import ProtectedRoute from "@/components/routing/ProtectedRoute";
+import Login from "@/pages/auth/Login";
+import Dashboard from "@/pages/dashboard/Dashboard";
+import CountryMaster from "@/pages/country/CountryMaster";
+import StateMaster from "@/pages/state/StateMaster";
+import CityMaster from "@/pages/city/CityMaster";
+import JobCategoryMaster from "@/pages/jobcategory/JobCategoryMaster";
+import JobSubCategoryMaster from "@/pages/jobsubcategory/JobSubCategoryMaster";
+import BlogsMaster from "@/pages/blogs/BlogsMaster";
+import CMSMaster from "@/pages/cms/CMSMaster";
+import NewsletterMaster from "@/pages/newsletter/NewsletterMaster";
+import ContactMaster from "@/pages/contact/ContactMaster";
 
-import JobCategoryDetails from "./pages/JobCategoryDetails.tsx";
-import Recruiters from "./pages/Recruiters.tsx";
-import RecruiterDetails from "./pages/RecruiterDetails.tsx";
-import CompaniesDetails from "./pages/CompaniesDetails.tsx";
-import Companies from "./pages/Companies.tsx";
-import Applicants from "./pages/Applicants.tsx";
-import ApplicantDetails from "./pages/ApplicantDetails.tsx";
-import Profile from "./pages/Profile.tsx";
-import Analytics from "./pages/Analytics.tsx";
-import AnalyticsEvents from "./pages/AnalyticsEvents.tsx";
+const App: React.FC = () => (
+  <Routes>
+    <Route path="/login" element={<Login />} />
 
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/location" element={<Location />} />
-      <Route path="/job-categories" element={<JobCategories />} />
-      <Route path="/job-categories/:id" element={<JobCategoryDetails />} />
-      <Route path="/recruiters" element={<Recruiters />} />
-      <Route path="/recruiters/:id" element={<RecruiterDetails />} />
-      <Route path="/companies/:id" element={<CompaniesDetails />} />
-      <Route path="/companies" element={<Companies />} />
-      <Route path="/applicants" element={<Applicants />}></Route>
-      <Route path="/applicant/:id" element={<ApplicantDetails />}></Route>
-      <Route path="/profile" element={<Profile />}></Route>
-      <Route path="/analytics" element={<Analytics />}></Route>
-      <Route path="/analytics-events" element={<AnalyticsEvents />}></Route>
-    </Routes>
-  );
-}
+    <Route
+      element={
+        <ProtectedRoute>
+          <AdminLayout />
+        </ProtectedRoute>
+      }
+    >
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/country-master" element={<CountryMaster />} />
+      <Route path="/state-master" element={<StateMaster />} />
+      <Route path="/city-master" element={<CityMaster />} />
+      <Route path="/job-category" element={<JobCategoryMaster />} />
+      <Route path="/job-sub-category" element={<JobSubCategoryMaster />} />
+      <Route path="/blogs" element={<BlogsMaster />} />
+      <Route path="/cms" element={<CMSMaster />} />
+      <Route path="/newsletter" element={<NewsletterMaster />} />
+      <Route path="/contact" element={<ContactMaster />} />
+    </Route>
+  </Routes>
+);
 
-// TODO: Test remaining for Recruiters, Companies, profile.
 export default App;

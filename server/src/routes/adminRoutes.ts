@@ -1,67 +1,42 @@
 import { Router } from "express";
+
 import {
-  createCity,
-  createCountry,
-  createState,
-  deleteCity,
-  deleteCountry,
-  deleteState,
-  getCities,
-  getCountries,
-  getStates,
-  updateCity,
-  updateCountry,
-  updateState,
-} from "../controllers/admin/locationController.js";
+  createAdmin,
+  loginAdmin,
+  getAdmins,
+  getAdmin,
+  updateAdmin,
+  deleteAdmin,
+} from "../controllers/AdminController/adminController.js";
+
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
-// router.get("/recruiters");
-// router.get("/recruiters/:id");
-// router.post("/recruiters");
-// router.patch("/recruiters/:id");
-// router.delete("/recruiters/:id");
+// ==========================================
+// AUTH
+// ==========================================
 
-// router.get("/applicants");
-// router.get("/applicants/:id");
-// router.delete("/applicants/:id");
+// POST /api/admin/login
+router.post("/login", loginAdmin);
 
-// router.get("/jobs");
-// router.get("/jobs/:id");
-// router.delete("/jobs/:id");
+// ==========================================
+// ADMIN CRUD
+// ==========================================
 
-// router.get("/applications");
-// router.get("/applications/:id");
+// POST /api/admin
+router.post("/", authMiddleware, createAdmin);
 
-// router.get("/interviews");
-// router.get("/interviews/:id");
+// GET /api/admin
+router.get("/", authMiddleware, getAdmins);
 
-// router.get("/companies");
-// router.get("/companies/:id");
+// GET /api/admin/:id
+router.get("/:id", authMiddleware, getAdmin);
 
-// Location management routes
-router.get("/countries", getCountries);
-router.get("/states", getStates);
-router.get("/cities", getCities);
-router.post("/countries", createCountry);
-router.post("/states", createState);
-router.post("/cities", createCity);
-router.patch("/countries/:id", updateCountry);
-router.patch("/states/:id", updateState);
-router.patch("/cities/:id", updateCity);
-router.delete("/countries/:id", deleteCountry);
-router.delete("/states/:id", deleteState);
-router.delete("/cities/:id", deleteCity);
+// PUT /api/admin/:id
+router.patch("/:id", authMiddleware, updateAdmin);
 
-// router.get("job-categories");
-// router.get("job-categories/:id");
-// router.post("job-categories");
-// router.patch("job-categories/:id");
-// router.delete("job-categories/:id");
-// router.get("job-subcategories");
-// router.get("job-subcategories/:id");
-// router.post("job-subcategories");
-// router.patch("job-subcategories/:id");
-// router.delete("job-subcategories/:id");
+// DELETE /api/admin/:id
+router.delete("/:id", authMiddleware, deleteAdmin);
 
 export default router;
