@@ -14,34 +14,88 @@ export const navConfig: NavGroup[] = [
     label: "Overview",
     items: [{ label: "Dashboard", path: "/", icon: "grid" }],
   },
+
   {
     label: "Location Masters",
     items: [
-      { label: "Country Master", path: "/country-master", icon: "globe" },
-      { label: "State Master", path: "/state-master", icon: "map" },
-      { label: "City Master", path: "/city-master", icon: "pin" },
+      {
+        label: "Country Master",
+        path: "/country-master",
+        icon: "globe",
+      },
+      {
+        label: "State Master",
+        path: "/state-master",
+        icon: "map",
+      },
+      {
+        label: "City Master",
+        path: "/city-master",
+        icon: "pin",
+      },
     ],
   },
+
   {
     label: "Job Masters",
     items: [
-      { label: "Job Category", path: "/job-category", icon: "briefcase" },
-      { label: "Job Sub Category", path: "/job-sub-category", icon: "layers" },
+      {
+        label: "Job Category",
+        path: "/job-category",
+        icon: "briefcase",
+      },
+      {
+        label: "Job Sub Category",
+        path: "/job-sub-category",
+        icon: "layers",
+      },
+      {
+        label: "Skills Master",
+        path: "/skills-master",
+        icon: "skills",
+      },
+      {
+        label: "Qualification Master",
+        path: "/qualification-master",
+        icon: "qualification",
+      },
     ],
   },
+
   {
     label: "Content",
     items: [
-      { label: "Blogs", path: "/blogs", icon: "file-text" },
-      { label: "CMS Pages", path: "/cms", icon: "layout" },
-      { label: "Newsletter", path: "/newsletter", icon: "mail" },
+      {
+        label: "Blogs",
+        path: "/blogs",
+        icon: "file-text",
+      },
+      {
+        label: "CMS Pages",
+        path: "/cms",
+        icon: "layout",
+      },
+      {
+        label: "Newsletter",
+        path: "/newsletter",
+        icon: "mail",
+      },
     ],
   },
+
   {
     label: "Engagement",
     items: [
-      { label: "Contact Queries", path: "/contact", icon: "message" },
-      { label: "FAQ", path: "/faq", icon: "faq" },
+      {
+        label: "Contact Queries",
+        path: "/contact",
+        icon: "message",
+      },
+      {
+        label: "FAQ",
+        path: "/faq",
+        icon: "faq",
+      },
       {
         label: "Email Credential",
         path: "/email-credential",
@@ -50,7 +104,7 @@ export const navConfig: NavGroup[] = [
       {
         label: "Email Templates",
         path: "/email-templates",
-        icon: "email",
+        icon: "mail-template",
       },
     ],
   },

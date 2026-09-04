@@ -37,6 +37,13 @@ const paths: Record<string, React.ReactNode> = {
       <path d="M3 7l9 6 9-6" />
     </>
   ),
+  "mail-template": (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M3 7l9 6 9-6" />
+      <path d="M7 16h5M7 19h8" />
+    </>
+  ),
   eye: (
     <>
       <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z" />
@@ -48,6 +55,21 @@ const paths: Record<string, React.ReactNode> = {
       <circle cx="12" cy="12" r="9" />
       <path d="M9.5 9a2.5 2.5 0 1 1 4.2 1.8c-.9.8-1.7 1.2-1.7 2.7" />
       <path d="M12 17h.01" />
+    </>
+  ),
+  skills: (
+    <>
+      <path d="m8 8-4 4 4 4" />
+      <path d="m16 8 4 4-4 4" />
+      <path d="m14 4-4 16" />
+    </>
+  ),
+
+  qualification: (
+    <>
+      <path d="m3 9 9-5 9 5-9 5-9-5z" />
+      <path d="M7 11.5V16c0 1.7 2.2 3 5 3s5-1.3 5-3v-4.5" />
+      <path d="M21 10v6" />
     </>
   ),
   pin: (

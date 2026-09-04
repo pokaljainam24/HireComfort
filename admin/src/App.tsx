@@ -15,6 +15,9 @@ import NewsletterMaster from "@/pages/newsletter/NewsletterMaster";
 import ContactMaster from "@/pages/contact/ContactMaster";
 import FaqMaster from "./pages/Faq/FaqMaster.js";
 import EmailCredentialMaster from "./pages/emailCredential/EmailCredentialMaster.js";
+import EmailTemplateMaster from "./pages/emailTemplates/EmailTemplateMaster.js";
+import SkillsMaster from "./pages/skills/SkillsMaster.js";
+import QualificationMaster from "./pages/qualifications/QualificationMaster.js";
 
 const App: React.FC = () => (
   <Routes>
@@ -39,6 +42,9 @@ const App: React.FC = () => (
       <Route path="/contact" element={<ContactMaster />} />
       <Route path="/faq" element={<FaqMaster />} />
       <Route path="/email-credential" element={<EmailCredentialMaster />} />
+      <Route path="/email-templates" element={<EmailTemplateMaster />} />
+      <Route path="/skills-master" element={<SkillsMaster />} />
+      <Route path="/qualification-master" element={<QualificationMaster />} />
     </Route>
   </Routes>
 );

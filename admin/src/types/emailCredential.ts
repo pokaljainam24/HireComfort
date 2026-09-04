@@ -8,7 +8,7 @@ export interface EmailCredential {
   isSSL: boolean;
 
   // Password is not returned from GET API
-  password?: string;
+  password: string;
 
   isActive: boolean;
   isDisplay: boolean;

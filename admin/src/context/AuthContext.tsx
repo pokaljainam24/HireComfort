@@ -21,8 +21,12 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export const AuthProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
+  // =====================================================
+  // GET USER FROM SESSION STORAGE
+  // =====================================================
+
   const [user, setUser] = useState<AuthUser | null>(() => {
-    const rawUser = localStorage.getItem(USER_STORAGE_KEY);
+    const rawUser = sessionStorage.getItem(USER_STORAGE_KEY);
 
     if (!rawUser) {
       return null;
@@ -31,14 +35,22 @@ export const AuthProvider: React.FC<{
     try {
       return JSON.parse(rawUser);
     } catch {
-      localStorage.removeItem(USER_STORAGE_KEY);
+      sessionStorage.removeItem(USER_STORAGE_KEY);
       return null;
     }
   });
 
+  // =====================================================
+  // GET TOKEN FROM SESSION STORAGE
+  // =====================================================
+
   const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem(TOKEN_STORAGE_KEY);
+    return sessionStorage.getItem(TOKEN_STORAGE_KEY);
   });
+
+  // =====================================================
+  // LOGIN
+  // =====================================================
 
   const login = async (
     username: string,
@@ -47,9 +59,17 @@ export const AuthProvider: React.FC<{
     try {
       const data = await loginAdmin(username, password);
 
-      localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+      // =====================================================
+      // SAVE LOGIN DATA IN SESSION STORAGE
+      // =====================================================
 
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user));
+      sessionStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+
+      sessionStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user));
+
+      // =====================================================
+      // UPDATE STATE
+      // =====================================================
 
       setToken(data.token);
       setUser(data.user);
@@ -57,13 +77,18 @@ export const AuthProvider: React.FC<{
       return true;
     } catch (error) {
       console.error("Login error:", error);
+
       return false;
     }
   };
 
+  // =====================================================
+  // LOGOUT
+  // =====================================================
+
   const logout = () => {
-    localStorage.removeItem(USER_STORAGE_KEY);
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    sessionStorage.removeItem(USER_STORAGE_KEY);
+    sessionStorage.removeItem(TOKEN_STORAGE_KEY);
 
     setUser(null);
     setToken(null);
@@ -82,6 +107,10 @@ export const AuthProvider: React.FC<{
     </AuthContext.Provider>
   );
 };
+
+// =====================================================
+// USE AUTH
+// =====================================================
 
 export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);

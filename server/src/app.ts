@@ -11,6 +11,9 @@ import blogRoutes from "./routes/blogRoutes/blogRoutes.js";
 import cmsRoutes from "./routes/cmsRoutes/cmsRoutes.js";
 import faqRoutes from "./routes/FaqRoutes/faqRoutes.js";
 import emailCredentialRoutes from "./routes/EmailCredentialRoutes/emailCredentialRoutes.js";
+import emailTemplatesRoutes from "./routes/EmailTemplatesRoutes/emailTemplatesRoutes.js";
+import QualificationRoutes from "./routes/QualificationRoutes/qualificationRoutes.js";
+import SkillRoutes from "./routes/SkillsRoutes/skillsRoutes.js";
 
 // Recruiter routes
 import recruiterRouter from "./routes/RecruiterRoutes/recruiterRoutes.js";
@@ -45,6 +48,9 @@ app.use("/api/blogs", blogRoutes);
 app.use("/api/cms", cmsRoutes);
 app.use("/api/faqs", faqRoutes);
 app.use("/api/email-credentials", emailCredentialRoutes);
+app.use("/api/email-templates", emailTemplatesRoutes);
+app.use("/api/qualifications", QualificationRoutes);
+app.use("/api/skills", SkillRoutes);
 
 // Auth routes
 app.use("/api/admin", authRouter);

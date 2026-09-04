@@ -20,14 +20,10 @@ const ViewModal: React.FC<ViewModalProps> = ({
   fields,
   onClose,
 }) => {
-  if (!open) return null;
-
-  return (
+  return open ? (
     <>
-      {/* Backdrop */}
       <div className="modal-backdrop fade show"></div>
 
-      {/* Modal */}
       <div
         className="modal fade show d-block"
         tabIndex={-1}
@@ -35,13 +31,12 @@ const ViewModal: React.FC<ViewModalProps> = ({
         aria-modal="true"
       >
         <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-          <div className="modal-content">
+          <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             {/* Header */}
-            <div className="modal-header">
+            <div className="modal-header px-4 py-3 border-bottom">
               <div>
-                <h5 className="modal-title mb-1">{title}</h5>
-
-                <small className="text-muted">View complete details</small>
+                <h4 className="modal-title fw-bold mb-1">{title}</h4>
+                <div className="text-muted small">View complete details</div>
               </div>
 
               <button
@@ -49,23 +44,28 @@ const ViewModal: React.FC<ViewModalProps> = ({
                 className="btn-close"
                 onClick={onClose}
                 aria-label="Close"
-              />
+              ></button>
             </div>
 
             {/* Body */}
-            <div className="modal-body">
-              <div className="row g-3">
+            <div className="modal-body p-4">
+              <div className="row g-4">
                 {fields.map((field, index) => (
                   <div
                     key={`${field.label}-${index}`}
                     className={field.fullWidth ? "col-12" : "col-md-6"}
                   >
-                    <div className="small text-muted fw-semibold mb-1">
+                    <div className="mb-1 text-muted small fw-semibold">
                       {field.label}
                     </div>
 
-                    <div className="border rounded p-2">
-                      {field.value ?? "-"}
+                    <div
+                      className="fw-medium text-dark"
+                      style={{ fontSize: "15px", lineHeight: "1.6" }}
+                    >
+                      {field.value ?? (
+                        <span className="text-muted">Not available</span>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -73,10 +73,10 @@ const ViewModal: React.FC<ViewModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="modal-footer">
+            <div className="modal-footer px-4 py-3 border-top">
               <button
                 type="button"
-                className="btn btn-outline-secondary"
+                className="btn btn-outline-secondary px-4"
                 onClick={onClose}
               >
                 Close
@@ -86,7 +86,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
         </div>
       </div>
     </>
-  );
+  ) : null;
 };
 
 export default ViewModal;

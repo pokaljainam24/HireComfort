@@ -109,11 +109,16 @@ function DataTable<T>({
                       {onView && (
                         <button
                           type="button"
-                          className="btn btn-sm border rounded-3"
+                          className="icon-btn btn-sm"
+                          style={{
+                            width: 36,
+                            height: 36,
+                          }}
                           onClick={() => onView(row)}
+                          aria-label="View"
                           title="View"
                         >
-                          <Icon name="eye" size={15} />
+                          <Icon name="eye" size={20} />
                         </button>
                       )}
 
@@ -124,14 +129,14 @@ function DataTable<T>({
                           type="button"
                           className="icon-btn btn-sm"
                           style={{
-                            width: 32,
-                            height: 32,
+                            width: 36,
+                            height: 36,
                           }}
                           onClick={() => onEdit(row)}
                           aria-label="Edit"
                           title="Edit"
                         >
-                          <Icon name="edit" size={15} />
+                          <Icon name="edit" size={20} />
                         </button>
                       )}
 
@@ -142,15 +147,15 @@ function DataTable<T>({
                           type="button"
                           className="icon-btn btn-sm"
                           style={{
-                            width: 32,
-                            height: 32,
+                            width: 36,
+                            height: 36,
                             color: "var(--bs-danger)",
                           }}
                           onClick={() => onDelete(row)}
                           aria-label="Delete"
                           title="Delete"
                         >
-                          <Icon name="trash" size={15} />
+                          <Icon name="trash" size={20} />
                         </button>
                       )}
                     </div>

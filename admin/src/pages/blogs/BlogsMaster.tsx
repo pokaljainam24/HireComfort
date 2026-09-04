@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 
 import PageHeader from "@/components/common/PageHeader";
+
 import Field from "@/components/common/Field";
+
 import DataTable, { ColumnDef } from "@/components/common/DataTable";
+
 import ConfirmModal from "@/components/common/ConfirmModal";
+
+import ViewModal, { ViewField } from "@/components/common/ViewModal";
+
 import { Icon } from "@/components/common/Icon";
 
 import { getBlogs, createBlog, updateBlog, deleteBlog } from "@/api/blogApi";
@@ -20,25 +26,15 @@ import { JobCategory } from "@/types/jobCategory";
 
 const empty: BlogForm = {
   categoryId: "",
-
   title: "",
-
   authorName: "",
-
   authorImg: null,
-
   date: "",
-
   durationInMin: "",
-
   description: "",
-
   metaTitle: "",
-
   metaDescription: "",
-
   blogImg: null,
-
   section: "latest",
 };
 
@@ -63,9 +59,13 @@ const BlogsMaster: React.FC = () => {
 
   const [deleteTarget, setDeleteTarget] = useState<Blog | null>(null);
 
+  const [viewTarget, setViewTarget] = useState<Blog | null>(null);
+
   const [imgPreview, setImgPreview] = useState("");
 
   const [blogImgPreview, setBlogImgPreview] = useState("");
+
+  const [showForm, setShowForm] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -110,6 +110,30 @@ const BlogsMaster: React.FC = () => {
     setEditingId(null);
 
     setErrors({});
+
+    setImgPreview("");
+
+    setBlogImgPreview("");
+  };
+
+  // =====================================
+  // ADD BLOG
+  // =====================================
+
+  const handleAdd = () => {
+    resetForm();
+
+    setShowForm(true);
+  };
+
+  // =====================================
+  // CLOSE FORM
+  // =====================================
+
+  const handleCloseForm = () => {
+    resetForm();
+
+    setShowForm(false);
   };
 
   // =====================================
@@ -278,6 +302,8 @@ const BlogsMaster: React.FC = () => {
       }
 
       resetForm();
+
+      setShowForm(false);
     } catch (error) {
       console.error("Error saving blog:", error);
     } finally {
@@ -290,6 +316,8 @@ const BlogsMaster: React.FC = () => {
   // =====================================
 
   const handleEdit = (row: Blog) => {
+    setShowForm(true);
+
     setEditingId(row._id);
 
     setForm({
@@ -305,6 +333,8 @@ const BlogsMaster: React.FC = () => {
       durationInMin: row.durationInMin,
       section: row.section,
     });
+
+    setErrors({});
 
     // Existing Author Image
     if (row.authorImg) {
@@ -400,7 +430,18 @@ const BlogsMaster: React.FC = () => {
 
       render: (row) => (
         <div>
-          <b>{row.title}</b>
+          <b
+            style={{
+              display: "block",
+              maxWidth: 210,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            title={row.title}
+          >
+            {row.title}
+          </b>
 
           <div
             className="cell-muted"
@@ -409,7 +450,6 @@ const BlogsMaster: React.FC = () => {
             }}
           >
             {row.description.slice(0, 60)}
-
             {row.description.length > 60 ? "..." : ""}
           </div>
         </div>
@@ -485,6 +525,140 @@ const BlogsMaster: React.FC = () => {
     },
   ];
 
+  // =====================================
+  // VIEW FIELDS
+  // =====================================
+
+  const getViewFields = (row: Blog): ViewField[] => [
+    {
+      label: "Blog Image",
+
+      value: row.blogImg ? (
+        <img
+          src={getImageUrl(row.blogImg)}
+          alt={row.title}
+          style={{
+            width: 180,
+            height: 110,
+            objectFit: "cover",
+            borderRadius: 8,
+          }}
+        />
+      ) : (
+        "No Image"
+      ),
+
+      fullWidth: true,
+    },
+
+    {
+      label: "Title",
+      value: row.title,
+      fullWidth: true,
+    },
+
+    {
+      label: "Category",
+      value: categoryName(row.categoryId),
+    },
+
+    {
+      label: "Author",
+      value: row.authorName,
+    },
+
+    {
+      label: "Date",
+      value: row.date ? new Date(row.date).toLocaleDateString() : "-",
+    },
+
+    {
+      label: "Reading Time",
+      value: `${row.durationInMin} min`,
+    },
+
+    {
+      label: "Section",
+      value: row.section || "-",
+    },
+
+    {
+      label: "Author Image",
+
+      value: row.authorImg ? (
+        <img
+          src={getImageUrl(row.authorImg)}
+          alt={row.authorName}
+          style={{
+            width: 50,
+            height: 50,
+            objectFit: "cover",
+            borderRadius: "50%",
+          }}
+        />
+      ) : (
+        "No Image"
+      ),
+    },
+
+    {
+      label: "Meta Title",
+      value: row.metaTitle || "-",
+      fullWidth: true,
+    },
+
+    {
+      label: "Meta Description",
+      value: row.metaDescription || "-",
+      fullWidth: true,
+    },
+
+    {
+      label: "Blog Content",
+      value: row.description,
+      fullWidth: true,
+    },
+
+    {
+      label: "Display",
+      value: row.isDisplay ? "Yes" : "No",
+    },
+
+    {
+      label: "Created By",
+      value: row.createdBy || "-",
+    },
+
+    {
+      label: "Created At",
+      value: row.createdAt ? new Date(row.createdAt).toLocaleString() : "-",
+    },
+
+    {
+      label: "Updated By",
+      value: row.updatedBy || "-",
+    },
+
+    {
+      label: "Updated At",
+      value: row.updatedAt ? new Date(row.updatedAt).toLocaleString() : "-",
+    },
+
+    {
+      label: "Delete By",
+      value: row.deleteBy || "-",
+    },
+
+    {
+      label: "Delete At",
+      value: row.deleteAt ? new Date(row.deleteAt).toLocaleString() : "-",
+    },
+  ];
+
+  // =====================================
+  // AUTHOR IMAGE CHANGE
+  // =====================================
+
   const handleAuthorImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
 
@@ -504,6 +678,10 @@ const BlogsMaster: React.FC = () => {
       setImgPreview("");
     }
   };
+
+  // =====================================
+  // BLOG IMAGE CHANGE
+  // =====================================
 
   const handleBlogImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
@@ -534,345 +712,350 @@ const BlogsMaster: React.FC = () => {
       <PageHeader title="Blogs" section="Content" />
 
       {/* =====================================
-          FORM
+          ADD / EDIT FORM
       ===================================== */}
 
-      <div className="card-panel">
-        <div className="card-panel-head">
-          <div>
-            <h2>{editingId ? "Edit Blog" : "Add Blog"}</h2>
+      {showForm && (
+        <div className="card-panel">
+          <div className="card-panel-head">
+            <div>
+              <h2>{editingId ? "Edit Blog" : "Add Blog"}</h2>
 
-            <p>Publish and manage blog articles.</p>
-          </div>
+              <p>Publish and manage blog articles.</p>
+            </div>
 
-          {editingId && (
             <button
               type="button"
               className="btn btn-ghost btn-sm"
-              onClick={resetForm}
+              onClick={handleCloseForm}
               disabled={loading}
             >
               <Icon name="x" size={14} />
-              Cancel edit
+              Close
             </button>
-          )}
-        </div>
+          </div>
 
-        <div className="card-panel-body">
-          <form onSubmit={handleSubmit}>
-            <div className="form-grid">
-              {/* TITLE */}
+          <div className="card-panel-body">
+            <form onSubmit={handleSubmit}>
+              <div className="form-grid">
+                {/* TITLE */}
 
-              <Field label="Blog Title" required error={errors.title} span2>
-                <input
-                  value={form.title}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      title: e.target.value,
-                    });
+                <Field label="Blog Title" required error={errors.title} span2>
+                  <input
+                    value={form.title}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        title: e.target.value,
+                      });
 
-                    setErrors({
-                      ...errors,
-                      title: "",
-                    });
-                  }}
-                  placeholder="e.g. 5 Tips to Crack Your Next Interview"
-                  disabled={loading}
-                />
-              </Field>
-
-              {/* CATEGORY */}
-
-              <Field label="Category" required error={errors.categoryId}>
-                <select
-                  value={form.categoryId}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      categoryId: e.target.value,
-                    });
-
-                    setErrors({
-                      ...errors,
-                      categoryId: "",
-                    });
-                  }}
-                  disabled={loading}
-                >
-                  <option value="">Select category</option>
-
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-
-              {/* AUTHOR */}
-
-              <Field label="Author Name" required error={errors.authorName}>
-                <input
-                  value={form.authorName}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      authorName: e.target.value,
-                    });
-
-                    setErrors({
-                      ...errors,
-                      authorName: "",
-                    });
-                  }}
-                  placeholder="e.g. Neha Verma"
-                  disabled={loading}
-                />
-              </Field>
-
-              {/* AUTHOR IMAGE */}
-
-              <Field
-                label="Author Image"
-                required={!editingId}
-                error={errors.authorImg}
-              >
-                <input
-                  type="file"
-                  accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml"
-                  onChange={handleAuthorImgChange}
-                  disabled={loading}
-                />
-
-                {imgPreview && (
-                  <div style={{ marginTop: 10 }}>
-                    <img
-                      src={imgPreview}
-                      alt="Author image preview"
-                      style={{
-                        width: 50,
-                        height: 50,
-                        objectFit: "cover",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  </div>
-                )}
-              </Field>
-
-              {/* DATE */}
-
-              <Field label="Date" required error={errors.date}>
-                <input
-                  type="date"
-                  value={form.date}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      date: e.target.value,
-                    });
-
-                    setErrors({
-                      ...errors,
-                      date: "",
-                    });
-                  }}
-                  disabled={loading}
-                />
-              </Field>
-
-              {/* READING TIME */}
-
-              <Field
-                label="Reading Time (minutes)"
-                required
-                error={errors.durationInMin}
-              >
-                <input
-                  type="number"
-                  min={1}
-                  value={form.durationInMin}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      durationInMin: e.target.value,
-                    });
-
-                    setErrors({
-                      ...errors,
-                      durationInMin: "",
-                    });
-                  }}
-                  placeholder="e.g. 5"
-                  disabled={loading}
-                />
-              </Field>
-
-              {/* SECTION */}
-
-              <Field label="Section" required error={errors.section}>
-                <select
-                  value={form.section}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      section: e.target.value as "big" | "latest",
-                    });
-
-                    setErrors({
-                      ...errors,
-                      section: "",
-                    });
-                  }}
-                  disabled={loading}
-                >
-                  <option value="latest">Latest</option>
-
-                  <option value="big">Big</option>
-                </select>
-              </Field>
-
-              {/* BLOG IMAGE */}
-
-              <Field
-                label="Blog Image"
-                required={!editingId}
-                error={errors.blogImg}
-              >
-                <input
-                  type="file"
-                  accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml"
-                  onChange={handleBlogImgChange}
-                  disabled={loading}
-                />
-
-                {blogImgPreview && (
-                  <div
-                    style={{
-                      marginTop: 10,
+                      setErrors({
+                        ...errors,
+                        title: "",
+                      });
                     }}
+                    placeholder="e.g. 5 Tips to Crack Your Next Interview"
+                    disabled={loading}
+                  />
+                </Field>
+
+                {/* CATEGORY */}
+
+                <Field label="Category" required error={errors.categoryId}>
+                  <select
+                    value={form.categoryId}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        categoryId: e.target.value,
+                      });
+
+                      setErrors({
+                        ...errors,
+                        categoryId: "",
+                      });
+                    }}
+                    disabled={loading}
                   >
-                    <img
-                      src={blogImgPreview}
-                      alt="Blog image preview"
+                    <option value="">Select category</option>
+
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+
+                {/* AUTHOR */}
+
+                <Field label="Author Name" required error={errors.authorName}>
+                  <input
+                    value={form.authorName}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        authorName: e.target.value,
+                      });
+
+                      setErrors({
+                        ...errors,
+                        authorName: "",
+                      });
+                    }}
+                    placeholder="e.g. Neha Verma"
+                    disabled={loading}
+                  />
+                </Field>
+
+                {/* AUTHOR IMAGE */}
+
+                <Field
+                  label="Author Image"
+                  required={!editingId}
+                  error={errors.authorImg}
+                >
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml"
+                    onChange={handleAuthorImgChange}
+                    disabled={loading}
+                  />
+
+                  {imgPreview && (
+                    <div style={{ marginTop: 10 }}>
+                      <img
+                        src={imgPreview}
+                        alt="Author image preview"
+                        style={{
+                          width: 50,
+                          height: 50,
+                          objectFit: "cover",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    </div>
+                  )}
+                </Field>
+
+                {/* DATE */}
+
+                <Field label="Date" required error={errors.date}>
+                  <input
+                    type="date"
+                    value={form.date}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        date: e.target.value,
+                      });
+
+                      setErrors({
+                        ...errors,
+                        date: "",
+                      });
+                    }}
+                    disabled={loading}
+                  />
+                </Field>
+
+                {/* READING TIME */}
+
+                <Field
+                  label="Reading Time (minutes)"
+                  required
+                  error={errors.durationInMin}
+                >
+                  <input
+                    type="number"
+                    min={1}
+                    value={form.durationInMin}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        durationInMin: e.target.value,
+                      });
+
+                      setErrors({
+                        ...errors,
+                        durationInMin: "",
+                      });
+                    }}
+                    placeholder="e.g. 5"
+                    disabled={loading}
+                  />
+                </Field>
+
+                {/* SECTION */}
+
+                <Field label="Section" required error={errors.section}>
+                  <select
+                    value={form.section}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        section: e.target.value as "big" | "latest",
+                      });
+
+                      setErrors({
+                        ...errors,
+                        section: "",
+                      });
+                    }}
+                    disabled={loading}
+                  >
+                    <option value="latest">Latest</option>
+
+                    <option value="big">Big</option>
+                  </select>
+                </Field>
+
+                {/* BLOG IMAGE */}
+
+                <Field
+                  label="Blog Image"
+                  required={!editingId}
+                  error={errors.blogImg}
+                >
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml"
+                    onChange={handleBlogImgChange}
+                    disabled={loading}
+                  />
+
+                  {blogImgPreview && (
+                    <div
                       style={{
-                        width: 120,
-                        height: 70,
-                        objectFit: "cover",
-                        borderRadius: 6,
+                        marginTop: 10,
                       }}
-                    />
-                  </div>
-                )}
-              </Field>
+                    >
+                      <img
+                        src={blogImgPreview}
+                        alt="Blog image preview"
+                        style={{
+                          width: 120,
+                          height: 70,
+                          objectFit: "cover",
+                          borderRadius: 6,
+                        }}
+                      />
+                    </div>
+                  )}
+                </Field>
 
-              {/* META TITLE */}
+                {/* META TITLE */}
 
-              <Field label="Meta Title" required error={errors.metaTitle} span2>
-                <input
-                  value={form.metaTitle}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      metaTitle: e.target.value,
-                    });
+                <Field
+                  label="Meta Title"
+                  required
+                  error={errors.metaTitle}
+                  span2
+                >
+                  <input
+                    value={form.metaTitle}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        metaTitle: e.target.value,
+                      });
 
-                    setErrors({
-                      ...errors,
-                      metaTitle: "",
-                    });
-                  }}
-                  placeholder="SEO meta title"
+                      setErrors({
+                        ...errors,
+                        metaTitle: "",
+                      });
+                    }}
+                    placeholder="SEO meta title"
+                    disabled={loading}
+                  />
+                </Field>
+
+                {/* META DESCRIPTION */}
+
+                <Field
+                  label="Meta Description"
+                  required
+                  error={errors.metaDescription}
+                  span2
+                >
+                  <textarea
+                    value={form.metaDescription}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        metaDescription: e.target.value,
+                      });
+
+                      setErrors({
+                        ...errors,
+                        metaDescription: "",
+                      });
+                    }}
+                    placeholder="SEO meta description"
+                    disabled={loading}
+                  />
+                </Field>
+
+                {/* BLOG CONTENT */}
+
+                <Field
+                  label="Blog Content"
+                  required
+                  error={errors.description}
+                  span2
+                >
+                  <textarea
+                    value={form.description}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        description: e.target.value,
+                      });
+
+                      setErrors({
+                        ...errors,
+                        description: "",
+                      });
+                    }}
+                    placeholder="Write the blog content here..."
+                    style={{
+                      minHeight: 180,
+                    }}
+                    disabled={loading}
+                  />
+                </Field>
+              </div>
+
+              {/* ACTIONS */}
+
+              <div className="form-actions">
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={resetForm}
                   disabled={loading}
-                />
-              </Field>
+                >
+                  Reset
+                </button>
 
-              {/* META DESCRIPTION */}
-
-              <Field
-                label="Meta Description"
-                required
-                error={errors.metaDescription}
-                span2
-              >
-                <textarea
-                  value={form.metaDescription}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      metaDescription: e.target.value,
-                    });
-
-                    setErrors({
-                      ...errors,
-                      metaDescription: "",
-                    });
-                  }}
-                  placeholder="SEO meta description"
+                <button
+                  type="submit"
+                  className="btn btn-primary"
                   disabled={loading}
-                />
-              </Field>
+                >
+                  <Icon name={editingId ? "edit" : "plus"} size={15} />
 
-              {/* BLOG CONTENT */}
-
-              <Field
-                label="Blog Content"
-                required
-                error={errors.description}
-                span2
-              >
-                <textarea
-                  value={form.description}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      description: e.target.value,
-                    });
-
-                    setErrors({
-                      ...errors,
-                      description: "",
-                    });
-                  }}
-                  placeholder="Write the blog content here..."
-                  style={{
-                    minHeight: 180,
-                  }}
-                  disabled={loading}
-                />
-              </Field>
-            </div>
-
-            {/* ACTIONS */}
-
-            <div className="form-actions">
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={resetForm}
-                disabled={loading}
-              >
-                Reset
-              </button>
-
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                <Icon name={editingId ? "edit" : "plus"} size={15} />
-
-                {loading
-                  ? "Saving..."
-                  : editingId
-                    ? "Update Blog"
-                    : "Publish Blog"}
-              </button>
-            </div>
-          </form>
+                  {loading
+                    ? "Saving..."
+                    : editingId
+                      ? "Update Blog"
+                      : "Publish Blog"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* =====================================
           DATA TABLE
@@ -885,6 +1068,18 @@ const BlogsMaster: React.FC = () => {
 
             <p>{rows.length} articles published</p>
           </div>
+
+          {!showForm && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleAdd}
+              disabled={loading}
+            >
+              <Icon name="plus" size={15} />
+              Add Blog
+            </button>
+          )}
         </div>
 
         <DataTable
@@ -897,10 +1092,22 @@ const BlogsMaster: React.FC = () => {
             row.authorName.toLowerCase().includes(query) ||
             categoryName(row.categoryId).toLowerCase().includes(query)
           }
+          onView={(row) => setViewTarget(row)}
           onEdit={handleEdit}
           onDelete={(row) => setDeleteTarget(row)}
         />
       </div>
+
+      {/* =====================================
+          VIEW MODAL
+      ===================================== */}
+
+      <ViewModal
+        open={!!viewTarget}
+        title="Blog Details"
+        fields={viewTarget ? getViewFields(viewTarget) : []}
+        onClose={() => setViewTarget(null)}
+      />
 
       {/* =====================================
           DELETE MODAL

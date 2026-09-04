@@ -7,39 +7,47 @@ import ConfirmModal from "@/components/common/ConfirmModal";
 import ViewModal, { ViewField } from "@/components/common/ViewModal";
 import { Icon } from "@/components/common/Icon";
 
-import { getFaqs, createFaq, updateFaq, deleteFaq } from "@/api/faqApi";
+import {
+  getSkills,
+  createSkill,
+  updateSkill,
+  deleteSkill,
+} from "@/api/skillsApi";
 
-import { Faq, FaqForm } from "@/types/faq";
+import { Skills, SkillsForm } from "@/types/skills";
 
 import { showSuccess, showError } from "@/utils/swal";
+
 // =====================================
 // EMPTY FORM
 // =====================================
 
-const empty: FaqForm = {
-  que: "",
-  ans: "",
+const empty: SkillsForm = {
+  skillsTest: "",
 };
 
 // =====================================
 // COMPONENT
 // =====================================
 
-const FaqMaster: React.FC = () => {
+const SkillsMaster: React.FC = () => {
   // =====================================
   // STATE
   // =====================================
 
-  const [rows, setRows] = useState<Faq[]>([]);
-  const [form, setForm] = useState<FaqForm>(empty);
+  const [rows, setRows] = useState<Skills[]>([]);
+
+  const [form, setForm] = useState<SkillsForm>(empty);
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  const [showForm, setShowForm] = useState(false);
+
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [deleteTarget, setDeleteTarget] = useState<Faq | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Skills | null>(null);
 
-  const [viewTarget, setViewTarget] = useState<Faq | null>(null);
+  const [viewTarget, setViewTarget] = useState<Skills | null>(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -51,11 +59,13 @@ const FaqMaster: React.FC = () => {
     try {
       setLoading(true);
 
-      const faqs = await getFaqs();
+      const data = await getSkills();
 
-      setRows(faqs);
+      setRows(data);
     } catch (error) {
-      console.error("Error loading FAQs:", error);
+      console.error("Error loading skills:", error);
+
+      showError("Failed to load skills");
     } finally {
       setLoading(false);
     }
@@ -70,13 +80,31 @@ const FaqMaster: React.FC = () => {
   }, []);
 
   // =====================================
-  // RESET
+  // OPEN ADD FORM
+  // =====================================
+
+  const handleAdd = () => {
+    setForm(empty);
+
+    setEditingId(null);
+
+    setErrors({});
+
+    setShowForm(true);
+  };
+
+  // =====================================
+  // RESET / CLOSE FORM
   // =====================================
 
   const resetForm = () => {
     setForm(empty);
+
     setEditingId(null);
+
     setErrors({});
+
+    setShowForm(false);
   };
 
   // =====================================
@@ -87,23 +115,15 @@ const FaqMaster: React.FC = () => {
     const e: Record<string, string> = {};
 
     // =====================================
-    // QUESTION
+    // SKILLS
     // =====================================
 
-    if (!form.que.trim()) {
-      e.que = "Question is required";
-    } else if (form.que.trim().length < 5) {
-      e.que = "Question must contain at least 5 characters";
-    }
-
-    // =====================================
-    // ANSWER
-    // =====================================
-
-    if (!form.ans.trim()) {
-      e.ans = "Answer is required";
-    } else if (form.ans.trim().length < 2) {
-      e.ans = "Answer must contain at least 2 characters";
+    if (!form.skillsTest.trim()) {
+      e.skillsTest = "Skills is required";
+    } else if (form.skillsTest.trim().length < 2) {
+      e.skillsTest = "Skills must contain at least 2 characters";
+    } else if (form.skillsTest.trim().length > 50) {
+      e.skillsTest = "Skills must not exceed 50 characters";
     }
 
     setErrors(e);
@@ -130,31 +150,34 @@ const FaqMaster: React.FC = () => {
       // =====================================
 
       if (editingId) {
-        const updated = await updateFaq(editingId, form);
+        const updated = await updateSkill(editingId, form);
 
         setRows((rows) =>
           rows.map((row) => (row._id === editingId ? updated : row)),
         );
 
-        showSuccess("FAQ updated successfully");
+        showSuccess("Skills updated successfully");
       }
 
       // =====================================
       // CREATE
       // =====================================
       else {
-        const created = await createFaq(form);
+        const created = await createSkill(form);
 
         setRows((rows) => [created, ...rows]);
 
-        showSuccess("FAQ added successfully");
+        showSuccess("Skills added successfully");
       }
 
       resetForm();
-    } catch (error) {
-      console.error("Error saving FAQ:", error);
+    } catch (error: any) {
+      console.error("Error saving skills:", error);
 
-      showError("Something went wrong while saving FAQ");
+      showError(
+        error?.response?.data?.message ||
+          "Something went wrong while saving skills",
+      );
     } finally {
       setLoading(false);
     }
@@ -164,15 +187,16 @@ const FaqMaster: React.FC = () => {
   // EDIT
   // =====================================
 
-  const handleEdit = (row: Faq) => {
+  const handleEdit = (row: Skills) => {
     setEditingId(row._id);
 
     setForm({
-      que: row.que,
-      ans: row.ans,
+      skillsTest: row.skillsTest,
     });
 
     setErrors({});
+
+    setShowForm(true);
   };
 
   // =====================================
@@ -187,17 +211,20 @@ const FaqMaster: React.FC = () => {
     try {
       setLoading(true);
 
-      await deleteFaq(deleteTarget._id);
+      await deleteSkill(deleteTarget._id);
 
       setRows((rows) => rows.filter((row) => row._id !== deleteTarget._id));
 
       setDeleteTarget(null);
 
-      showSuccess("FAQ deleted successfully");
-    } catch (error) {
-      console.error("Error deleting FAQ:", error);
+      showSuccess("Skills deleted successfully");
+    } catch (error: any) {
+      console.error("Error deleting skills:", error);
 
-      showError("Something went wrong while deleting FAQ");
+      showError(
+        error?.response?.data?.message ||
+          "Something went wrong while deleting skills",
+      );
     } finally {
       setLoading(false);
     }
@@ -207,28 +234,13 @@ const FaqMaster: React.FC = () => {
   // TABLE
   // =====================================
 
-  const columns: ColumnDef<Faq>[] = [
+  const columns: ColumnDef<Skills>[] = [
     {
-      header: "Question",
+      header: "Skills",
+
       render: (row) => (
         <div>
-          <b>{row.que}</b>
-        </div>
-      ),
-    },
-
-    {
-      header: "Answer",
-      render: (row) => (
-        <div
-          className="cell-muted"
-          style={{
-            maxWidth: 500,
-            fontSize: 13,
-          }}
-        >
-          {row.ans.slice(0, 100)}
-          {row.ans.length > 100 ? "..." : ""}
+          <b>{row.skillsTest}</b>
         </div>
       ),
     },
@@ -238,17 +250,16 @@ const FaqMaster: React.FC = () => {
   // VIEW FIELDS
   // =====================================
 
-  const getViewFields = (row: Faq): ViewField[] => [
+  const getViewFields = (row: Skills): ViewField[] => [
     {
-      label: "Question",
-      value: row.que,
+      label: "Skills",
+      value: row.skillsTest,
       fullWidth: true,
     },
 
     {
-      label: "Answer",
-      value: row.ans,
-      fullWidth: true,
+      label: "Active",
+      value: row.isActive ? "Yes" : "No",
     },
 
     {
@@ -293,21 +304,21 @@ const FaqMaster: React.FC = () => {
 
   return (
     <>
-      <PageHeader title="FAQ" section="Engagement" />
+      <PageHeader title="Skills" section="Master" />
 
       {/* =====================================
           FORM
       ===================================== */}
 
-      <div className="card-panel">
-        <div className="card-panel-head">
-          <div>
-            <h2>{editingId ? "Edit FAQ" : "Add FAQ"}</h2>
+      {showForm && (
+        <div className="card-panel">
+          <div className="card-panel-head">
+            <div>
+              <h2>{editingId ? "Edit Skills" : "Add Skills"}</h2>
 
-            <p>Manage frequently asked questions.</p>
-          </div>
+              <p>Manage skills.</p>
+            </div>
 
-          {editingId && (
             <button
               type="button"
               className="btn btn-ghost btn-sm"
@@ -315,85 +326,70 @@ const FaqMaster: React.FC = () => {
               disabled={loading}
             >
               <Icon name="x" size={14} />
-              Cancel edit
+              Close
             </button>
-          )}
-        </div>
+          </div>
 
-        <div className="card-panel-body">
-          <form onSubmit={handleSubmit}>
-            <div className="form-grid">
-              {/* QUESTION */}
+          <div className="card-panel-body">
+            <form onSubmit={handleSubmit}>
+              <div className="form-grid">
+                {/* =====================================
+                    SKILLS
+                ===================================== */}
 
-              <Field label="Question" required error={errors.que} span2>
-                <input
-                  value={form.que}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      que: e.target.value,
-                    });
+                <Field label="Skills" required error={errors.skillsTest}>
+                  <input
+                    value={form.skillsTest}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        skillsTest: e.target.value,
+                      });
 
-                    setErrors({
-                      ...errors,
-                      que: "",
-                    });
-                  }}
-                  placeholder="e.g. How can I create an account?"
+                      setErrors({
+                        ...errors,
+                        skillsTest: "",
+                      });
+                    }}
+                    placeholder="e.g. React JS"
+                    maxLength={50}
+                    disabled={loading}
+                  />
+                </Field>
+              </div>
+
+              {/* =====================================
+                  ACTIONS
+              ===================================== */}
+
+              <div className="form-actions">
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={resetForm}
                   disabled={loading}
-                />
-              </Field>
+                >
+                  Reset
+                </button>
 
-              {/* ANSWER */}
-
-              <Field label="Answer" required error={errors.ans} span2>
-                <textarea
-                  value={form.ans}
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      ans: e.target.value,
-                    });
-
-                    setErrors({
-                      ...errors,
-                      ans: "",
-                    });
-                  }}
-                  placeholder="Enter the answer..."
-                  style={{
-                    minHeight: 160,
-                  }}
+                <button
+                  type="submit"
+                  className="btn btn-primary"
                   disabled={loading}
-                />
-              </Field>
-            </div>
+                >
+                  <Icon name={editingId ? "edit" : "plus"} size={15} />
 
-            {/* ACTIONS */}
-
-            <div className="form-actions">
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={resetForm}
-                disabled={loading}
-              >
-                Reset
-              </button>
-
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                <Icon name={editingId ? "edit" : "plus"} size={15} />
-
-                {loading ? "Saving..." : editingId ? "Update FAQ" : "Add FAQ"}
-              </button>
-            </div>
-          </form>
+                  {loading
+                    ? "Saving..."
+                    : editingId
+                      ? "Update Skills"
+                      : "Add Skills"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* =====================================
           DATA TABLE
@@ -402,22 +398,36 @@ const FaqMaster: React.FC = () => {
       <div className="card-panel">
         <div className="card-panel-head">
           <div>
-            <h2>All FAQs</h2>
+            <h2>Skills</h2>
 
-            <p>{rows.length} FAQs available</p>
+            <p>{rows.length} skills available</p>
           </div>
+
+          {/* ADD BUTTON */}
+
+          {!showForm && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleAdd}
+            >
+              <Icon name="plus" size={15} />
+              Add Skills
+            </button>
+          )}
         </div>
 
         <DataTable
           columns={columns}
           rows={rows}
           rowKey={(row) => row._id}
-          searchPlaceholder="Search FAQs..."
+          searchPlaceholder="Search skills..."
           onSearch={(row, query) =>
-            row.que.toLowerCase().includes(query) ||
-            row.ans.toLowerCase().includes(query)
+            row.skillsTest.toLowerCase().includes(query)
           }
-          onView={(row) => setViewTarget(row)}
+          onView={(row) => {
+            setViewTarget(row);
+          }}
           onEdit={handleEdit}
           onDelete={(row) => setDeleteTarget(row)}
         />
@@ -429,9 +439,11 @@ const FaqMaster: React.FC = () => {
 
       <ViewModal
         open={!!viewTarget}
-        title="FAQ Details"
+        title="Skills Details"
         fields={viewTarget ? getViewFields(viewTarget) : []}
-        onClose={() => setViewTarget(null)}
+        onClose={() => {
+          setViewTarget(null);
+        }}
       />
 
       {/* =====================================
@@ -440,8 +452,8 @@ const FaqMaster: React.FC = () => {
 
       <ConfirmModal
         open={!!deleteTarget}
-        title="Delete FAQ?"
-        message={`"${deleteTarget?.que}" will be permanently removed.`}
+        title="Delete Skills?"
+        message={`"${deleteTarget?.skillsTest}" will be permanently removed.`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />
@@ -449,4 +461,4 @@ const FaqMaster: React.FC = () => {
   );
 };
 
-export default FaqMaster;
+export default SkillsMaster;

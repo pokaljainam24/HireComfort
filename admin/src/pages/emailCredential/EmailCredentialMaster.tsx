@@ -309,6 +309,15 @@ const EmailCredentialMaster: React.FC = () => {
     },
 
     {
+      header: "Password",
+      render: (row) => (
+        <div className="cell-muted">
+          {showPassword ? row.password || "Password not available" : "••••••••"}
+        </div>
+      ),
+    },
+
+    {
       header: "SSL",
       render: (row) => (
         <span
@@ -321,6 +330,15 @@ const EmailCredentialMaster: React.FC = () => {
       ),
     },
   ];
+
+  // =====================================
+  // VIEW
+  // =====================================
+
+  const handleView = (row: EmailCredential) => {
+    setShowPassword(false);
+    setViewTarget(row);
+  };
 
   // =====================================
   // VIEW FIELDS
@@ -667,10 +685,7 @@ const EmailCredentialMaster: React.FC = () => {
             row.host.toLowerCase().includes(query) ||
             row.port.toLowerCase().includes(query)
           }
-          onView={(row) => {
-            setViewTarget(row);
-            setShowPassword(false);
-          }}
+          onView={handleView}
           onEdit={handleEdit}
           onDelete={(row) => setDeleteTarget(row)}
         />
