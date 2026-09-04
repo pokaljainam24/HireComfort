@@ -26,6 +26,11 @@ import interviewMasterRoutes from "./routes/RecruiterRoutes/InterviewMasterRoute
 import authRouter from "./routes/adminRoutes.js";
 
 // Website routes
+// Industry Routes
+import industryRoutes from "./routes/IndustryRoutes/IndustryRoutes.js";
+
+// Employment Type Routes
+import employmentTypeRoutes from "./routes/EmploymentTypeRoutes/EmploymentTypeRoutes.js";
 
 import path from "path";
 
@@ -68,5 +73,10 @@ app.use("/api/messages", chatMessageRoutes);
 app.use("/api/interview_master", interviewMasterRoutes);
 
 // Website routes
+// Industry Routes
+app.use("/api/industries", industryRoutes);
+
+// Employment Type Routes
+app.use("/api/employment-types", employmentTypeRoutes);
 
 export default app;
