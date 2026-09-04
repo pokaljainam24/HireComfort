@@ -1,10 +1,53 @@
 export interface Blog {
-  id: string;
+  _id: string;
+
+  categoryId: string;
+
   title: string;
+  description: string;
+
+  metaTitle: string;
+  metaDescription: string;
+
+  blogImg: string;
+
+  authorImg: string;
   authorName: string;
-  email: string;
-  name: string;
-  recruiterId: string;
-  readingTime: number;
-  blogText: string;
+
+  date: string;
+  durationInMin: string;
+
+  section: "big" | "latest";
+
+  isActive: boolean;
+  isDisplay: boolean;
+
+  createdAt: string;
+  createdBy: string;
+
+  updatedAt: string;
+  updatedBy: string | null;
+
+  deleteAt: string | null;
+  deleteBy: string | null;
+}
+
+export interface BlogForm {
+  categoryId: string;
+
+  title: string;
+  description: string;
+
+  metaTitle: string;
+  metaDescription: string;
+
+  blogImg: File | null;
+
+  authorImg: File | null;
+  authorName: string;
+
+  date: string;
+  durationInMin: string;
+
+  section: "big" | "latest";
 }

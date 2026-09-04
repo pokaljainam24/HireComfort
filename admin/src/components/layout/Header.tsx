@@ -7,7 +7,18 @@ interface HeaderProps {
   onToggleMobile: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, onToggleSidebar, onToggleMobile }) => {
+const Header: React.FC<HeaderProps> = ({
+  title,
+  onToggleSidebar,
+  onToggleMobile,
+}) => {
+  // Get logged-in user from localStorage
+  const storedUser = localStorage.getItem("admin_panel_auth_user");
+
+  const adminUser = storedUser ? JSON.parse(storedUser) : null;
+
+  const username = adminUser?.username || "Admin";
+
   return (
     <header className="app-header">
       <div className="header-left">
@@ -18,6 +29,7 @@ const Header: React.FC<HeaderProps> = ({ title, onToggleSidebar, onToggleMobile 
         >
           <Icon name="menu" />
         </button>
+
         <button
           className="icon-btn only-mobile"
           onClick={onToggleMobile}
@@ -25,6 +37,7 @@ const Header: React.FC<HeaderProps> = ({ title, onToggleSidebar, onToggleMobile 
         >
           <Icon name="menu" />
         </button>
+
         <span className="page-title">{title}</span>
       </div>
 
@@ -32,11 +45,14 @@ const Header: React.FC<HeaderProps> = ({ title, onToggleSidebar, onToggleMobile 
         <button className="icon-btn" aria-label="Notifications">
           <Icon name="bell" />
         </button>
+
         <div className="admin-chip">
-          <div className="admin-avatar">A</div>
+          {/* Dynamic first letter */}
+          <div className="admin-avatar">{username.charAt(0).toUpperCase()}</div>
+
           <div>
-            <div className="admin-chip-name">Admin</div>
-            <div className="admin-chip-role">Super Admin</div>
+            {/* Dynamic username */}
+            <div className="admin-chip-name">{username}</div>
           </div>
         </div>
       </div>

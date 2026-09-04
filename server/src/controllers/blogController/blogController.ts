@@ -14,52 +14,40 @@ import {
 
 export const createBlog = async (req: Request, res: Response) => {
   try {
-    console.log("BODY:", req.body);
-    console.log("FILES:", req.files);
+    const files = req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    };
 
-    const files = req.files as
-      | {
-          [fieldname: string]: Express.Multer.File[];
-        }
-      | undefined;
+    const blogImg = files?.blogImg?.[0]?.path?.replace(/\\/g, "/") || "";
+
+    const authorImg = files?.authorImg?.[0]?.path?.replace(/\\/g, "/") || "";
 
     const blog = await createBlogService({
       ...req.body,
 
-      bgImage: files?.bgImage?.[0]
-        ? `/uploads/blogs/${files.bgImage[0].filename}`
-        : req.body.bgImage || "",
+      blogImg,
 
-      heroImage: files?.heroImage?.[0]
-        ? `/uploads/blogs/${files.heroImage[0].filename}`
-        : req.body.heroImage || "",
-
-      heroImg: files?.heroImg?.[0]
-        ? `/uploads/blogs/${files.heroImg[0].filename}`
-        : req.body.heroImg || "",
-
-      authorImg: files?.authorImg?.[0]
-        ? `/uploads/blogs/${files.authorImg[0].filename}`
-        : req.body.authorImg || "",
+      authorImg,
 
       createdBy: "admin",
     });
 
     return res.status(201).json({
       message: "Blog created successfully",
+
       blog,
     });
   } catch (error) {
     console.error("Error creating blog:", error);
 
     return res.status(500).json({
-      message: error instanceof Error ? error.message : "Error creating blog",
+      message: "Error creating blog",
     });
   }
 };
 
 // =====================================
-// GET ALL BLOGS
+// GET BLOGS
 // =====================================
 
 export const getBlogs = async (req: Request, res: Response) => {
@@ -79,7 +67,7 @@ export const getBlogs = async (req: Request, res: Response) => {
 };
 
 // =====================================
-// GET BLOG BY ID
+// GET BLOG
 // =====================================
 
 export const getBlog = async (req: Request, res: Response) => {
@@ -126,10 +114,33 @@ export const updateBlog = async (req: Request, res: Response) => {
       });
     }
 
-    const blog = await updateBlogService(blogId, {
+    const files = req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    };
+
+    const updateData: any = {
       ...req.body,
+
       updatedBy: "admin",
-    });
+    };
+
+    // =====================================
+    // BLOG IMAGE
+    // =====================================
+
+    if (files?.blogImg?.[0]) {
+      updateData.blogImg = files.blogImg[0].path.replace(/\\/g, "/");
+    }
+
+    // =====================================
+    // AUTHOR IMAGE
+    // =====================================
+
+    if (files?.authorImg?.[0]) {
+      updateData.authorImg = files.authorImg[0].path.replace(/\\/g, "/");
+    }
+
+    const blog = await updateBlogService(blogId, updateData);
 
     if (!blog) {
       return res.status(404).json({
@@ -139,6 +150,7 @@ export const updateBlog = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Blog updated successfully",
+
       blog,
     });
   } catch (error) {
@@ -176,6 +188,7 @@ export const deleteBlog = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Blog deleted successfully",
+
       blog,
     });
   } catch (error) {

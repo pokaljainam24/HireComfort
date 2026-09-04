@@ -4,6 +4,14 @@ import applicantRoutes from "./routes/applicantRoutes/applicantRoutes.js";
 
 import cors from "cors";
 
+// AdminPannel Menues routes
+import joobCategoryRoutes from "./routes/jobCategoryRoutes/jobCategoryRoutes.js";
+import jobSubCategoryRoutes from "./routes/jobSubCategoryRoutes/jobSubCategoryRoutes.js";
+import blogRoutes from "./routes/blogRoutes/blogRoutes.js";
+import cmsRoutes from "./routes/cmsRoutes/cmsRoutes.js";
+import faqRoutes from "./routes/FaqRoutes/faqRoutes.js";
+import emailCredentialRoutes from "./routes/EmailCredentialRoutes/emailCredentialRoutes.js";
+
 // Recruiter routes
 import recruiterRouter from "./routes/RecruiterRoutes/recruiterRoutes.js";
 import companyRoutes from "./routes/RecruiterRoutes/companyRoutes.js";
@@ -15,7 +23,7 @@ import interviewMasterRoutes from "./routes/RecruiterRoutes/InterviewMasterRoute
 import authRouter from "./routes/adminRoutes.js";
 
 // Website routes
-import blogRoutes from "./routes/blogRoutes/blogRoutes.js";
+
 import path from "path";
 
 const app = express();
@@ -30,7 +38,13 @@ app.use(express.json());
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
-// Admin routes
+// Admin Menues routes
+app.use("/api/job-categories", joobCategoryRoutes);
+app.use("/api/job-sub-categories", jobSubCategoryRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/cms", cmsRoutes);
+app.use("/api/faqs", faqRoutes);
+app.use("/api/email-credentials", emailCredentialRoutes);
 
 // Auth routes
 app.use("/api/admin", authRouter);
@@ -48,6 +62,5 @@ app.use("/api/messages", chatMessageRoutes);
 app.use("/api/interview_master", interviewMasterRoutes);
 
 // Website routes
-app.use("/api/blogs", blogRoutes);
 
 export default app;

@@ -676,7 +676,7 @@ table.data-table {
   letter-spacing: 0.03em;
   color: var(--text-muted);
   background: var(--surface);
-  padding: 11px 20px;
+  padding: 11px 50px;
   white-space: nowrap;
   border-bottom: 1px solid var(--border-c);
 }
@@ -858,12 +858,225 @@ table.data-table {
 /* login */
 .login-screen {
   min-height: 100vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bs-dark);
-  background: radial-gradient(circle at 20% 20%, #1c2536, #0f131c 65%);
+
+  position: relative;
+  overflow: hidden;
+
   padding: 16px;
+
+  /* Dark base */
+  background: #0b1120;
+}
+
+/* =========================
+   BUBBLES
+========================= */
+
+.login-screen::before,
+.login-screen::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Large blue bubble */
+.login-screen::before {
+  width: 420px;
+  height: 420px;
+
+  top: -160px;
+  left: -120px;
+
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.45) 0%,
+    rgba(59, 130, 246, 0.2) 35%,
+    rgba(59, 130, 246, 0.05) 60%,
+    transparent 75%
+  );
+
+  filter: blur(8px);
+
+  animation: bubbleOne 10s ease-in-out infinite alternate;
+}
+
+/* Large purple bubble */
+.login-screen::after {
+  width: 500px;
+  height: 500px;
+
+  right: -180px;
+  bottom: -200px;
+
+  background: radial-gradient(
+    circle,
+    rgba(139, 92, 246, 0.4) 0%,
+    rgba(139, 92, 246, 0.18) 35%,
+    rgba(139, 92, 246, 0.05) 60%,
+    transparent 75%
+  );
+
+  filter: blur(10px);
+
+  animation: bubbleTwo 12s ease-in-out infinite alternate;
+}
+
+/* =========================
+   EXTRA BUBBLES
+========================= */
+
+.login-screen .bubble {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.05) 40%,
+    transparent 70%
+  );
+
+  backdrop-filter: blur(2px);
+
+  z-index: 0;
+}
+
+/* Bubble 1 */
+.login-screen .bubble:nth-child(1) {
+  width: 180px;
+  height: 180px;
+
+  top: 12%;
+  right: 18%;
+
+  background: radial-gradient(
+    circle,
+    rgba(34, 211, 238, 0.22),
+    rgba(34, 211, 238, 0.05) 55%,
+    transparent 75%
+  );
+
+  filter: blur(3px);
+
+  animation: floatOne 8s ease-in-out infinite;
+}
+
+/* Bubble 2 */
+.login-screen .bubble:nth-child(2) {
+  width: 120px;
+  height: 120px;
+
+  bottom: 18%;
+  left: 12%;
+
+  background: radial-gradient(
+    circle,
+    rgba(96, 165, 250, 0.25),
+    rgba(96, 165, 250, 0.05) 60%,
+    transparent 75%
+  );
+
+  filter: blur(2px);
+
+  animation: floatTwo 9s ease-in-out infinite;
+}
+
+/* Bubble 3 */
+.login-screen .bubble:nth-child(3) {
+  width: 80px;
+  height: 80px;
+
+  top: 45%;
+  left: 28%;
+
+  background: radial-gradient(
+    circle,
+    rgba(167, 139, 250, 0.25),
+    rgba(167, 139, 250, 0.05) 60%,
+    transparent 75%
+  );
+
+  animation: floatThree 7s ease-in-out infinite;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes bubbleOne {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(80px, 50px) scale(1.08);
+  }
+
+  100% {
+    transform: translate(30px, 100px) scale(0.95);
+  }
+}
+
+@keyframes bubbleTwo {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(-70px, -50px) scale(1.1);
+  }
+
+  100% {
+    transform: translate(-20px, -100px) scale(0.95);
+  }
+}
+
+@keyframes floatOne {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-30px, 40px);
+  }
+
+  100% {
+    transform: translate(20px, -20px);
+  }
+}
+
+@keyframes floatTwo {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(40px, -30px);
+  }
+
+  100% {
+    transform: translate(-20px, -60px);
+  }
+}
+
+@keyframes floatThree {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(25px, -35px);
+  }
+
+  100% {
+    transform: translate(-20px, 20px);
+  }
 }
 
 .login-card {
@@ -872,19 +1085,22 @@ table.data-table {
   background: #fff;
   border-radius: 16px;
   padding: 32px 28px;
+  position: relative;
+  z-index: 5;
 }
 
 .login-mark {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: var(--bs-primary);
-  color: #fff;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  margin-bottom: 16px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.login-mark img {
+  width: 200px;
+  object-fit: contain;
 }
 
 .login-card h1 {
@@ -894,6 +1110,51 @@ table.data-table {
 
 .login-card p {
   margin: 0 0 22px;
-  font-size: 13px;
+  font-size: 16px;
   color: var(--text-muted);
+}
+
+.ssl-checkbox .form-check-input {
+  width: 20px;
+  height: 20px;
+  margin-top: 0;
+  cursor: pointer;
+
+  border: 2px solid #000;
+  border-radius: 4px;
+  background-color: #fff;
+
+  box-shadow: none;
+}
+
+.ssl-checkbox .form-check-input:checked {
+  background-color: #3fbd2f;
+  border-color: #3fbd2f;
+}
+
+.ssl-checkbox .form-check-input:focus {
+  box-shadow: none;
+}
+
+.ssl-checkbox .form-check-label {
+  margin-left: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.ssl-checkbox .form-check-input:checked {
+  background-color: #3fbd2f;
+  border-color: #3fbd2f;
+  background-image: none;
+  position: relative;
+}
+
+.ssl-checkbox .form-check-input:checked::after {
+  content: "✓";
+  position: absolute;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  left: 6px;
+  top: -4px;
 }

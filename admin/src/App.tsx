@@ -13,6 +13,8 @@ import BlogsMaster from "@/pages/blogs/BlogsMaster";
 import CMSMaster from "@/pages/cms/CMSMaster";
 import NewsletterMaster from "@/pages/newsletter/NewsletterMaster";
 import ContactMaster from "@/pages/contact/ContactMaster";
+import FaqMaster from "./pages/Faq/FaqMaster.js";
+import EmailCredentialMaster from "./pages/emailCredential/EmailCredentialMaster.js";
 
 const App: React.FC = () => (
   <Routes>
@@ -35,6 +37,8 @@ const App: React.FC = () => (
       <Route path="/cms" element={<CMSMaster />} />
       <Route path="/newsletter" element={<NewsletterMaster />} />
       <Route path="/contact" element={<ContactMaster />} />
+      <Route path="/faq" element={<FaqMaster />} />
+      <Route path="/email-credential" element={<EmailCredentialMaster />} />
     </Route>
   </Routes>
 );

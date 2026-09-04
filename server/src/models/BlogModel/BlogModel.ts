@@ -1,18 +1,15 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IBlog extends Document {
+  categoryId: mongoose.Types.ObjectId;
+
   title: string;
   description: string;
-  metaDescription: string;
+
   metaTitle: string;
-  type: string;
+  metaDescription: string;
 
-  // Big Card
-  bgImage: string;
-  heroImage: string;
-
-  // Latest Post
-  heroImg: string;
+  blogImg: string;
 
   authorImg: string;
   authorName: string;
@@ -20,7 +17,6 @@ export interface IBlog extends Document {
   date: Date;
   durationInMin: string;
 
-  // Which section
   section: "big" | "latest";
 
   // Status
@@ -41,6 +37,20 @@ export interface IBlog extends Document {
 
 const blogSchema = new Schema<IBlog>(
   {
+    // =====================================
+    // CATEGORY
+    // =====================================
+
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: "JobCategory",
+      required: true,
+    },
+
+    // =====================================
+    // BASIC
+    // =====================================
+
     title: {
       type: String,
       required: true,
@@ -49,42 +59,44 @@ const blogSchema = new Schema<IBlog>(
 
     description: {
       type: String,
-      default: "",
+      required: true,
       trim: true,
     },
 
-    type: {
+    // =====================================
+    // SEO
+    // =====================================
+
+    metaTitle: {
       type: String,
-      default: "",
+      required: true,
       trim: true,
     },
 
-    // =========================
-    // BIG CARD
-    // =========================
-
-    bgImage: {
+    metaDescription: {
       type: String,
+      required: true,
+      trim: true,
+    },
+
+    // =====================================
+    // BLOG IMAGE
+    // =====================================
+
+    blogImg: {
+      type: String,
+      required: true,
       default: "",
     },
 
-    heroImage: {
-      type: String,
-      default: "",
-    },
-
-    // =========================
-    // LATEST POST
-    // =========================
-
-    heroImg: {
-      type: String,
-      default: "",
-    },
+    // =====================================
+    // AUTHOR
+    // =====================================
 
     authorImg: {
       type: String,
       required: true,
+      default: "",
     },
 
     authorName: {
@@ -93,6 +105,10 @@ const blogSchema = new Schema<IBlog>(
       trim: true,
     },
 
+    // =====================================
+    // BLOG DETAILS
+    // =====================================
+
     date: {
       type: Date,
       required: true,
@@ -100,12 +116,9 @@ const blogSchema = new Schema<IBlog>(
 
     durationInMin: {
       type: String,
-      default: "",
+      required: true,
+      trim: true,
     },
-
-    // =========================
-    // SECTION
-    // =========================
 
     section: {
       type: String,
@@ -113,9 +126,9 @@ const blogSchema = new Schema<IBlog>(
       required: true,
     },
 
-    // =========================
+    // =====================================
     // STATUS
-    // =========================
+    // =====================================
 
     isActive: {
       type: Boolean,
@@ -127,9 +140,9 @@ const blogSchema = new Schema<IBlog>(
       default: true,
     },
 
-    // =========================
+    // =====================================
     // AUDIT
-    // =========================
+    // =====================================
 
     createdBy: {
       type: String,
@@ -141,9 +154,9 @@ const blogSchema = new Schema<IBlog>(
       default: null,
     },
 
-    // =========================
+    // =====================================
     // SOFT DELETE
-    // =========================
+    // =====================================
 
     deleteAt: {
       type: Date,

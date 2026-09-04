@@ -39,6 +39,19 @@ export const navConfig: NavGroup[] = [
   },
   {
     label: "Engagement",
-    items: [{ label: "Contact Queries", path: "/contact", icon: "message" }],
+    items: [
+      { label: "Contact Queries", path: "/contact", icon: "message" },
+      { label: "FAQ", path: "/faq", icon: "faq" },
+      {
+        label: "Email Credential",
+        path: "/email-credential",
+        icon: "email",
+      },
+      {
+        label: "Email Templates",
+        path: "/email-templates",
+        icon: "email",
+      },
+    ],
   },
 ];

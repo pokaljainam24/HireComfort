@@ -1,4 +1,6 @@
-import express from "express";
+import { Router } from "express";
+
+import uploadIcon from "../../middleware/uploadIcon.js";
 
 import {
   createBlog,
@@ -8,71 +10,50 @@ import {
   deleteBlog,
 } from "../../controllers/blogController/blogController.js";
 
-import upload from "../../middleware/upload.js";
+const router = Router();
 
+// =====================================
+// UPLOAD FIELDS
+// =====================================
 
+const blogUpload = uploadIcon.fields([
+  {
+    name: "blogImg",
+    maxCount: 1,
+  },
+  {
+    name: "authorImg",
+    maxCount: 1,
+  },
+]);
 
-const router = express.Router();
+// =====================================
+// CREATE
+// =====================================
 
-// CREATE BLOG
+router.post("/", blogUpload, createBlog);
 
-router.post(
-  "/",
-  upload.fields([
-    {
-      name: "bgImage",
-      maxCount: 1,
-    },
-    {
-      name: "heroImage",
-      maxCount: 1,
-    },
-    {
-      name: "heroImg",
-      maxCount: 1,
-    },
-    {
-      name: "authorImg",
-      maxCount: 1,
-    },
-  ]),
-  createBlog,
-);
-
+// =====================================
 // GET ALL
+// =====================================
 
 router.get("/", getBlogs);
 
+// =====================================
 // GET BY ID
+// =====================================
 
 router.get("/:id", getBlog);
 
+// =====================================
 // UPDATE
+// =====================================
 
-router.put(
-  "/:id",
-  upload.fields([
-    {
-      name: "bgImage",
-      maxCount: 1,
-    },
-    {
-      name: "heroImage",
-      maxCount: 1,
-    },
-    {
-      name: "heroImg",
-      maxCount: 1,
-    },
-    {
-      name: "authorImg",
-      maxCount: 1,
-    },
-  ]),
-  updateBlog,
-);
+router.patch("/:id", blogUpload, updateBlog);
 
+// =====================================
 // DELETE
+// =====================================
 
 router.delete("/:id", deleteBlog);
 

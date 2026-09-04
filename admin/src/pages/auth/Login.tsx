@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { Icon } from "@/components/common/Icon";
 import Field from "@/components/common/Field";
 import Swal from "sweetalert2";
 
@@ -70,12 +69,14 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-screen">
+      <div className="bubble"></div>
+      <div className="bubble"></div>
+      <div className="bubble"></div>
+
       <div className="login-card">
         <div className="login-mark">
-          <Icon name="user" size={22} />
+          <img src="/logo.png" alt="Admin Panel Logo" />
         </div>
-
-        <h1>Admin Panel Login</h1>
 
         <p>Sign in to manage your masters and content.</p>
 

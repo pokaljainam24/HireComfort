@@ -3,6 +3,11 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "@/context/AuthContext";
+
+// @ts-expect-error CSS files are handled by the bundler at runtime.
+import "bootstrap/dist/css/bootstrap.min.css";
+
+// @ts-expect-error CSS files are handled by the bundler at runtime.
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
@@ -12,5 +17,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <App />
       </AuthProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
