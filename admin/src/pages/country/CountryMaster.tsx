@@ -39,7 +39,7 @@ const CountryMaster: React.FC = () => {
 
               return apiKey ? { "X-CSCAPI-KEY": apiKey } : undefined;
             })(),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -53,7 +53,7 @@ const CountryMaster: React.FC = () => {
             id: genId("cty"),
             name: country.name,
             code: country.iso2,
-          })
+          }),
         );
 
         setRows(mappedCountries);
@@ -104,8 +104,8 @@ const CountryMaster: React.FC = () => {
                 ...row,
                 ...form,
               }
-            : row
-        )
+            : row,
+        ),
       );
     } else {
       setRows((r) => [
@@ -127,24 +127,17 @@ const CountryMaster: React.FC = () => {
     },
     {
       header: "Code",
-      render: (r) => (
-        <span className="badge badge-blue">{r.code}</span>
-      ),
+      render: (r) => <span className="badge badge-blue">{r.code}</span>,
     },
     {
       header: "ID",
-      render: (r) => (
-        <span className="cell-muted">{r.id}</span>
-      ),
+      render: (r) => <span className="cell-muted">{r.id}</span>,
     },
   ];
 
   return (
     <>
-      <PageHeader
-        title="Country Master"
-        section="Location Masters"
-      />
+      <PageHeader title="Country Master" section="Location Masters" />
 
       <div className="card-panel">
         <div className="card-panel-head">
@@ -159,11 +152,7 @@ const CountryMaster: React.FC = () => {
           </div>
         </div>
 
-        {apiError && (
-          <div className="error-message">
-            {apiError}
-          </div>
-        )}
+        {apiError && <div className="error-message">{apiError}</div>}
 
         <DataTable
           columns={columns}
@@ -171,8 +160,7 @@ const CountryMaster: React.FC = () => {
           rowKey={(r) => r.id}
           searchPlaceholder="Search country..."
           onSearch={(r, q) =>
-            r.name.toLowerCase().includes(q) ||
-            r.code.toLowerCase().includes(q)
+            r.name.toLowerCase().includes(q) || r.code.toLowerCase().includes(q)
           }
           onDelete={(r) => setDeleteTarget(r)}
         />
@@ -184,11 +172,7 @@ const CountryMaster: React.FC = () => {
         message={`"${deleteTarget?.name}" will be permanently removed.`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={() => {
-          setRows((r) =>
-            r.filter(
-              (row) => row.id !== deleteTarget?.id
-            )
-          );
+          setRows((r) => r.filter((row) => row.id !== deleteTarget?.id));
 
           setDeleteTarget(null);
         }}
