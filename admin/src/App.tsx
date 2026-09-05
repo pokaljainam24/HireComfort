@@ -18,6 +18,10 @@ import EmailCredentialMaster from "./pages/emailCredential/EmailCredentialMaster
 import EmailTemplateMaster from "./pages/emailTemplates/EmailTemplateMaster.js";
 import SkillsMaster from "./pages/skills/SkillsMaster.js";
 import QualificationMaster from "./pages/qualifications/QualificationMaster.js";
+import employmentTypesMaster from "./pages/EmploymentTypes/EmploymentTypes.js";
+import industryTypesMaster from "./pages/Industry/IndustryTypes.js";
+import EmploymentTypes from "./pages/EmploymentTypes/EmploymentTypes.js";
+import IndustryTypes from "./pages/Industry/IndustryTypes.js";
 
 const App: React.FC = () => (
   <Routes>
@@ -45,6 +49,8 @@ const App: React.FC = () => (
       <Route path="/email-templates" element={<EmailTemplateMaster />} />
       <Route path="/skills-master" element={<SkillsMaster />} />
       <Route path="/qualification-master" element={<QualificationMaster />} />
+      <Route path="/employment-types" element={<EmploymentTypes />} />
+      <Route path="/industry" element={<IndustryTypes />} />
     </Route>
   </Routes>
 );

@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IEmploymentTypeMaster {
   EmploymentTypeId: number;
   EmploymentName: string;
-
+  EmploymentType: string;
   // Status
   isActive: boolean;
   isDisplay: boolean;
@@ -29,6 +29,12 @@ const employmentTypeMasterSchema =
         type: Number,
         required: true,
         unique: true,
+      },
+
+      EmploymentType: {
+        type: String,
+        required: true,
+        trim: true,
       },
 
       EmploymentName: {

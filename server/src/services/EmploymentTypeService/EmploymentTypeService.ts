@@ -11,49 +11,61 @@ export async function createEmploymentTypeService(
   employmentTypeData: Partial<IEmploymentTypeMaster>,
 ) {
   try {
-    // Employment Type ID validation
-    if (employmentTypeData.EmploymentTypeId === undefined) {
-      throw new Error("Employment type ID is required");
-    }
+    // =====================================
+    // Employment Name validation
+    // =====================================
 
-    if (employmentTypeData.EmploymentTypeId <= 0) {
+    if (!employmentTypeData.EmploymentName?.trim()) {
       throw new Error(
-        "Employment type ID must be greater than 0",
+        "Employment name is required",
       );
     }
 
-    // Employment Name validation
-    if (!employmentTypeData.EmploymentName?.trim()) {
-      throw new Error("Employment name is required");
-    }
-
-    if (employmentTypeData.EmploymentName.trim().length < 2) {
+    if (
+      employmentTypeData.EmploymentName.trim().length < 2
+    ) {
       throw new Error(
         "Employment name must contain at least 2 characters",
       );
     }
 
-    // Created by validation
+    // =====================================
+    // Employment Type validation
+    // =====================================
+
+    if (!employmentTypeData.EmploymentType?.trim()) {
+      throw new Error(
+        "Employment type is required",
+      );
+    }
+
+    // =====================================
+    // Created By validation
+    // =====================================
+
     if (!employmentTypeData.createdBy?.trim()) {
       throw new Error("Created by is required");
     }
 
     // Duplicate ID check
-    const existingEmploymentType =
+    const existingEmploymentTypeById =
       await EmploymentTypeMaster.findOne({
         EmploymentTypeId: employmentTypeData.EmploymentTypeId,
         isActive: true,
         isDisplay: true,
       });
 
-    if (existingEmploymentType) {
+    if (existingEmploymentTypeById) {
       throw new Error(
-        "Employment type with this ID already exists",
+        "Created by is required",
       );
     }
 
-    // Duplicate name check
-    const existingEmploymentTypeName =
+    // =====================================
+    // Duplicate Employment Name
+    // =====================================
+
+    const existingEmploymentType =
       await EmploymentTypeMaster.findOne({
         EmploymentName:
           employmentTypeData.EmploymentName.trim(),
@@ -61,29 +73,55 @@ export async function createEmploymentTypeService(
         isDisplay: true,
       });
 
-    if (existingEmploymentTypeName) {
+    if (existingEmploymentType) {
       throw new Error(
         "Employment type with this name already exists",
       );
     }
 
-    const employmentType = new EmploymentTypeMaster({
-      ...employmentTypeData,
+    // =====================================
+    // Generate Employment Type ID
+    // =====================================
 
-      EmploymentName:
-        employmentTypeData.EmploymentName.trim(),
+    const lastEmploymentType =
+      await EmploymentTypeMaster.findOne()
+        .sort({
+          EmploymentTypeId: -1,
+        })
+        .select("EmploymentTypeId");
 
-      isActive: true,
-      isDisplay: true,
+    const EmploymentTypeId =
+      lastEmploymentType
+        ? lastEmploymentType.EmploymentTypeId + 1
+        : 1;
 
-      createdBy: employmentTypeData.createdBy.trim(),
+    // =====================================
+    // Create Employment Type
+    // =====================================
 
-      updatedBy: null,
-      deleteAt: null,
-      deleteBy: null,
-    });
+    const employmentType =
+      new EmploymentTypeMaster({
+        EmploymentTypeId,
+
+        EmploymentName:
+          employmentTypeData.EmploymentName.trim(),
+
+        EmploymentType:
+          employmentTypeData.EmploymentType.trim(),
+
+        isActive: true,
+        isDisplay: true,
+
+        createdBy:
+          employmentTypeData.createdBy.trim(),
+
+        updatedBy: null,
+        deleteAt: null,
+        deleteBy: null,
+      });
 
     return await employmentType.save();
+
   } catch (error) {
     console.error(
       "Error creating employment type:",
@@ -106,6 +144,7 @@ export async function getEmploymentTypesService() {
     }).sort({
       EmploymentTypeId: 1,
     });
+
   } catch (error) {
     console.error(
       "Error getting employment types:",
@@ -127,7 +166,9 @@ export async function getEmploymentTypeByIdService(
     const employmentTypeId = Number(id);
 
     if (isNaN(employmentTypeId)) {
-      throw new Error("Invalid employment type ID");
+      throw new Error(
+        "Invalid employment type ID",
+      );
     }
 
     return await EmploymentTypeMaster.findOne({
@@ -135,6 +176,7 @@ export async function getEmploymentTypeByIdService(
       isActive: true,
       isDisplay: true,
     });
+
   } catch (error) {
     console.error(
       `Error getting employment type with id ${id}:`,
@@ -157,15 +199,22 @@ export async function updateEmploymentTypeService(
     const employmentTypeId = Number(id);
 
     if (isNaN(employmentTypeId)) {
-      throw new Error("Invalid employment type ID");
+      throw new Error(
+        "Invalid employment type ID",
+      );
     }
 
+    // =====================================
     // Employment Name validation
+    // =====================================
+
     if (
       updateData.EmploymentName !== undefined &&
       !updateData.EmploymentName.trim()
     ) {
-      throw new Error("Employment name is required");
+      throw new Error(
+        "Employment name is required",
+      );
     }
 
     if (
@@ -177,12 +226,33 @@ export async function updateEmploymentTypeService(
       );
     }
 
-    // Updated by validation
-    if (!updateData.updatedBy?.trim()) {
-      throw new Error("Updated by is required");
+    // =====================================
+    // Employment Type validation
+    // =====================================
+
+    if (
+      updateData.EmploymentType !== undefined &&
+      !updateData.EmploymentType.trim()
+    ) {
+      throw new Error(
+        "Employment type is required",
+      );
     }
 
-    // Check current employment type
+    // =====================================
+    // Updated By validation
+    // =====================================
+
+    if (!updateData.updatedBy?.trim()) {
+      throw new Error(
+        "Updated by is required",
+      );
+    }
+
+    // =====================================
+    // Check Current Employment Type
+    // =====================================
+
     const currentEmploymentType =
       await EmploymentTypeMaster.findOne({
         EmploymentTypeId: employmentTypeId,
@@ -194,13 +264,20 @@ export async function updateEmploymentTypeService(
       return null;
     }
 
-    // Duplicate name check
+    // =====================================
+    // Duplicate Employment Name
+    // =====================================
+
     if (updateData.EmploymentName !== undefined) {
       const existingEmploymentType =
         await EmploymentTypeMaster.findOne({
-          EmploymentTypeId: { $ne: employmentTypeId },
+          EmploymentTypeId: {
+            $ne: employmentTypeId,
+          },
+
           EmploymentName:
             updateData.EmploymentName.trim(),
+
           isActive: true,
           isDisplay: true,
         });
@@ -212,17 +289,35 @@ export async function updateEmploymentTypeService(
       }
     }
 
+    // =====================================
+    // Prepare Update Data
+    // =====================================
+
     const data: Partial<IEmploymentTypeMaster> = {
       ...updateData,
     };
 
+    // Never allow ID to be changed
+    delete data.EmploymentTypeId;
+
     if (data.EmploymentName !== undefined) {
-      data.EmploymentName = data.EmploymentName.trim();
+      data.EmploymentName =
+        data.EmploymentName.trim();
+    }
+
+    if (data.EmploymentType !== undefined) {
+      data.EmploymentType =
+        data.EmploymentType.trim();
     }
 
     if (data.updatedBy != null) {
-      data.updatedBy = data.updatedBy.trim();
+      data.updatedBy =
+        data.updatedBy.trim();
     }
+
+    // =====================================
+    // Update
+    // =====================================
 
     return await EmploymentTypeMaster.findOneAndUpdate(
       {
@@ -236,6 +331,7 @@ export async function updateEmploymentTypeService(
         runValidators: true,
       },
     );
+
   } catch (error) {
     console.error(
       `Error updating employment type with id ${id}:`,
@@ -258,12 +354,24 @@ export async function deleteEmploymentTypeService(
     const employmentTypeId = Number(id);
 
     if (isNaN(employmentTypeId)) {
-      throw new Error("Invalid employment type ID");
+      throw new Error(
+        "Invalid employment type ID",
+      );
     }
 
+    // =====================================
+    // Delete By validation
+    // =====================================
+
     if (!deleteBy?.trim()) {
-      throw new Error("Delete by is required");
+      throw new Error(
+        "Delete by is required",
+      );
     }
+
+    // =====================================
+    // Soft Delete
+    // =====================================
 
     return await EmploymentTypeMaster.findOneAndUpdate(
       {
@@ -280,6 +388,7 @@ export async function deleteEmploymentTypeService(
         new: true,
       },
     );
+
   } catch (error) {
     console.error(
       `Error deleting employment type with id ${id}:`,
@@ -299,6 +408,7 @@ export async function getAllEmploymentTypeForAdminService() {
     return await EmploymentTypeMaster.find().sort({
       EmploymentTypeId: 1,
     });
+
   } catch (error) {
     console.error(
       "Error getting all employment types:",

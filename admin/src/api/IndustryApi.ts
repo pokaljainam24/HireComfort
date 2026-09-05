@@ -3,14 +3,10 @@ import axios from "axios";
 import type {
   Industry,
   IndustryForm,
-} from "@/types/Industry";
+} from "../types/Industry.js";
 
 const API_URL =
   "http://localhost:5000/api/industries";
-
-// =====================================
-// Get All Industries
-// =====================================
 
 export const getIndustries =
   async (): Promise<Industry[]> => {
@@ -20,14 +16,8 @@ export const getIndustries =
     return response.data.industries;
   };
 
-// =====================================
-// Get Industry By ID
-// =====================================
-
 export const getIndustryById =
-  async (
-    id: number,
-  ): Promise<Industry> => {
+  async (id: number): Promise<Industry> => {
     const response =
       await axios.get(
         `${API_URL}/${id}`,
@@ -35,10 +25,6 @@ export const getIndustryById =
 
     return response.data.industry;
   };
-
-// =====================================
-// Create Industry
-// =====================================
 
 export const createIndustry =
   async (
@@ -53,10 +39,6 @@ export const createIndustry =
     return response.data.industry;
   };
 
-// =====================================
-// Update Industry
-// =====================================
-
 export const updateIndustry =
   async (
     id: number,
@@ -70,10 +52,6 @@ export const updateIndustry =
 
     return response.data.industry;
   };
-
-// =====================================
-// Delete Industry
-// =====================================
 
 export const deleteIndustry =
   async (

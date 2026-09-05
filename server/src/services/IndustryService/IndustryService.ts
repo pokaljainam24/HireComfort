@@ -1,6 +1,7 @@
 import IndustryMaster from "../../models/IndustryModel/IndustryModel.js";
 
-export type IIndustryMaster = InstanceType<typeof IndustryMaster>;
+export type IIndustryMaster =
+  InstanceType<typeof IndustryMaster>;
 
 // =====================================
 // Create
@@ -10,71 +11,98 @@ export async function createIndustryService(
   industryData: Partial<IIndustryMaster>,
 ) {
   try {
-    // Industry ID validation
-    if (industryData.IndustryId === undefined) {
-      throw new Error("Industry ID is required");
-    }
+    // =====================================
+    // Industry Name validation
+    // =====================================
 
-    if (industryData.IndustryId <= 0) {
-      throw new Error("Industry ID must be greater than 0");
-    }
-
-    // Industry name validation
     if (!industryData.IndustryName?.trim()) {
-      throw new Error("Industry name is required");
+      throw new Error(
+        "Industry name is required",
+      );
     }
 
-    if (industryData.IndustryName.trim().length < 2) {
+    if (
+      industryData.IndustryName.trim().length < 2
+    ) {
       throw new Error(
         "Industry name must contain at least 2 characters",
       );
     }
 
-    // Created by validation
+    // =====================================
+    // Created By validation
+    // =====================================
+
     if (!industryData.createdBy?.trim()) {
-      throw new Error("Created by is required");
+      throw new Error(
+        "Created by is required",
+      );
     }
 
-    // Duplicate check
-    const existingIndustry = await IndustryMaster.findOne({
-      IndustryId: industryData.IndustryId,
-      isActive: true,
-      isDisplay: true,
-    });
+    // =====================================
+    // Duplicate Industry Name check
+    // =====================================
+
+    const existingIndustry =
+      await IndustryMaster.findOne({
+        IndustryName:
+          industryData.IndustryName.trim(),
+        isActive: true,
+        isDisplay: true,
+      });
 
     if (existingIndustry) {
-      throw new Error("Industry with this ID already exists");
+      throw new Error(
+        "Industry with this name already exists",
+      );
     }
 
-    // Duplicate name check
-    const existingIndustryName = await IndustryMaster.findOne({
-      IndustryName: industryData.IndustryName.trim(),
-      isActive: true,
-      isDisplay: true,
-    });
+    // =====================================
+    // Generate Industry ID
+    // =====================================
 
-    if (existingIndustryName) {
-      throw new Error("Industry with this name already exists");
-    }
+    const lastIndustry =
+      await IndustryMaster.findOne()
+        .sort({
+          IndustryId: -1,
+        })
+        .select("IndustryId");
 
-    const industry = new IndustryMaster({
-      ...industryData,
+    const IndustryId =
+      lastIndustry
+        ? lastIndustry.IndustryId + 1
+        : 1;
 
-      IndustryName: industryData.IndustryName.trim(),
+    // =====================================
+    // Create Industry
+    // =====================================
 
-      isActive: true,
-      isDisplay: true,
+    const industry =
+      new IndustryMaster({
+        IndustryId,
 
-      createdBy: industryData.createdBy.trim(),
+        IndustryName:
+          industryData.IndustryName.trim(),
 
-      updatedBy: null,
-      deleteAt: null,
-      deleteBy: null,
-    });
+        isActive: true,
+        isDisplay: true,
+
+        createdBy:
+          industryData.createdBy.trim(),
+
+        updatedBy: null,
+        deleteAt: null,
+        deleteBy: null,
+      });
 
     return await industry.save();
+
   } catch (error) {
-    console.error("Error creating industry:", error);
+    console.error(
+      "Error creating industry:",
+      error,
+    );
+
     throw error;
   }
 }
@@ -88,9 +116,16 @@ export async function getIndustriesService() {
     return await IndustryMaster.find({
       isActive: true,
       isDisplay: true,
-    }).sort({ IndustryId: 1 });
+    }).sort({
+      IndustryId: 1,
+    });
+
   } catch (error) {
-    console.error("Error getting industries:", error);
+    console.error(
+      "Error getting industries:",
+      error,
+    );
+
     throw error;
   }
 }
@@ -99,12 +134,16 @@ export async function getIndustriesService() {
 // Get By ID
 // =====================================
 
-export async function getIndustryByIdService(id: string) {
+export async function getIndustryByIdService(
+  id: string,
+) {
   try {
     const industryId = Number(id);
 
     if (isNaN(industryId)) {
-      throw new Error("Invalid industry ID");
+      throw new Error(
+        "Invalid industry ID",
+      );
     }
 
     return await IndustryMaster.findOne({
@@ -112,6 +151,7 @@ export async function getIndustryByIdService(id: string) {
       isActive: true,
       isDisplay: true,
     });
+
   } catch (error) {
     console.error(
       `Error getting industry with id ${id}:`,
@@ -134,15 +174,22 @@ export async function updateIndustryService(
     const industryId = Number(id);
 
     if (isNaN(industryId)) {
-      throw new Error("Invalid industry ID");
+      throw new Error(
+        "Invalid industry ID",
+      );
     }
 
-    // Industry name validation
+    // =====================================
+    // Industry Name validation
+    // =====================================
+
     if (
       updateData.IndustryName !== undefined &&
       !updateData.IndustryName.trim()
     ) {
-      throw new Error("Industry name is required");
+      throw new Error(
+        "Industry name is required",
+      );
     }
 
     if (
@@ -154,30 +201,50 @@ export async function updateIndustryService(
       );
     }
 
-    // Updated by validation
+    // =====================================
+    // Updated By validation
+    // =====================================
+
     if (!updateData.updatedBy?.trim()) {
-      throw new Error("Updated by is required");
+      throw new Error(
+        "Updated by is required",
+      );
     }
 
-    // Check current industry
-    const currentIndustry = await IndustryMaster.findOne({
-      IndustryId: industryId,
-      isActive: true,
-      isDisplay: true,
-    });
+    // =====================================
+    // Check Current Industry
+    // =====================================
+
+    const currentIndustry =
+      await IndustryMaster.findOne({
+        IndustryId: industryId,
+        isActive: true,
+        isDisplay: true,
+      });
 
     if (!currentIndustry) {
       return null;
     }
 
-    // Duplicate name check
-    if (updateData.IndustryName !== undefined) {
-      const existingIndustry = await IndustryMaster.findOne({
-        IndustryId: { $ne: industryId },
-        IndustryName: updateData.IndustryName.trim(),
-        isActive: true,
-        isDisplay: true,
-      });
+    // =====================================
+    // Duplicate Industry Name check
+    // =====================================
+
+    if (
+      updateData.IndustryName !== undefined
+    ) {
+      const existingIndustry =
+        await IndustryMaster.findOne({
+          IndustryId: {
+            $ne: industryId,
+          },
+
+          IndustryName:
+            updateData.IndustryName.trim(),
+
+          isActive: true,
+          isDisplay: true,
+        });
 
       if (existingIndustry) {
         throw new Error(
@@ -186,17 +253,30 @@ export async function updateIndustryService(
       }
     }
 
+    // =====================================
+    // Prepare Update Data
+    // =====================================
+
     const data: Partial<IIndustryMaster> = {
       ...updateData,
     };
 
+    // Do not allow IndustryId to be changed
+    delete data.IndustryId;
+
     if (data.IndustryName !== undefined) {
-      data.IndustryName = data.IndustryName.trim();
+      data.IndustryName =
+        data.IndustryName.trim();
     }
 
     if (data.updatedBy != null) {
-      data.updatedBy = data.updatedBy.trim();
+      data.updatedBy =
+        data.updatedBy.trim();
     }
+
+    // =====================================
+    // Update
+    // =====================================
 
     return await IndustryMaster.findOneAndUpdate(
       {
@@ -210,6 +290,7 @@ export async function updateIndustryService(
         runValidators: true,
       },
     );
+
   } catch (error) {
     console.error(
       `Error updating industry with id ${id}:`,
@@ -232,12 +313,24 @@ export async function deleteIndustryService(
     const industryId = Number(id);
 
     if (isNaN(industryId)) {
-      throw new Error("Invalid industry ID");
+      throw new Error(
+        "Invalid industry ID",
+      );
     }
 
+    // =====================================
+    // Delete By validation
+    // =====================================
+
     if (!deleteBy?.trim()) {
-      throw new Error("Delete by is required");
+      throw new Error(
+        "Delete by is required",
+      );
     }
+
+    // =====================================
+    // Soft Delete
+    // =====================================
 
     return await IndustryMaster.findOneAndUpdate(
       {
@@ -254,6 +347,7 @@ export async function deleteIndustryService(
         new: true,
       },
     );
+
   } catch (error) {
     console.error(
       `Error deleting industry with id ${id}:`,
@@ -273,9 +367,14 @@ export async function getAllIndustryForAdminService() {
     return await IndustryMaster.find().sort({
       IndustryId: 1,
     });
+
   } catch (error) {
-    console.error("Error getting all industries:", error);
+    console.error(
+      "Error getting all industries:",
+      error,
+    );
 
     throw error;
   }
 }
+

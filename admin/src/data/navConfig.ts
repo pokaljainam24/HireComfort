@@ -59,6 +59,17 @@ export const navConfig: NavGroup[] = [
         path: "/qualification-master",
         icon: "qualification",
       },
+
+      {
+        label: "Employment Types",
+        path: "/employment-types",
+        icon: "employment",
+      },
+      {
+        label: "Industry Types",
+        path: "/industry",
+        icon: "industry",
+      }
     ],
   },
 
