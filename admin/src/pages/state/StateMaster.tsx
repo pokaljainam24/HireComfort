@@ -16,20 +16,17 @@ const empty: Omit<StateItem, "id"> = {
 const StateMaster: React.FC = () => {
   const [rows, setRows] = useState<StateItem[]>(seedStates);
 
-  const [form, setForm] =
-    useState<Omit<StateItem, "id">>(empty);
+  const [form, setForm] = useState<Omit<StateItem, "id">>(empty);
 
-  const [editingId, setEditingId] =
-    useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [errors, setErrors] =
-    useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [deleteTarget, setDeleteTarget] =
-    useState<StateItem | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<StateItem | null>(null);
 
-  const [loadingStates, setLoadingStates] =
-    useState(false);
+  const [loadingStates, setLoadingStates] = useState(false);
+
+  const [apiError, setApiError] = useState("");
 
   const countryName = (id: string) =>
     seedCountries.find((c) => c.id === id)?.name ?? "—";
@@ -41,79 +38,65 @@ const StateMaster: React.FC = () => {
     const fetchStates = async () => {
       try {
         setLoadingStates(true);
+        setApiError("");
+
+        const cachedStates = sessionStorage.getItem("india_states");
+
+        if (cachedStates) {
+          setRows(JSON.parse(cachedStates));
+          return;
+        }
 
         const response = await fetch(
           "https://api.countrystatecity.in/v1/countries/IN/states",
           {
             headers: (() => {
-              const apiKey = (import.meta as ImportMeta & {
-                env: { VITE_REST_COUNTRIES_API_KEY?: string };
-              }).env.VITE_REST_COUNTRIES_API_KEY;
+              const apiKey = (
+                import.meta as ImportMeta & {
+                  env: { VITE_REST_COUNTRIES_API_KEY?: string };
+                }
+              ).env.VITE_REST_COUNTRIES_API_KEY;
 
               return apiKey ? { "X-CSCAPI-KEY": apiKey } : undefined;
             })(),
-          }
+          },
         );
 
+        if (response.status === 429) {
+          throw new Error("Too many API requests. Please try again later.");
+        }
+
         if (!response.ok) {
-          throw new Error(
-            "Failed to fetch states"
-          );
+          throw new Error(`Failed to fetch states: ${response.status}`);
         }
 
         const states = await response.json();
 
-        /*
-         * API response looks like:
-         *
-         * {
-         *   "id": "4023",
-         *   "name": "Gujarat",
-         *   "iso2": "GJ"
-         * }
-         */
-
-        const india =
-          seedCountries.find(
-            (country) =>
-              country.name.toLowerCase() ===
-              "india"
-          );
+        const india = seedCountries.find(
+          (country) => country.name.toLowerCase() === "india",
+        );
 
         if (!india) {
-          console.error(
-            "India not found in seedCountries"
-          );
-          return;
+          throw new Error("India not found");
         }
 
-        const apiStates: StateItem[] =
-          states.map(
-            (state: {
-              id: string;
-              name: string;
-              iso2: string;
-            }) => ({
-              id: `api_st_${state.iso2.toLowerCase()}`,
-              countryId: india.id,
-              name: state.name,
-              code: state.iso2,
-            })
-          );
+        const apiStates: StateItem[] = states.map(
+          (state: { id: string; name: string; iso2: string }) => ({
+            id: `api_st_${state.iso2.toLowerCase()}`,
+            countryId: india.id,
+            name: state.name,
+            code: state.iso2,
+          }),
+        );
+
+        sessionStorage.setItem("india_states", JSON.stringify(apiStates));
 
         setRows(apiStates);
       } catch (error) {
-        console.error(
-          "Error fetching states:",
-          error
-        );
+        console.error("Error fetching states:", error);
 
-        /*
-         * If API fails, keep your existing
-         * seed states instead of showing
-         * an empty table.
-         */
         setRows(seedStates);
+        setApiError("Unable to load states from API. Showing default states.");
       } finally {
         setLoadingStates(false);
       }
@@ -148,9 +131,7 @@ const StateMaster: React.FC = () => {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (
-    ev: React.FormEvent
-  ) => {
+  const handleSubmit = (ev: React.FormEvent) => {
     ev.preventDefault();
 
     if (!validate()) return;
@@ -163,8 +144,8 @@ const StateMaster: React.FC = () => {
                 ...row,
                 ...form,
               }
-            : row
-        )
+            : row,
+        ),
       );
     } else {
       setRows((r) => [
@@ -186,26 +167,17 @@ const StateMaster: React.FC = () => {
     },
     {
       header: "Code",
-      render: (r) => (
-        <span className="badge badge-blue">
-          {r.code}
-        </span>
-      ),
+      render: (r) => <span className="badge badge-blue">{r.code}</span>,
     },
     {
       header: "Country",
-      render: (r) =>
-        countryName(r.countryId),
+      render: (r) => countryName(r.countryId),
     },
   ];
 
   return (
     <>
-      <PageHeader
-        title="State Master"
-        section="Location Masters"
-      />
-
+      <PageHeader title="State Master" section="Location Masters" />
 
       {/* ALL STATES */}
 
@@ -228,16 +200,9 @@ const StateMaster: React.FC = () => {
           rowKey={(r) => r.id}
           searchPlaceholder="Search state..."
           onSearch={(r, q) =>
-            r.name
-              .toLowerCase()
-              .includes(q) ||
-            r.code
-              .toLowerCase()
-              .includes(q)
+            r.name.toLowerCase().includes(q) || r.code.toLowerCase().includes(q)
           }
-          onDelete={(r) =>
-            setDeleteTarget(r)
-          }
+          onDelete={(r) => setDeleteTarget(r)}
         />
       </div>
 
@@ -247,17 +212,9 @@ const StateMaster: React.FC = () => {
         open={!!deleteTarget}
         title="Delete state?"
         message={`"${deleteTarget?.name}" will be permanently removed.`}
-        onCancel={() =>
-          setDeleteTarget(null)
-        }
+        onCancel={() => setDeleteTarget(null)}
         onConfirm={() => {
-          setRows((r) =>
-            r.filter(
-              (row) =>
-                row.id !==
-                deleteTarget?.id
-            )
-          );
+          setRows((r) => r.filter((row) => row.id !== deleteTarget?.id));
 
           setDeleteTarget(null);
         }}
