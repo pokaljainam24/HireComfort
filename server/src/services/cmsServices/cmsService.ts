@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 import CmsMaster from "../../models/CmsModel/CmsModel.js";
 
 export type ICmsMaster = InstanceType<typeof CmsMaster>;
@@ -10,78 +8,84 @@ export type ICmsMaster = InstanceType<typeof CmsMaster>;
 
 export async function createCmsService(cmsData: Partial<ICmsMaster>) {
   try {
-    // ==============================
-    // Section Name Validation
-    // ==============================
-
-    if (!cmsData.sectionName?.trim()) {
-      throw new Error("Section name is required");
+    // SMTP Server
+    if (!cmsData.smtpServer?.trim()) {
+      throw new Error("SMTP server is required");
     }
 
-    if (cmsData.sectionName.trim().length < 2) {
-      throw new Error("Section name must contain at least 2 characters");
+    // Email From
+    if (!cmsData.emailFrom?.trim()) {
+      throw new Error("Email from is required");
     }
 
-    // ==============================
-    // Code Validation
-    // ==============================
-
-    if (!cmsData.code?.trim()) {
-      throw new Error("Code is required");
+    // Username
+    if (!cmsData.username?.trim()) {
+      throw new Error("Username is required");
     }
 
-    if (cmsData.code.trim().length < 2) {
-      throw new Error("Code must contain at least 2 characters");
+    // Security Type
+    if (!cmsData.securityType?.trim()) {
+      throw new Error("Security type is required");
     }
 
-    // ==============================
-    // Content Validation
-    // ==============================
+    // Password
+    if (!cmsData.password?.trim()) {
+      throw new Error("Password is required");
+    }
 
+    // Port
+    if (!cmsData.port) {
+      throw new Error("Port is required");
+    }
+
+    // Content
     if (!cmsData.content?.trim()) {
       throw new Error("Content is required");
     }
 
-    // ==============================
-    // Created By Validation
-    // ==============================
-
+    // Created By
     if (!cmsData.createdBy?.trim()) {
       throw new Error("Created by is required");
     }
 
-    // ==============================
-    // Duplicate Code Validation
-    // ==============================
-
-    const existingCms = await CmsMaster.findOne({
-      code: cmsData.code.trim().toLowerCase(),
-      isActive: true,
-      isDisplay: true,
-    });
-
-    if (existingCms) {
-      throw new Error("CMS code already exists");
-    }
-
-    // ==============================
+    // =====================================
     // Create CMS
-    // ==============================
+    // =====================================
 
     const cms = new CmsMaster({
       ...cmsData,
 
-      // Store normalized values
-      sectionName: cmsData.sectionName.trim(),
+      smtpServer: cmsData.smtpServer.trim(),
 
-      code: cmsData.code.trim().toLowerCase(),
+      emailFrom: cmsData.emailFrom.trim().toLowerCase(),
+
+      username: cmsData.username.trim(),
+
+      securityType: cmsData.securityType.trim(),
+
+      password: cmsData.password.trim(),
+
+      port: Number(cmsData.port),
 
       content: cmsData.content.trim(),
+
+      isActive: true,
+
+      isDisplay: true,
+
+      createdBy: cmsData.createdBy.trim(),
+
+      updatedBy: null,
+
+      deleteAt: null,
+
+      deleteBy: null,
     });
 
     return await cms.save();
   } catch (error) {
     console.error("Error creating CMS:", error);
+
     throw error;
   }
 }
@@ -98,6 +102,7 @@ export async function getCmsService() {
     });
   } catch (error) {
     console.error("Error getting CMS:", error);
+
     throw error;
   }
 }
@@ -129,56 +134,44 @@ export async function updateCmsService(
   updateData: Partial<ICmsMaster>,
 ) {
   try {
-    // ==============================
-    // Section Name Validation
-    // ==============================
-
-    if (!updateData.sectionName?.trim()) {
-      throw new Error("Section name is required");
+    // SMTP Server
+    if (!updateData.smtpServer?.trim()) {
+      throw new Error("SMTP server is required");
     }
 
-    if (updateData.sectionName.trim().length < 2) {
-      throw new Error("Section name must contain at least 2 characters");
+    // Email From
+    if (!updateData.emailFrom?.trim()) {
+      throw new Error("Email from is required");
     }
 
-    // ==============================
-    // Code Validation
-    // ==============================
-
-    if (!updateData.code?.trim()) {
-      throw new Error("Code is required");
+    // Username
+    if (!updateData.username?.trim()) {
+      throw new Error("Username is required");
     }
 
-    if (updateData.code.trim().length < 2) {
-      throw new Error("Code must contain at least 2 characters");
+    // Security Type
+    if (!updateData.securityType?.trim()) {
+      throw new Error("Security type is required");
     }
 
-    // ==============================
-    // Content Validation
-    // ==============================
+    // Password
+    if (!updateData.password?.trim()) {
+      throw new Error("Password is required");
+    }
 
+    // Port
+    if (!updateData.port) {
+      throw new Error("Port is required");
+    }
+
+    // Content
     if (!updateData.content?.trim()) {
       throw new Error("Content is required");
     }
 
-    // ==============================
-    // Duplicate Code Validation
-    // ==============================
-
-    const existingCms = await CmsMaster.findOne({
-      code: updateData.code.trim().toLowerCase(),
-      _id: { $ne: id },
-      isActive: true,
-      isDisplay: true,
-    });
-
-    if (existingCms) {
-      throw new Error("CMS code already exists");
-    }
-
-    // ==============================
+    // =====================================
     // Update CMS
-    // ==============================
+    // =====================================
 
     return await CmsMaster.findOneAndUpdate(
       {
@@ -189,11 +182,21 @@ export async function updateCmsService(
       {
         ...updateData,
 
-        sectionName: updateData.sectionName.trim(),
+        smtpServer: updateData.smtpServer.trim(),
 
-        code: updateData.code.trim().toLowerCase(),
+        emailFrom: updateData.emailFrom.trim().toLowerCase(),
+
+        username: updateData.username.trim(),
+
+        securityType: updateData.securityType.trim(),
+
+        password: updateData.password.trim(),
+
+        port: Number(updateData.port),
 
         content: updateData.content.trim(),
+
+        updatedBy: updateData.updatedBy,
       },
       {
         new: true,
