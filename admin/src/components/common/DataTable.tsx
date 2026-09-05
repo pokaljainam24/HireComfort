@@ -85,7 +85,7 @@ function DataTable<T>({
                 <th
                   style={{
                     width: 125,
-                    textAlign: "right",
+                    textAlign: "center",
                   }}
                 >
                   Actions
@@ -102,8 +102,20 @@ function DataTable<T>({
                 ))}
 
                 {(onView || onEdit || onDelete) && (
-                  <td>
-                    <div className="cell-actions">
+                  <td
+                    style={{
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      className="cell-actions"
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 6,
+                      }}
+                    >
                       {/* View */}
 
                       {onView && (

@@ -185,7 +185,12 @@ export async function createBlogService(blogData: Partial<IBlogMaster>) {
       deleteBy: null,
     });
 
-    return await blog.save();
+    const savedBlog = await blog.save();
+
+    return await BlogMaster.findById(savedBlog._id).populate(
+      "categoryId",
+      "name",
+    );
   } catch (error) {
     console.error("Error creating blog:", error);
 
@@ -202,7 +207,9 @@ export async function getBlogService() {
     return await BlogMaster.find({
       isActive: true,
       isDisplay: true,
-    });
+    })
+      .populate("categoryId", "name")
+      .sort({ createdAt: -1 });
   } catch (error) {
     console.error("Error getting blogs:", error);
 
@@ -220,7 +227,7 @@ export async function getBlogByIdService(id: string) {
       _id: id,
       isActive: true,
       isDisplay: true,
-    });
+    }).populate("categoryId", "name");
   } catch (error) {
     console.error(`Error getting blog with id ${id}:`, error);
 
@@ -437,7 +444,7 @@ export async function updateBlogService(
     // Update Blog
     // ==============================
 
-    return await BlogMaster.findOneAndUpdate(
+    const updatedBlog = await BlogMaster.findOneAndUpdate(
       {
         _id: id,
         isActive: true,
@@ -451,6 +458,17 @@ export async function updateBlogService(
         runValidators: true,
       },
     );
+
+    if (!updatedBlog) {
+      throw new Error("Blog not found");
+    }
+
+    // Populate category before returning response
+    return await BlogMaster.findById(updatedBlog._id).populate(
+      "categoryId",
+      "name",
+    );
+    
   } catch (error) {
     console.error(`Error updating blog with id ${id}:`, error);
 

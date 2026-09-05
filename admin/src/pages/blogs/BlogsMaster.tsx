@@ -16,7 +16,7 @@ import { getBlogs, createBlog, updateBlog, deleteBlog } from "@/api/blogApi";
 
 import { getJobCategories } from "@/api/jobCategoryApi";
 
-import { Blog, BlogForm } from "@/types/blog";
+import { Blog, BlogCategory, BlogForm } from "@/types/blog";
 
 import { JobCategory } from "@/types/jobCategory";
 
@@ -140,10 +140,12 @@ const BlogsMaster: React.FC = () => {
   // CATEGORY NAME
   // =====================================
 
-  const categoryName = (categoryId: string) => {
-    const category = categories.find((category) => category._id === categoryId);
+  const categoryName = (categoryId: string | BlogCategory) => {
+    if (typeof categoryId === "object") {
+      return categoryId.name || "Unknown";
+    }
 
-    return category?.name || "Unknown";
+    return categoryId || "Unknown";
   };
 
   // =====================================
@@ -317,11 +319,17 @@ const BlogsMaster: React.FC = () => {
 
   const handleEdit = (row: Blog) => {
     setShowForm(true);
-
     setEditingId(row._id);
 
+    const categoryId =
+      typeof row.categoryId === "object" ? row.categoryId._id : row.categoryId;
+
+    const formattedDate = row.date
+      ? new Date(row.date).toISOString().split("T")[0]
+      : "";
+
     setForm({
-      categoryId: row.categoryId,
+      categoryId,
       title: row.title,
       description: row.description,
       metaTitle: row.metaTitle,
@@ -329,7 +337,7 @@ const BlogsMaster: React.FC = () => {
       blogImg: null,
       authorImg: null,
       authorName: row.authorName,
-      date: row.date,
+      date: formattedDate,
       durationInMin: row.durationInMin,
       section: row.section,
     });

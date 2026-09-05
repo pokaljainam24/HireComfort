@@ -1,7 +1,12 @@
+export interface BlogCategory {
+  _id: string;
+  name: string;
+}
+
 export interface Blog {
   _id: string;
 
-  categoryId: string;
+  categoryId: string | BlogCategory;
 
   title: string;
   description: string;
@@ -10,7 +15,6 @@ export interface Blog {
   metaDescription: string;
 
   blogImg: string;
-
   authorImg: string;
   authorName: string;
 
@@ -42,10 +46,9 @@ export interface BlogForm {
   metaDescription: string;
 
   blogImg: File | null;
-
   authorImg: File | null;
-  authorName: string;
 
+  authorName: string;
   date: string;
   durationInMin: string;
 

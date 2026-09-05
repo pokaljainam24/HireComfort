@@ -120,22 +120,6 @@ const CountryMaster: React.FC = () => {
     resetForm();
   };
 
-  const handleEdit = (row: Country) => {
-    setEditingId(row.id);
-
-    setForm({
-      name: row.name,
-      code: row.code,
-    });
-
-    setErrors({});
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
   const columns: ColumnDef<Country>[] = [
     {
       header: "Country Name",
@@ -165,96 +149,6 @@ const CountryMaster: React.FC = () => {
       <div className="card-panel">
         <div className="card-panel-head">
           <div>
-            <h2>
-              {editingId ? "Edit Country" : "Add Country"}
-            </h2>
-
-            <p>
-              Countries used across job locations and profiles.
-            </p>
-          </div>
-
-          {editingId && (
-            <button
-              className="btn btn-ghost btn-sm"
-              onClick={resetForm}
-            >
-              <Icon name="x" size={14} />
-              Cancel edit
-            </button>
-          )}
-        </div>
-
-        <div className="card-panel-body">
-          <form onSubmit={handleSubmit}>
-            <div className="form-grid">
-              <Field
-                label="Country Name"
-                required
-                error={errors.name}
-              >
-                <input
-                  value={form.name}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      name: e.target.value,
-                    })
-                  }
-                  placeholder="e.g. India"
-                />
-              </Field>
-
-              <Field
-                label="Country Code"
-                required
-                error={errors.code}
-                hint="ISO short code"
-              >
-                <input
-                  value={form.code}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      code: e.target.value.toUpperCase(),
-                    })
-                  }
-                  placeholder="e.g. IN"
-                  maxLength={5}
-                />
-              </Field>
-            </div>
-
-            <div className="form-actions">
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={resetForm}
-              >
-                Reset
-              </button>
-
-              <button
-                type="submit"
-                className="btn btn-primary"
-              >
-                <Icon
-                  name={editingId ? "edit" : "plus"}
-                  size={15}
-                />
-
-                {editingId
-                  ? "Update Country"
-                  : "Add Country"}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <div className="card-panel">
-        <div className="card-panel-head">
-          <div>
             <h2>All Countries</h2>
 
             <p>
@@ -280,7 +174,6 @@ const CountryMaster: React.FC = () => {
             r.name.toLowerCase().includes(q) ||
             r.code.toLowerCase().includes(q)
           }
-          onEdit={handleEdit}
           onDelete={(r) => setDeleteTarget(r)}
         />
       </div>

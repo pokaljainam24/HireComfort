@@ -179,25 +179,6 @@ const StateMaster: React.FC = () => {
     resetForm();
   };
 
-  const handleEdit = (
-    row: StateItem
-  ) => {
-    setEditingId(row.id);
-
-    setForm({
-      countryId: row.countryId,
-      name: row.name,
-      code: row.code,
-    });
-
-    setErrors({});
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
   const columns: ColumnDef<StateItem>[] = [
     {
       header: "State Name",
@@ -225,142 +206,6 @@ const StateMaster: React.FC = () => {
         section="Location Masters"
       />
 
-      {/* ADD / EDIT STATE */}
-
-      <div className="card-panel">
-        <div className="card-panel-head">
-          <div>
-            <h2>
-              {editingId
-                ? "Edit State"
-                : "Add State"}
-            </h2>
-
-            <p>
-              States are linked to a parent
-              country.
-            </p>
-          </div>
-
-          {editingId && (
-            <button
-              className="btn btn-ghost btn-sm"
-              onClick={resetForm}
-            >
-              <Icon name="x" size={14} />
-              Cancel edit
-            </button>
-          )}
-        </div>
-
-        <div className="card-panel-body">
-          <form onSubmit={handleSubmit}>
-            <div className="form-grid">
-
-              {/* COUNTRY */}
-
-              <Field
-                label="Country"
-                required
-                error={errors.countryId}
-              >
-                <select
-                  value={form.countryId}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      countryId:
-                        e.target.value,
-                    })
-                  }
-                >
-                  <option value="">
-                    Select country
-                  </option>
-
-                  {seedCountries.map(
-                    (c) => (
-                      <option
-                        key={c.id}
-                        value={c.id}
-                      >
-                        {c.name}
-                      </option>
-                    )
-                  )}
-                </select>
-              </Field>
-
-              {/* STATE NAME */}
-
-              <Field
-                label="State Name"
-                required
-                error={errors.name}
-              >
-                <input
-                  value={form.name}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      name: e.target.value,
-                    })
-                  }
-                  placeholder="e.g. Gujarat"
-                />
-              </Field>
-
-              {/* STATE CODE */}
-
-              <Field
-                label="State Code"
-                required
-                error={errors.code}
-              >
-                <input
-                  value={form.code}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      code: e.target.value.toUpperCase(),
-                    })
-                  }
-                  placeholder="e.g. GJ"
-                  maxLength={5}
-                />
-              </Field>
-            </div>
-
-            <div className="form-actions">
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={resetForm}
-              >
-                Reset
-              </button>
-
-              <button
-                type="submit"
-                className="btn btn-primary"
-              >
-                <Icon
-                  name={
-                    editingId
-                      ? "edit"
-                      : "plus"
-                  }
-                  size={15}
-                />
-
-                {editingId
-                  ? "Update State"
-                  : "Add State"}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
 
       {/* ALL STATES */}
 
@@ -390,7 +235,6 @@ const StateMaster: React.FC = () => {
               .toLowerCase()
               .includes(q)
           }
-          onEdit={handleEdit}
           onDelete={(r) =>
             setDeleteTarget(r)
           }

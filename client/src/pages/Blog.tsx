@@ -1,4 +1,3 @@
-import BlogBigCard from "../components/BlogBigCard";
 import BlogLatestPostCard from "../components/BlogLatestPostCard";
 import trendingImg from "../assets/imgs/page/blog/img-trending.png";
 import gallery1 from "../assets/imgs/page/blog/gallery1.png";
@@ -21,13 +20,12 @@ import { getBlogsApi } from "../api/blog/blogApi";
 
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
+import BlogBigCard from "../components/BlogBigCard.tsx";
 
 function Blog() {
   const [blogs, setBlogs] = useState<any[]>([]);
 
   const [loading, setLoading] = useState(true);
-
-  const API_URL = "http://localhost:5000";
 
   // =====================================
   // GET BLOG DATA
@@ -60,13 +58,15 @@ function Blog() {
     .map((blog) => ({
       _id: blog._id,
 
-      bgImage: blog.bgImage,
+      bgImage: blog.blogImg,
 
       title: blog.title,
 
-      heroImage: `${API_URL}${blog.heroImage}`,
+      heroImage: blog.blogImg,
 
-      author: blog.authorName,
+      authorImg: blog.authorImg,
+
+      authorName: blog.authorName,
 
       date: new Date(blog.date).toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -84,9 +84,9 @@ function Blog() {
     .map((blog) => ({
       _id: blog._id,
 
-      heroImg: blog.heroImg,
+      blogImg: blog.blogImg,
 
-      type: blog.type,
+      category: typeof blog.categoryId === "object" ? blog.categoryId.name : "",
 
       title: blog.title,
 
@@ -143,6 +143,7 @@ function Blog() {
           </div>
         </div>
       </section>
+
       <section className="section-box mt-50">
         <div className="container">
           <div className="row">
@@ -154,6 +155,7 @@ function Blog() {
           </div>
         </div>
       </section>
+
       <section className="section-box mt-50">
         <div className="post-loop-grid">
           <div className="container">
@@ -345,6 +347,7 @@ function Blog() {
           </div>
         </div>
       </section>
+
       <section className="section-box mt-50 mb-20">
         <div className="container">
           <div className="box-newsletter">
