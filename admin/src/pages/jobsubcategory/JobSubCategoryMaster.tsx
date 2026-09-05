@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 
 import PageHeader from "@/components/common/PageHeader";
 import Field from "@/components/common/Field";
-import DataTable, { ColumnDef } from "@/components/common/DataTable";
+import DataTable, {
+  ColumnDef,
+} from "@/components/common/DataTable";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { Icon } from "@/components/common/Icon";
 
@@ -44,15 +46,20 @@ const JobSubCategoryMaster: React.FC = () => {
 
   const [form, setForm] = useState(empty);
 
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingId, setEditingId] =
+    useState<string | null>(null);
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] =
+    useState<Record<string, string>>({});
 
-  const [deleteTarget, setDeleteTarget] = useState<JobSubCategory | null>(null);
+  const [deleteTarget, setDeleteTarget] =
+    useState<JobSubCategory | null>(null);
 
   const [loading, setLoading] = useState(false);
 
   const [iconPreview, setIconPreview] = useState("");
+
+  const [showForm, setShowForm] = useState(false);
 
   // =====================================
   // GET ALL DATA
@@ -62,15 +69,21 @@ const JobSubCategoryMaster: React.FC = () => {
     try {
       setLoading(true);
 
-      const [subCategories, jobCategories] = await Promise.all([
+      const [
+        subCategories,
+        jobCategories,
+      ] = await Promise.all([
         getJobSubCategories(),
         getJobCategories(),
       ]);
 
-      setRows(subCategories);
-      setCategories(jobCategories);
+      setRows(subCategories ?? []);
+      setCategories(jobCategories ?? []);
     } catch (error) {
-      console.error("Error loading job sub categories:", error);
+      console.error(
+        "Error loading job sub categories:",
+        error,
+      );
     } finally {
       setLoading(false);
     }
@@ -96,6 +109,24 @@ const JobSubCategoryMaster: React.FC = () => {
     setErrors({});
 
     setIconPreview("");
+
+    setShowForm(false);
+  };
+
+  // =====================================
+  // OPEN ADD FORM
+  // =====================================
+
+  const handleAdd = () => {
+    setForm(empty);
+
+    setEditingId(null);
+
+    setErrors({});
+
+    setIconPreview("");
+
+    setShowForm(true);
   };
 
   // =====================================
@@ -105,26 +136,44 @@ const JobSubCategoryMaster: React.FC = () => {
   const validate = () => {
     const e: Record<string, string> = {};
 
-    // Category validation
+    // =====================================
+    // CATEGORY
+    // =====================================
+
     if (!form.categoryId) {
       e.categoryId = "Select a job category";
     }
 
-    // Name validation
+    // =====================================
+    // NAME
+    // =====================================
+
     if (!form.name.trim()) {
       e.name = "Sub category name is required";
-    } else if (form.name.trim().length < 2) {
-      e.name = "Sub category name must contain at least 2 characters";
+    } else if (
+      form.name.trim().length < 2
+    ) {
+      e.name =
+        "Sub category name must contain at least 2 characters";
     }
 
-    // Description validation
+    // =====================================
+    // DESCRIPTION
+    // =====================================
+
     if (!form.description.trim()) {
       e.description = "Description is required";
-    } else if (form.description.trim().length < 2) {
-      e.description = "Description must contain at least 2 characters";
+    } else if (
+      form.description.trim().length < 2
+    ) {
+      e.description =
+        "Description must contain at least 2 characters";
     }
 
-    // Icon required only while creating
+    // =====================================
+    // ICON
+    // =====================================
+
     if (!editingId && !form.icon) {
       e.icon = "Icon is required";
     }
@@ -138,7 +187,9 @@ const JobSubCategoryMaster: React.FC = () => {
   // ICON CHANGE
   // =====================================
 
-  const handleIconChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIconChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
 
     if (!file) {
@@ -150,7 +201,9 @@ const JobSubCategoryMaster: React.FC = () => {
       icon: file,
     });
 
-    setIconPreview(URL.createObjectURL(file));
+    setIconPreview(
+      URL.createObjectURL(file),
+    );
 
     setErrors({
       ...errors,
@@ -162,7 +215,9 @@ const JobSubCategoryMaster: React.FC = () => {
   // CREATE / UPDATE
   // =====================================
 
-  const handleSubmit = async (ev: React.FormEvent) => {
+  const handleSubmit = async (
+    ev: React.FormEvent,
+  ) => {
     ev.preventDefault();
 
     // =====================================
@@ -181,34 +236,51 @@ const JobSubCategoryMaster: React.FC = () => {
       // =====================================
 
       if (editingId) {
-        const updated = await updateJobSubCategory(editingId, {
-          categoryId: form.categoryId,
-          name: form.name,
-          description: form.description,
-          icon: form.icon,
-        });
+        const updated =
+          await updateJobSubCategory(
+            editingId,
+            {
+              categoryId:
+                form.categoryId,
+              name: form.name,
+              description:
+                form.description,
+              icon: form.icon,
+            },
+          );
 
         setRows((rows) =>
-          rows.map((row) => (row._id === editingId ? updated : row)),
+          rows.map((row) =>
+            row._id === editingId
+              ? updated
+              : row,
+          ),
         );
       }
 
       // =====================================
       // CREATE
       // =====================================
+
       else {
         if (!form.icon) {
           return;
         }
 
-        const newSubCategory = await createJobSubCategory({
-          categoryId: form.categoryId,
-          name: form.name,
-          description: form.description,
-          icon: form.icon,
-        });
+        const newSubCategory =
+          await createJobSubCategory({
+            categoryId:
+              form.categoryId,
+            name: form.name,
+            description:
+              form.description,
+            icon: form.icon,
+          });
 
-        setRows((rows) => [newSubCategory, ...rows]);
+        setRows((rows) => [
+          newSubCategory,
+          ...rows,
+        ]);
       }
 
       // =====================================
@@ -217,7 +289,10 @@ const JobSubCategoryMaster: React.FC = () => {
 
       resetForm();
     } catch (error) {
-      console.error("Error saving job sub category:", error);
+      console.error(
+        "Error saving job sub category:",
+        error,
+      );
     } finally {
       setLoading(false);
     }
@@ -227,7 +302,9 @@ const JobSubCategoryMaster: React.FC = () => {
   // EDIT
   // =====================================
 
-  const handleEdit = (row: JobSubCategory) => {
+  const handleEdit = (
+    row: JobSubCategory,
+  ) => {
     setEditingId(row._id);
 
     setForm({
@@ -237,9 +314,15 @@ const JobSubCategoryMaster: React.FC = () => {
       icon: null,
     });
 
-    setIconPreview(row.icon ? `http://localhost:5000${row.icon}` : "");
+    setIconPreview(
+      row.icon
+        ? `http://localhost:5000${row.icon}`
+        : "",
+    );
 
     setErrors({});
+
+    setShowForm(true);
 
     window.scrollTo({
       top: 0,
@@ -259,13 +342,24 @@ const JobSubCategoryMaster: React.FC = () => {
     try {
       setLoading(true);
 
-      await deleteJobSubCategory(deleteTarget._id);
+      await deleteJobSubCategory(
+        deleteTarget._id,
+      );
 
-      setRows((rows) => rows.filter((row) => row._id !== deleteTarget._id));
+      setRows((rows) =>
+        rows.filter(
+          (row) =>
+            row._id !==
+            deleteTarget._id,
+        ),
+      );
 
       setDeleteTarget(null);
     } catch (error) {
-      console.error("Error deleting job sub category:", error);
+      console.error(
+        "Error deleting job sub category:",
+        error,
+      );
     } finally {
       setLoading(false);
     }
@@ -275,8 +369,14 @@ const JobSubCategoryMaster: React.FC = () => {
   // CATEGORY NAME
   // =====================================
 
-  const categoryName = (categoryId: string) => {
-    const category = categories.find((category) => category._id === categoryId);
+  const categoryName = (
+    categoryId: string,
+  ) => {
+    const category =
+      categories.find(
+        (category) =>
+          category._id === categoryId,
+      );
 
     return category?.name || "Unknown";
   };
@@ -285,53 +385,65 @@ const JobSubCategoryMaster: React.FC = () => {
   // TABLE COLUMNS
   // =====================================
 
-  const columns: ColumnDef<JobSubCategory>[] = [
-    {
-      header: "Sub Category",
+  const columns: ColumnDef<JobSubCategory>[] =
+    [
+      {
+        header: "Sub Category",
 
-      render: (row) => (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <div className="icon-preview">
-            {row.icon ? (
-              <img
-                src={`http://localhost:5000${row.icon}`}
-                alt={row.name}
-                style={{
-                  width: 35,
-                  height: 35,
-                  objectFit: "contain",
-                }}
-              />
-            ) : (
-              <Icon name="folder" size={20} />
-            )}
+        render: (row) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <div className="icon-preview">
+              {row.icon ? (
+                <img
+                  src={`http://localhost:5000${row.icon}`}
+                  alt={row.name}
+                  style={{
+                    width: 35,
+                    height: 35,
+                    objectFit: "contain",
+                  }}
+                />
+              ) : (
+                <Icon
+                  name="folder"
+                  size={20}
+                />
+              )}
+            </div>
+
+            <b>{row.name}</b>
           </div>
+        ),
+      },
 
-          <b>{row.name}</b>
-        </div>
-      ),
-    },
+      {
+        header: "Parent Category",
 
-    {
-      header: "Parent Category",
+        render: (row) => (
+          <span className="badge badge-blue">
+            {categoryName(
+              row.categoryId,
+            )}
+          </span>
+        ),
+      },
 
-      render: (row) => (
-        <span className="badge badge-blue">{categoryName(row.categoryId)}</span>
-      ),
-    },
+      {
+        header: "Description",
 
-    {
-      header: "Description",
-
-      render: (row) => <span className="cell-muted">{row.description}</span>,
-    },
-  ];
+        render: (row) => (
+          <span className="cell-muted">
+            {row.description}
+          </span>
+        ),
+      },
+    ];
 
   // =====================================
   // UI
@@ -339,165 +451,264 @@ const JobSubCategoryMaster: React.FC = () => {
 
   return (
     <>
-      <PageHeader title="Job Sub Category Master" section="Job Masters" />
+      <PageHeader
+        title="Job Sub Category Master"
+        section="Job Masters"
+      />
 
       {/* =====================================
-          FORM
+          ALL JOB SUB CATEGORIES
       ===================================== */}
 
       <div className="card-panel">
         <div className="card-panel-head">
           <div>
             <h2>
-              {editingId ? "Edit Job Sub Category" : "Add Job Sub Category"}
+              All Job Sub Categories
             </h2>
 
-            <p>Sub categories are linked to a parent job category.</p>
+            <p>
+              {rows.length} sub categories
+              configured
+            </p>
           </div>
 
-          {editingId && (
+          {!showForm && (
             <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleAdd}
+            >
+              <Icon
+                name="plus"
+                size={15}
+              />
+
+              Add Job Sub Category
+            </button>
+          )}
+
+          {showForm && editingId && (
+            <button
+              type="button"
               className="btn btn-ghost btn-sm"
               onClick={resetForm}
-              type="button"
+              disabled={loading}
             >
-              <Icon name="x" size={14} />
+              <Icon
+                name="x"
+                size={14}
+              />
+
               Cancel edit
             </button>
           )}
         </div>
 
-        <div className="card-panel-body">
-          <form onSubmit={handleSubmit}>
-            <div className="form-grid">
-              {/* CATEGORY */}
+        {/* =====================================
+            ADD / EDIT FORM
+        ===================================== */}
 
-              <Field label="Parent Category" required error={errors.categoryId}>
-                <select
-                  value={form.categoryId}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      categoryId: e.target.value,
-                    })
+        {showForm && (
+          <div className="card-panel-body">
+            <form
+              onSubmit={handleSubmit}
+            >
+              <div className="form-grid">
+                {/* =====================================
+                    CATEGORY
+                ===================================== */}
+
+                <Field
+                  label="Parent Category"
+                  required
+                  error={
+                    errors.categoryId
                   }
                 >
-                  <option value="">Select category</option>
+                  <select
+                    value={
+                      form.categoryId
+                    }
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        categoryId:
+                          e.target.value,
+                      });
 
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-
-              {/* NAME */}
-
-              <Field label="Sub Category Name" required error={errors.name}>
-                <input
-                  value={form.name}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      name: e.target.value,
-                    })
-                  }
-                  placeholder="e.g. Frontend Developer"
-                />
-              </Field>
-
-              {/* ICON */}
-
-              <Field label="Icon" required={!editingId} error={errors.icon}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleIconChange}
-                />
-
-                {iconPreview && (
-                  <div
-                    style={{
-                      marginTop: 10,
+                      setErrors({
+                        ...errors,
+                        categoryId: "",
+                      });
                     }}
+                    disabled={loading}
                   >
-                    <img
-                      src={iconPreview}
-                      alt="Icon preview"
+                    <option value="">
+                      Select category
+                    </option>
+
+                    {categories.map(
+                      (category) => (
+                        <option
+                          key={
+                            category._id
+                          }
+                          value={
+                            category._id
+                          }
+                        >
+                          {
+                            category.name
+                          }
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </Field>
+
+                {/* =====================================
+                    NAME
+                ===================================== */}
+
+                <Field
+                  label="Sub Category Name"
+                  required
+                  error={errors.name}
+                >
+                  <input
+                    value={form.name}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        name: e.target
+                          .value,
+                      });
+
+                      setErrors({
+                        ...errors,
+                        name: "",
+                      });
+                    }}
+                    placeholder="e.g. Frontend Developer"
+                    disabled={loading}
+                  />
+                </Field>
+
+                {/* =====================================
+                    ICON
+                ===================================== */}
+
+                <Field
+                  label="Icon"
+                  required={!editingId}
+                  error={errors.icon}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={
+                      handleIconChange
+                    }
+                    disabled={loading}
+                  />
+
+                  {iconPreview && (
+                    <div
                       style={{
-                        width: 50,
-                        height: 50,
-                        objectFit: "contain",
+                        marginTop: 10,
                       }}
-                    />
-                  </div>
-                )}
-              </Field>
+                    >
+                      <img
+                        src={iconPreview}
+                        alt="Icon preview"
+                        style={{
+                          width: 50,
+                          height: 50,
+                          objectFit:
+                            "contain",
+                        }}
+                      />
+                    </div>
+                  )}
+                </Field>
 
-              {/* DESCRIPTION */}
+                {/* =====================================
+                    DESCRIPTION
+                ===================================== */}
 
-              <Field
-                label="Description"
-                required
-                error={errors.description}
-                span2
-              >
-                <textarea
-                  value={form.description}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      description: e.target.value,
-                    })
+                <Field
+                  label="Description"
+                  required
+                  error={
+                    errors.description
                   }
-                  placeholder="Short description of this job sub category"
-                />
-              </Field>
-            </div>
+                  span2
+                >
+                  <textarea
+                    value={
+                      form.description
+                    }
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        description:
+                          e.target.value,
+                      });
 
-            {/* FORM ACTIONS */}
+                      setErrors({
+                        ...errors,
+                        description: "",
+                      });
+                    }}
+                    placeholder="Short description of this job sub category"
+                    disabled={loading}
+                  />
+                </Field>
+              </div>
 
-            <div className="form-actions">
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={resetForm}
-                disabled={loading}
-              >
-                Reset
-              </button>
+              {/* =====================================
+                  FORM ACTIONS
+              ===================================== */}
 
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                <Icon name={editingId ? "edit" : "plus"} size={15} />
+              <div className="form-actions">
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={resetForm}
+                  disabled={loading}
+                >
+                  Reset
+                </button>
 
-                {loading
-                  ? "Saving..."
-                  : editingId
-                    ? "Update Sub Category"
-                    : "Add Sub Category"}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={loading}
+                >
+                  <Icon
+                    name={
+                      editingId
+                        ? "edit"
+                        : "plus"
+                    }
+                    size={15}
+                  />
 
-      {/* =====================================
-          DATA TABLE
-      ===================================== */}
-
-      <div className="card-panel">
-        <div className="card-panel-head">
-          <div>
-            <h2>All Job Sub Categories</h2>
-
-            <p>{rows.length} sub categories configured</p>
+                  {loading
+                    ? "Saving..."
+                    : editingId
+                      ? "Update Sub Category"
+                      : "Add Sub Category"}
+                </button>
+              </div>
+            </form>
           </div>
-        </div>
+        )}
+
+        {/* =====================================
+            DATA TABLE
+        ===================================== */}
 
         <DataTable
           columns={columns}
@@ -505,11 +716,17 @@ const JobSubCategoryMaster: React.FC = () => {
           rowKey={(row) => row._id}
           searchPlaceholder="Search sub category..."
           onSearch={(row, query) =>
-            row.name.toLowerCase().includes(query) ||
-            row.description.toLowerCase().includes(query)
+            row.name
+              .toLowerCase()
+              .includes(query) ||
+            row.description
+              .toLowerCase()
+              .includes(query)
           }
           onEdit={handleEdit}
-          onDelete={(row) => setDeleteTarget(row)}
+          onDelete={(row) =>
+            setDeleteTarget(row)
+          }
         />
       </div>
 
@@ -521,7 +738,9 @@ const JobSubCategoryMaster: React.FC = () => {
         open={!!deleteTarget}
         title="Delete job sub category?"
         message={`"${deleteTarget?.name}" will be permanently removed.`}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={() =>
+          setDeleteTarget(null)
+        }
         onConfirm={handleDelete}
       />
     </>

@@ -45,16 +45,17 @@ const IndustryMaster: React.FC = () => {
   // STATE
   // =====================================
 
-  const [rows, setRows] = useState<Industry[]>([]);
+  const [rows, setRows] =
+    useState<Industry[]>([]);
+
   const [form, setForm] =
     useState<IndustryForm>(empty);
 
   const [editingId, setEditingId] =
     useState<number | null>(null);
 
-  const [errors, setErrors] = useState<
-    Record<string, string>
-  >({});
+  const [errors, setErrors] =
+    useState<Record<string, string>>({});
 
   const [deleteTarget, setDeleteTarget] =
     useState<Industry | null>(null);
@@ -65,6 +66,9 @@ const IndustryMaster: React.FC = () => {
   const [loading, setLoading] =
     useState(false);
 
+  const [showForm, setShowForm] =
+    useState(false);
+
   // =====================================
   // LOAD DATA
   // =====================================
@@ -73,7 +77,8 @@ const IndustryMaster: React.FC = () => {
     try {
       setLoading(true);
 
-      const industries = await getIndustries();
+      const industries =
+        await getIndustries();
 
       setRows(industries ?? []);
     } catch (error) {
@@ -104,8 +109,26 @@ const IndustryMaster: React.FC = () => {
 
   const resetForm = () => {
     setForm(empty);
+
     setEditingId(null);
+
     setErrors({});
+
+    setShowForm(false);
+  };
+
+  // =====================================
+  // OPEN ADD FORM
+  // =====================================
+
+  const handleAdd = () => {
+    setForm(empty);
+
+    setEditingId(null);
+
+    setErrors({});
+
+    setShowForm(true);
   };
 
   // =====================================
@@ -131,7 +154,9 @@ const IndustryMaster: React.FC = () => {
 
     setErrors(e);
 
-    return Object.keys(e).length === 0;
+    return (
+      Object.keys(e).length === 0
+    );
   };
 
   // =====================================
@@ -202,14 +227,24 @@ const IndustryMaster: React.FC = () => {
   // EDIT
   // =====================================
 
-  const handleEdit = (row: Industry) => {
+  const handleEdit = (
+    row: Industry,
+  ) => {
     setEditingId(row.IndustryId);
 
     setForm({
-      IndustryName: row.IndustryName,
+      IndustryName:
+        row.IndustryName,
     });
 
     setErrors({});
+
+    setShowForm(true);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   // =====================================
@@ -235,6 +270,15 @@ const IndustryMaster: React.FC = () => {
             deleteTarget.IndustryId,
         ),
       );
+
+      // If deleted row is currently
+      // being edited
+      if (
+        editingId ===
+        deleteTarget.IndustryId
+      ) {
+        resetForm();
+      }
 
       setDeleteTarget(null);
 
@@ -264,9 +308,12 @@ const IndustryMaster: React.FC = () => {
   const columns: ColumnDef<Industry>[] = [
     {
       header: "Industry Name",
+
       render: (row) => (
         <div>
-          <b>{row.IndustryName}</b>
+          <b>
+            {row.IndustryName}
+          </b>
         </div>
       ),
     },
@@ -281,7 +328,8 @@ const IndustryMaster: React.FC = () => {
   ): ViewField[] => [
     {
       label: "Industry Name",
-      value: row.IndustryName,
+      value:
+        row.IndustryName,
       fullWidth: true,
     },
 
@@ -294,7 +342,8 @@ const IndustryMaster: React.FC = () => {
 
     {
       label: "Created By",
-      value: row.createdBy || "-",
+      value:
+        row.createdBy || "-",
     },
 
     {
@@ -308,7 +357,8 @@ const IndustryMaster: React.FC = () => {
 
     {
       label: "Updated By",
-      value: row.updatedBy || "-",
+      value:
+        row.updatedBy || "-",
     },
 
     {
@@ -322,7 +372,8 @@ const IndustryMaster: React.FC = () => {
 
     {
       label: "Delete By",
-      value: row.deleteBy || "-",
+      value:
+        row.deleteBy || "-",
     },
 
     {
@@ -347,122 +398,157 @@ const IndustryMaster: React.FC = () => {
       />
 
       {/* =====================================
-          FORM
+          MAIN INDUSTRY CARD
       ===================================== */}
 
       <div className="card-panel">
+
+        {/* =====================================
+            CARD HEADER
+        ===================================== */}
+
         <div className="card-panel-head">
           <div>
             <h2>
               {editingId !== null
                 ? "Edit Industry"
-                : "Add Industry"}
+                : "Industry Management"}
             </h2>
 
             <p>
-              Manage industries.
+              {loading
+                ? "Loading industries..."
+                : `${rows.length} industries available`}
             </p>
           </div>
 
-          {editingId !== null && (
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm"
-              onClick={resetForm}
-              disabled={loading}
-            >
-              <Icon
-                name="x"
-                size={14}
-              />
-
-              Cancel edit
-            </button>
-          )}
-        </div>
-
-        <div className="card-panel-body">
-          <form onSubmit={handleSubmit}>
-            <div className="form-grid">
-
-              {/* INDUSTRY NAME */}
-
-              <Field
-                label="Industry Name"
-                required
-                error={
-                  errors.IndustryName
-                }
-                span2
+          <div>
+            {!showForm && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleAdd}
               >
-                <input
-                  value={
-                    form.IndustryName
-                  }
-                  onChange={(e) => {
-                    setForm({
-                      ...form,
-                      IndustryName:
-                        e.target.value,
-                    });
-
-                    setErrors({
-                      ...errors,
-                      IndustryName: "",
-                    });
-                  }}
-                  placeholder="e.g. Information Technology"
-                  disabled={loading}
+                <Icon
+                  name="plus"
+                  size={15}
                 />
-              </Field>
 
-            </div>
+                Add Industry
+              </button>
+            )}
 
-            {/* ACTIONS */}
-
-            <div className="form-actions">
+            {showForm && (
               <button
                 type="button"
                 className="btn btn-outline"
                 onClick={resetForm}
                 disabled={loading}
               >
-                Reset
-              </button>
-
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
                 <Icon
-                  name={
-                    editingId !== null
-                      ? "edit"
-                      : "plus"
-                  }
-                  size={15}
+                  name="x"
+                  size={14}
                 />
 
-                {loading
-                  ? "Saving..."
-                  : editingId !== null
-                  ? "Update Industry"
-                  : "Add Industry"}
+                Cancel
               </button>
-            </div>
-          </form>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* =====================================
-          DATA TABLE
-      ===================================== */}
+        {/* =====================================
+            FORM
+        ===================================== */}
 
-      <div className="card-panel">
+        {showForm && (
+          <div className="card-panel-body">
+            <form
+              onSubmit={handleSubmit}
+            >
+              <div className="form-grid">
+
+                {/* =====================================
+                    INDUSTRY NAME
+                ===================================== */}
+
+                <Field
+                  label="Industry Name"
+                  required
+                  error={
+                    errors.IndustryName
+                  }
+                  span2
+                >
+                  <input
+                    value={
+                      form.IndustryName
+                    }
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        IndustryName:
+                          e.target.value,
+                      });
+
+                      setErrors({
+                        ...errors,
+                        IndustryName: "",
+                      });
+                    }}
+                    placeholder="e.g. Information Technology"
+                    disabled={loading}
+                  />
+                </Field>
+              </div>
+
+              {/* =====================================
+                  ACTIONS
+              ===================================== */}
+
+              <div className="form-actions">
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={resetForm}
+                  disabled={loading}
+                >
+                  Reset
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={loading}
+                >
+                  <Icon
+                    name={
+                      editingId !== null
+                        ? "edit"
+                        : "plus"
+                    }
+                    size={15}
+                  />
+
+                  {loading
+                    ? "Saving..."
+                    : editingId !== null
+                      ? "Update Industry"
+                      : "Add Industry"}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* =====================================
+            ALL INDUSTRIES
+        ===================================== */}
+
         <div className="card-panel-head">
           <div>
-            <h2>All Industries</h2>
+            <h2>
+              All Industries
+            </h2>
 
             <p>
               {rows.length} industries
@@ -471,26 +557,43 @@ const IndustryMaster: React.FC = () => {
           </div>
         </div>
 
-        <DataTable
-          columns={columns}
-          rows={rows}
-         rowKey={(row) =>
-            String(row.IndustryId)
-        }
-          searchPlaceholder="Search industries..."
-          onSearch={(row, query) =>
-            row.IndustryName
-              .toLowerCase()
-              .includes(query)
-          }
-          onView={(row) =>
-            setViewTarget(row)
-          }
-          onEdit={handleEdit}
-          onDelete={(row) =>
-            setDeleteTarget(row)
-          }
-        />
+        {/* =====================================
+            DATA TABLE
+        ===================================== */}
+
+        {loading ? (
+          <div className="card-panel-body">
+            <p className="cell-muted">
+              Loading industries...
+            </p>
+          </div>
+        ) : (
+          <DataTable
+            columns={columns}
+            rows={rows}
+            rowKey={(row) =>
+              String(
+                row.IndustryId,
+              )
+            }
+            searchPlaceholder="Search industries..."
+            onSearch={(
+              row,
+              query,
+            ) =>
+              row.IndustryName
+                .toLowerCase()
+                .includes(query)
+            }
+            onView={(row) =>
+              setViewTarget(row)
+            }
+            onEdit={handleEdit}
+            onDelete={(row) =>
+              setDeleteTarget(row)
+            }
+          />
+        )}
       </div>
 
       {/* =====================================
@@ -523,7 +626,9 @@ const IndustryMaster: React.FC = () => {
         onCancel={() =>
           setDeleteTarget(null)
         }
-        onConfirm={handleDelete}
+        onConfirm={
+          handleDelete
+        }
       />
     </>
   );

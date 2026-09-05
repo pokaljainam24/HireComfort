@@ -63,12 +63,12 @@ export const navConfig: NavGroup[] = [
       {
         label: "Employment Types",
         path: "/employment-types",
-        icon: "employment",
+        icon: "users",
       },
       {
         label: "Industry Types",
         path: "/industry",
-        icon: "industry",
+        icon: "building",
       }
     ],
   },
