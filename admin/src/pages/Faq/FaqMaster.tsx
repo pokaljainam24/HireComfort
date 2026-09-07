@@ -416,7 +416,7 @@ const FaqMaster: React.FC = () => {
                     ANSWER
                 ===================================== */}
 
-                <Field label="Answer" required error={errors.ans} span2>
+                <Field label="FAQ Content" required error={errors.ans} span2>
                   <Editor
                     apiKey={
                       (
@@ -432,8 +432,7 @@ const FaqMaster: React.FC = () => {
                       handleChange("ans", content)
                     }
                     init={{
-                      height: 400,
-
+                      height: 600,
                       menubar: false,
 
                       plugins: [
@@ -448,7 +447,6 @@ const FaqMaster: React.FC = () => {
                         "visualblocks",
                         "code",
                         "fullscreen",
-                        "insertdatetime",
                         "media",
                         "table",
                         "preview",
@@ -464,8 +462,73 @@ const FaqMaster: React.FC = () => {
                         "link image media table | " +
                         "removeformat | code fullscreen",
 
-                      content_style:
-                        "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; }",
+                      content_style: `
+                      body {
+                        font-family: Helvetica, Arial, sans-serif;
+                        font-size: 14px;
+                        margin: 20px;
+                        background: #ffffff;
+                      }
+
+                      .faq-editor-layout {
+                        display: flex;
+                        width: 100%;
+                        min-height: 450px;
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
+                        overflow: hidden;
+                      }
+
+                      .faq-sidebar {
+                        width: 220px;
+                        min-width: 220px;
+                        background: #f5f6f8;
+                        border-right: 1px solid #ddd;
+                        padding: 25px 20px;
+                      }
+
+                      .faq-sidebar-title {
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #777;
+                        text-transform: uppercase;
+                        margin-bottom: 10px;
+                      }
+
+                      .faq-sidebar-key {
+                        font-size: 15px;
+                        font-weight: 600;
+                        color: #222;
+                        word-break: break-word;
+                      }
+
+                      .faq-content {
+                        flex: 1;
+                        padding: 30px;
+                      }
+
+                      .faq-question-label,
+                      .faq-answer-label {
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #777;
+                        text-transform: uppercase;
+                        margin-bottom: 8px;
+                      }
+
+                      .faq-question {
+                        font-size: 22px;
+                        font-weight: 600;
+                        margin-bottom: 30px;
+                        color: #222;
+                      }
+
+                      .faq-answer {
+                        font-size: 15px;
+                        line-height: 1.7;
+                        color: #444;
+                      }
+                    `,
                     }}
                   />
                 </Field>

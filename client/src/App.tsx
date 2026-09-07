@@ -23,6 +23,7 @@ import BlogInterviewTips from "./pages/BlogInterviewTips";
 import Login from "./pages/Login";
 import BlogDetails from "./pages/BlogDetails";
 import Signup from "./pages/Signup";
+import Faq from "./pages/Faq.tsx";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/blog-details/:id" element={<BlogDetails />} />
+        <Route path="/faq" element={<Faq />} />
       </Routes>
       <Footer />
     </>
