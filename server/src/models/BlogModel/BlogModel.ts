@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IBlog extends Document {
-  categoryId: mongoose.Types.ObjectId;
+  categoryId: string;
 
   title: string;
   description: string;
@@ -42,9 +42,10 @@ const blogSchema = new Schema<IBlog>(
     // =====================================
 
     categoryId: {
-      type: Schema.Types.ObjectId,
-      ref: "JobCategory",
+      type: String,
+      enum: ["Job Seekers", "Recruiters"],
       required: true,
+      trim: true,
     },
 
     // =====================================

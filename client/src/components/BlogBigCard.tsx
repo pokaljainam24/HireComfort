@@ -1,4 +1,7 @@
+import { Link } from "react-router";
+
 export interface IBlogBigCard {
+  _id: string;
   bgImage: string;
   title: string;
   heroImage: string;
@@ -8,6 +11,7 @@ export interface IBlogBigCard {
 }
 
 function BlogBigCard({
+  _id,
   bgImage,
   authorImg,
   authorName,
@@ -32,10 +36,10 @@ function BlogBigCard({
         <div
           className="card-grid-5 hover-up"
           style={{
-            backgroundImage: `url("${bgImage}")`,
+            backgroundImage: `url("${getImageUrl(bgImage)}")`,
           }}
         >
-          <a href="/blog-details">
+          <Link to={`/blog-details/${_id}`}>
             <div className="box-cover-img">
               <div className="content-bottom">
                 <h3 className="color-white mb-20">{title}</h3>
@@ -45,7 +49,7 @@ function BlogBigCard({
                     <div className="d-flex">
                       <img
                         className="mr-10"
-                        alt="jobBox"
+                        alt={authorName}
                         src={getImageUrl(authorImg)}
                         width="40"
                         height="40"
@@ -76,7 +80,7 @@ function BlogBigCard({
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,12 +1,7 @@
 export interface CmsSection {
   _id: string;
 
-  smtpServer: string;
-  emailFrom: string;
-  username: string;
-  securityType: string;
-  password: string;
-  port: number;
+  title: string;
   content: string;
 
   isActive: boolean;
@@ -23,11 +18,6 @@ export interface CmsSection {
 }
 
 export interface CmsSectionForm {
-  smtpServer: string;
-  emailFrom: string;
-  username: string;
-  securityType: string;
-  password: string;
-  port: string;
+  title: string;
   content: string;
 }

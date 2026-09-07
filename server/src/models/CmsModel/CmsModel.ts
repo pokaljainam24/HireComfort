@@ -1,12 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface ICms extends Document {
-  smtpServer: string;
-  emailFrom: string;
-  username: string;
-  securityType: string;
-  password: string;
-  port: number;
+  title: string;
   content: string;
 
   isActive: boolean;
@@ -23,40 +18,10 @@ export interface ICms extends Document {
 
 const cmsSchema = new Schema<ICms>(
   {
-    smtpServer: {
+    title: {
       type: String,
       required: true,
       trim: true,
-    },
-
-    emailFrom: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
-
-    username: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    securityType: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    password: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    port: {
-      type: Number,
-      required: true,
     },
 
     content: {

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { Editor } from "@tinymce/tinymce-react";
+
 import PageHeader from "@/components/common/PageHeader";
 import Field from "@/components/common/Field";
 import DataTable, { ColumnDef } from "@/components/common/DataTable";
@@ -85,13 +87,20 @@ const EmailTemplateMaster: React.FC = () => {
   // =====================================
 
   const handleAdd = () => {
-    setForm(empty);
+    setForm({
+      ...empty,
+    });
 
     setEditingId(null);
 
     setErrors({});
 
     setShowForm(true);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   // =====================================
@@ -99,7 +108,9 @@ const EmailTemplateMaster: React.FC = () => {
   // =====================================
 
   const resetForm = () => {
-    setForm(empty);
+    setForm({
+      ...empty,
+    });
 
     setEditingId(null);
 
@@ -131,7 +142,9 @@ const EmailTemplateMaster: React.FC = () => {
     // DESCRIPTION
     // =====================================
 
-    if (!form.description.trim()) {
+    const plainDescription = form.description.replace(/<[^>]*>/g, "").trim();
+
+    if (!plainDescription) {
       e.description = "Description is required";
     }
 
@@ -155,11 +168,20 @@ const EmailTemplateMaster: React.FC = () => {
       setLoading(true);
 
       // =====================================
+      // PAYLOAD
+      // =====================================
+
+      const payload: EmailTemplateForm = {
+        templateName: form.templateName.trim(),
+        description: form.description,
+      };
+
+      // =====================================
       // UPDATE
       // =====================================
 
       if (editingId) {
-        const updated = await updateEmailTemplate(editingId, form);
+        const updated = await updateEmailTemplate(editingId, payload);
 
         setRows((rows) =>
           rows.map((row) => (row._id === editingId ? updated : row)),
@@ -172,7 +194,7 @@ const EmailTemplateMaster: React.FC = () => {
       // CREATE
       // =====================================
       else {
-        const created = await createEmailTemplate(form);
+        const created = await createEmailTemplate(payload);
 
         setRows((rows) => [created, ...rows]);
 
@@ -207,6 +229,11 @@ const EmailTemplateMaster: React.FC = () => {
     setErrors({});
 
     setShowForm(true);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   // =====================================
@@ -258,7 +285,17 @@ const EmailTemplateMaster: React.FC = () => {
     {
       header: "Description",
 
-      render: (row) => <div className="cell-muted">{row.description}</div>,
+      render: (row) => {
+        const plainText = row.description.replace(/<[^>]*>/g, "").trim();
+
+        return (
+          <span className="cell-muted">
+            {plainText.slice(0, 100)}
+
+            {plainText.length > 100 ? "..." : ""}
+          </span>
+        );
+      },
     },
   ];
 
@@ -275,7 +312,16 @@ const EmailTemplateMaster: React.FC = () => {
 
     {
       label: "Description",
-      value: row.description,
+
+      value: (
+        <div
+          className="cms-content-preview"
+          dangerouslySetInnerHTML={{
+            __html: row.description,
+          }}
+        />
+      ),
+
       fullWidth: true,
     },
 
@@ -389,13 +435,27 @@ const EmailTemplateMaster: React.FC = () => {
                     DESCRIPTION
                 ===================================== */}
 
-                <Field label="Description" required error={errors.description}>
-                  <textarea
+                <Field
+                  label="Description"
+                  required
+                  error={errors.description}
+                  span2
+                >
+                  <Editor
+                    apiKey={
+                      (
+                        import.meta as ImportMeta & {
+                          env: {
+                            VITE_TINYMCE_API_KEY?: string;
+                          };
+                        }
+                      ).env.VITE_TINYMCE_API_KEY
+                    }
                     value={form.description}
-                    onChange={(e) => {
+                    onEditorChange={(content: string) => {
                       setForm({
                         ...form,
-                        description: e.target.value,
+                        description: content,
                       });
 
                       setErrors({
@@ -403,9 +463,42 @@ const EmailTemplateMaster: React.FC = () => {
                         description: "",
                       });
                     }}
-                    placeholder="Enter email template description"
-                    rows={5}
-                    disabled={loading}
+                    init={{
+                      height: 400,
+
+                      menubar: false,
+
+                      plugins: [
+                        "advlist",
+                        "autolink",
+                        "lists",
+                        "link",
+                        "image",
+                        "charmap",
+                        "anchor",
+                        "searchreplace",
+                        "visualblocks",
+                        "code",
+                        "fullscreen",
+                        "insertdatetime",
+                        "media",
+                        "table",
+                        "preview",
+                        "help",
+                        "wordcount",
+                      ],
+
+                      toolbar:
+                        "undo redo | blocks | " +
+                        "bold italic underline forecolor | " +
+                        "alignleft aligncenter alignright alignjustify | " +
+                        "bullist numlist outdent indent | " +
+                        "link image media table | " +
+                        "removeformat | code fullscreen",
+
+                      content_style:
+                        "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; }",
+                    }}
                   />
                 </Field>
               </div>
@@ -448,13 +541,7 @@ const EmailTemplateMaster: React.FC = () => {
       ===================================== */}
 
       <div className="card-panel">
-        <div className="card-panel-head">
-          <div>
-            <h2>Email Templates</h2>
-
-            <p>{rows.length} email templates available</p>
-          </div>
-
+        <div className="card-panel-header">
           {/* ADD BUTTON */}
 
           {!showForm && (

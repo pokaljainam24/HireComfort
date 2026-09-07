@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import { Editor } from "@tinymce/tinymce-react";
 
 import PageHeader from "@/components/common/PageHeader";
@@ -19,12 +20,7 @@ import { showSuccess, showError } from "@/utils/swal";
 // =====================================
 
 const emptyForm: CmsSectionForm = {
-  smtpServer: "",
-  emailFrom: "",
-  username: "",
-  securityType: "",
-  password: "",
-  port: "",
+  title: "",
   content: "",
 };
 
@@ -54,8 +50,6 @@ const CMSMaster: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const [showForm, setShowForm] = useState(false);
-
-  const [showPassword, setShowPassword] = useState(false);
 
   // =====================================
   // LOAD DATA
@@ -97,8 +91,6 @@ const CMSMaster: React.FC = () => {
     setEditingId(null);
 
     setErrors({});
-
-    setShowPassword(false);
   };
 
   // =====================================
@@ -107,6 +99,7 @@ const CMSMaster: React.FC = () => {
 
   const closeForm = () => {
     resetForm();
+
     setShowForm(false);
   };
 
@@ -117,42 +110,21 @@ const CMSMaster: React.FC = () => {
   const validate = () => {
     const e: Record<string, string> = {};
 
-    // SMTP SERVER
-    if (!form.smtpServer.trim()) {
-      e.smtpServer = "SMTP server is required";
+    // =====================================
+    // TITLE
+    // =====================================
+
+    if (!form.title.trim()) {
+      e.title = "Title is required";
     }
 
-    // EMAIL FROM
-    if (!form.emailFrom.trim()) {
-      e.emailFrom = "Email from is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.emailFrom.trim())) {
-      e.emailFrom = "Enter a valid email address";
-    }
-
-    // USERNAME
-    if (!form.username.trim()) {
-      e.username = "Username is required";
-    }
-
-    // SECURITY TYPE
-    if (!form.securityType.trim()) {
-      e.securityType = "Security type is required";
-    }
-
-    // PASSWORD
-    if (!form.password.trim()) {
-      e.password = "Password is required";
-    }
-
-    // PORT
-    if (!form.port.trim()) {
-      e.port = "Port is required";
-    } else if (Number(form.port) < 1 || Number(form.port) > 65535) {
-      e.port = "Port must be between 1 and 65535";
-    }
-
+    // =====================================
     // CONTENT
-    if (!form.content.trim()) {
+    // =====================================
+
+    const plainContent = form.content.replace(/<[^>]*>/g, "").trim();
+
+    if (!plainContent) {
       e.content = "Content is required";
     }
 
@@ -191,13 +163,12 @@ const CMSMaster: React.FC = () => {
     try {
       setLoading(true);
 
+      // =====================================
+      // PAYLOAD
+      // =====================================
+
       const payload: CmsSectionForm = {
-        smtpServer: form.smtpServer.trim(),
-        emailFrom: form.emailFrom.trim(),
-        username: form.username.trim(),
-        securityType: form.securityType.trim(),
-        password: form.password.trim(),
-        port: form.port.trim(),
+        title: form.title.trim(),
         content: form.content,
       };
 
@@ -212,7 +183,7 @@ const CMSMaster: React.FC = () => {
           rows.map((row) => (row._id === editingId ? updated : row)),
         );
 
-        showSuccess("CMS configuration updated successfully");
+        showSuccess("CMS updated successfully");
       }
 
       // =====================================
@@ -223,7 +194,7 @@ const CMSMaster: React.FC = () => {
 
         setRows((rows) => [created, ...rows]);
 
-        showSuccess("CMS configuration added successfully");
+        showSuccess("CMS added successfully");
       }
 
       closeForm();
@@ -244,20 +215,12 @@ const CMSMaster: React.FC = () => {
     setEditingId(row._id);
 
     setForm({
-      smtpServer: row.smtpServer,
-      emailFrom: row.emailFrom,
-      username: row.username,
-      securityType: row.securityType,
-      password: row.password,
-      port: String(row.port),
+      title: row.title,
       content: row.content,
     });
 
     setErrors({});
 
-    setShowPassword(false);
-
-    // Open form when editing
     setShowForm(true);
 
     window.scrollTo({
@@ -284,7 +247,7 @@ const CMSMaster: React.FC = () => {
 
       setDeleteTarget(null);
 
-      showSuccess("CMS configuration deleted successfully");
+      showSuccess("CMS deleted successfully");
     } catch (error) {
       console.error("Error deleting CMS:", error);
 
@@ -300,45 +263,26 @@ const CMSMaster: React.FC = () => {
 
   const columns: ColumnDef<CmsSection>[] = [
     {
-      header: "SMTP Server",
+      header: "Title",
+
       render: (row) => (
         <div>
-          <b>{row.smtpServer}</b>
+          <b>{row.title}</b>
         </div>
       ),
     },
 
     {
-      header: "Email From",
-      render: (row) => <span className="cell-muted">{row.emailFrom}</span>,
-    },
-
-    {
-      header: "Username",
-      render: (row) => <span className="cell-muted">{row.username}</span>,
-    },
-
-    {
-      header: "Security Type",
-      render: (row) => (
-        <span className="badge badge-gray">{row.securityType}</span>
-      ),
-    },
-
-    {
-      header: "Port",
-      render: (row) => <span className="cell-muted">{row.port}</span>,
-    },
-
-    {
       header: "Content",
+
       render: (row) => {
         const plainText = row.content.replace(/<[^>]*>/g, "").trim();
 
         return (
           <span className="cell-muted">
-            {plainText.slice(0, 60)}
-            {plainText.length > 60 ? "..." : ""}
+            {plainText.slice(0, 80)}
+
+            {plainText.length > 80 ? "..." : ""}
           </span>
         );
       },
@@ -351,37 +295,14 @@ const CMSMaster: React.FC = () => {
 
   const getViewFields = (row: CmsSection): ViewField[] => [
     {
-      label: "SMTP Server",
-      value: row.smtpServer,
-    },
+      label: "Title",
 
-    {
-      label: "Email From",
-      value: row.emailFrom,
-    },
-
-    {
-      label: "Username",
-      value: row.username,
-    },
-
-    {
-      label: "Security Type",
-      value: <span className="badge badge-gray">{row.securityType}</span>,
-    },
-
-    {
-      label: "Port",
-      value: row.port,
-    },
-
-    {
-      label: "Password",
-      value: "••••••••",
+      value: row.title,
     },
 
     {
       label: "Content",
+
       value: (
         <div
           className="cms-content-preview"
@@ -390,41 +311,49 @@ const CMSMaster: React.FC = () => {
           }}
         />
       ),
+
       fullWidth: true,
     },
 
     {
       label: "Display",
+
       value: row.isDisplay ? "Yes" : "No",
     },
 
     {
       label: "Created By",
+
       value: row.createdBy || "-",
     },
 
     {
       label: "Created At",
+
       value: row.createdAt ? new Date(row.createdAt).toLocaleString() : "-",
     },
 
     {
       label: "Updated By",
+
       value: row.updatedBy || "-",
     },
 
     {
       label: "Updated At",
+
       value: row.updatedAt ? new Date(row.updatedAt).toLocaleString() : "-",
     },
 
     {
       label: "Delete By",
+
       value: row.deleteBy || "-",
     },
 
     {
       label: "Delete At",
+
       value: row.deleteAt ? new Date(row.deleteAt).toLocaleString() : "-",
     },
   ];
@@ -447,7 +376,7 @@ const CMSMaster: React.FC = () => {
             <div>
               <h2>{editingId ? "Edit CMS" : "Add CMS"}</h2>
 
-              <p>Manage email SMTP configuration and content.</p>
+              <p>Manage CMS title and content.</p>
             </div>
 
             <button
@@ -464,126 +393,31 @@ const CMSMaster: React.FC = () => {
           <div className="card-panel-body">
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
-                {/* SMTP SERVER */}
+                {/* =====================================
+                    TITLE
+                ===================================== */}
 
-                <Field label="SMTP Server" required error={errors.smtpServer}>
+                <Field label="Title" required error={errors.title} span2>
                   <input
-                    value={form.smtpServer}
-                    onChange={(e) => handleChange("smtpServer", e.target.value)}
-                    placeholder="e.g. smtp.gmail.com"
+                    value={form.title}
+                    onChange={(e) => handleChange("title", e.target.value)}
+                    placeholder="Enter CMS title"
                     disabled={loading}
                   />
                 </Field>
 
-                {/* EMAIL FROM */}
-
-                <Field label="Email From" required error={errors.emailFrom}>
-                  <input
-                    type="email"
-                    value={form.emailFrom}
-                    onChange={(e) => handleChange("emailFrom", e.target.value)}
-                    placeholder="e.g. otp@example.com"
-                    disabled={loading}
-                  />
-                </Field>
-
-                {/* USERNAME */}
-
-                <Field label="Username" required error={errors.username}>
-                  <input
-                    value={form.username}
-                    onChange={(e) => handleChange("username", e.target.value)}
-                    placeholder="Enter username"
-                    disabled={loading}
-                  />
-                </Field>
-
-                {/* SECURITY TYPE */}
-
-                <Field
-                  label="Security Type"
-                  required
-                  error={errors.securityType}
-                >
-                  <select
-                    value={form.securityType}
-                    onChange={(e) =>
-                      handleChange("securityType", e.target.value)
-                    }
-                    disabled={loading}
-                  >
-                    <option value="">Select Security Type</option>
-
-                    <option value="SSL">SSL</option>
-                    <option value="TLS">TLS</option>
-                    <option value="NONE">None</option>
-                  </select>
-                </Field>
-
-                {/* PASSWORD */}
-
-                <Field label="Password" required error={errors.password}>
-                  <div
-                    style={{
-                      position: "relative",
-                    }}
-                  >
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      value={form.password}
-                      onChange={(e) => handleChange("password", e.target.value)}
-                      placeholder="Enter password"
-                      disabled={loading}
-                      style={{
-                        paddingRight: 42,
-                      }}
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                      disabled={loading}
-                      style={{
-                        position: "absolute",
-                        right: 12,
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        border: "none",
-                        background: "transparent",
-                        padding: 0,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Icon name={showPassword ? "eye-off" : "eye"} size={18} />
-                    </button>
-                  </div>
-                </Field>
-
-                {/* PORT */}
-
-                <Field label="Port" required error={errors.port}>
-                  <input
-                    type="number"
-                    min="1"
-                    max="65535"
-                    value={form.port}
-                    onChange={(e) => handleChange("port", e.target.value)}
-                    placeholder="e.g. 465"
-                    disabled={loading}
-                  />
-                </Field>
-
-                {/* CONTENT */}
+                {/* =====================================
+                    CONTENT
+                ===================================== */}
 
                 <Field label="Content" required error={errors.content} span2>
                   <Editor
                     apiKey={
                       (
                         import.meta as ImportMeta & {
-                          env: { VITE_TINYMCE_API_KEY?: string };
+                          env: {
+                            VITE_TINYMCE_API_KEY?: string;
+                          };
                         }
                       ).env.VITE_TINYMCE_API_KEY
                     }
@@ -593,7 +427,9 @@ const CMSMaster: React.FC = () => {
                     }
                     init={{
                       height: 400,
+
                       menubar: false,
+
                       plugins: [
                         "advlist",
                         "autolink",
@@ -613,6 +449,7 @@ const CMSMaster: React.FC = () => {
                         "help",
                         "wordcount",
                       ],
+
                       toolbar:
                         "undo redo | blocks | " +
                         "bold italic underline forecolor | " +
@@ -620,12 +457,17 @@ const CMSMaster: React.FC = () => {
                         "bullist numlist outdent indent | " +
                         "link image media table | " +
                         "removeformat | code fullscreen",
+
                       content_style:
                         "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; }",
                     }}
                   />
                 </Field>
               </div>
+
+              {/* =====================================
+                  FORM ACTIONS
+              ===================================== */}
 
               <div className="form-actions">
                 <button
@@ -653,18 +495,15 @@ const CMSMaster: React.FC = () => {
       )}
 
       {/* =====================================
-    DATA TABLE
-===================================== */}
+          DATA TABLE
+      ===================================== */}
 
       <div className="card-panel">
-        <div className="card-panel-head">
-          <div>
-            <h2>All CMS Configurations</h2>
+        <div className="card-panel-header">
 
-            <p>{rows.length} CMS configurations available</p>
-          </div>
-
-          {/* ADD BUTTON SAME CARD ME */}
+          {/* =====================================
+              ADD BUTTON
+          ===================================== */}
 
           {!showForm && (
             <button
@@ -687,11 +526,7 @@ const CMSMaster: React.FC = () => {
           rowKey={(row) => row._id}
           searchPlaceholder="Search CMS..."
           onSearch={(row, query) =>
-            row.smtpServer.toLowerCase().includes(query) ||
-            row.emailFrom.toLowerCase().includes(query) ||
-            row.username.toLowerCase().includes(query) ||
-            row.securityType.toLowerCase().includes(query) ||
-            String(row.port).includes(query) ||
+            row.title.toLowerCase().includes(query) ||
             row.content.toLowerCase().includes(query)
           }
           onView={(row) => setViewTarget(row)}
@@ -718,7 +553,7 @@ const CMSMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete CMS?"
-        message={`"${deleteTarget?.smtpServer}" configuration will be permanently removed.`}
+        message={`"${deleteTarget?.title}" CMS will be deleted.`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />

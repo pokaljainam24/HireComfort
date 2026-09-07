@@ -1,14 +1,12 @@
 export interface EmailCredential {
   _id: string;
 
-  emailSetUpName: string;
-  email: string;
-  host: string;
-  port: string;
-  isSSL: boolean;
-
-  // Password is not returned from GET API
+  smtpServer: string;
+  emailFrom: string;
+  username: string;
+  securityType: string;
   password: string;
+  port: string;
 
   isActive: boolean;
   isDisplay: boolean;
@@ -24,10 +22,10 @@ export interface EmailCredential {
 }
 
 export interface EmailCredentialForm {
-  emailSetUpName: string;
-  email: string;
-  host: string;
-  port: string;
-  isSSL: boolean;
+  smtpServer: string;
+  emailFrom: string;
+  username: string;
+  securityType: string;
   password: string;
+  port: string;
 }

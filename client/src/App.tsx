@@ -46,7 +46,7 @@ function App() {
         <Route path="/blog-resume-tips" element={<BlogResumeTips />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/blog-details" element={<BlogDetails />} />
+        <Route path="/blog-details/:id" element={<BlogDetails />} />
       </Routes>
       <Footer />
     </>

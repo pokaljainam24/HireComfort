@@ -24,17 +24,13 @@ export const createBlog = async (req: Request, res: Response) => {
 
     const blog = await createBlogService({
       ...req.body,
-
       blogImg,
-
       authorImg,
-
       createdBy: "admin",
     });
 
     return res.status(201).json({
       message: "Blog created successfully",
-
       blog,
     });
   } catch (error) {
@@ -120,7 +116,6 @@ export const updateBlog = async (req: Request, res: Response) => {
 
     const updateData: any = {
       ...req.body,
-
       updatedBy: "admin",
     };
 
@@ -150,7 +145,6 @@ export const updateBlog = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Blog updated successfully",
-
       blog,
     });
   } catch (error) {
@@ -188,7 +182,6 @@ export const deleteBlog = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Blog deleted successfully",
-
       blog,
     });
   } catch (error) {

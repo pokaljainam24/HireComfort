@@ -1,35 +1,25 @@
 import React, { useEffect, useState } from "react";
 
+import { Editor } from "@tinymce/tinymce-react";
+
 import PageHeader from "@/components/common/PageHeader";
 import Field from "@/components/common/Field";
-import DataTable, {
-  ColumnDef,
-} from "@/components/common/DataTable";
+import DataTable, { ColumnDef } from "@/components/common/DataTable";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import ViewModal, {
-  ViewField,
-} from "@/components/common/ViewModal";
+import ViewModal, { ViewField } from "@/components/common/ViewModal";
 import { Icon } from "@/components/common/Icon";
 
-import {
-  getFaqs,
-  createFaq,
-  updateFaq,
-  deleteFaq,
-} from "@/api/faqApi";
+import type { Faq, FaqForm } from "@/types/faq";
 
-import { Faq, FaqForm } from "@/types/faq";
+import { getFaqs, createFaq, updateFaq, deleteFaq } from "@/api/faqApi";
 
-import {
-  showSuccess,
-  showError,
-} from "@/utils/swal";
+import { showSuccess, showError } from "@/utils/swal";
 
 // =====================================
 // EMPTY FORM
 // =====================================
 
-const empty: FaqForm = {
+const emptyForm: FaqForm = {
   que: "",
   ans: "",
 };
@@ -45,26 +35,21 @@ const FaqMaster: React.FC = () => {
 
   const [rows, setRows] = useState<Faq[]>([]);
 
-  const [form, setForm] =
-    useState<FaqForm>(empty);
+  const [form, setForm] = useState<FaqForm>({
+    ...emptyForm,
+  });
 
-  const [editingId, setEditingId] =
-    useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [errors, setErrors] =
-    useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [deleteTarget, setDeleteTarget] =
-    useState<Faq | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Faq | null>(null);
 
-  const [viewTarget, setViewTarget] =
-    useState<Faq | null>(null);
+  const [viewTarget, setViewTarget] = useState<Faq | null>(null);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [showForm, setShowForm] =
-    useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   // =====================================
   // LOAD DATA
@@ -76,14 +61,11 @@ const FaqMaster: React.FC = () => {
 
       const faqs = await getFaqs();
 
-      setRows(faqs ?? []);
+      setRows(faqs);
     } catch (error) {
-      console.error(
-        "Error loading FAQs:",
-        error,
-      );
+      console.error("Error loading FAQs:", error);
 
-      setRows([]);
+      showError("Failed to load FAQ data");
     } finally {
       setLoading(false);
     }
@@ -102,27 +84,23 @@ const FaqMaster: React.FC = () => {
   // =====================================
 
   const resetForm = () => {
-    setForm(empty);
+    setForm({
+      ...emptyForm,
+    });
 
     setEditingId(null);
 
     setErrors({});
-
-    setShowForm(false);
   };
 
   // =====================================
-  // OPEN ADD FORM
+  // CLOSE FORM
   // =====================================
 
-  const handleAdd = () => {
-    setForm(empty);
+  const closeForm = () => {
+    resetForm();
 
-    setEditingId(null);
-
-    setErrors({});
-
-    setShowForm(true);
+    setShowForm(false);
   };
 
   // =====================================
@@ -138,40 +116,44 @@ const FaqMaster: React.FC = () => {
 
     if (!form.que.trim()) {
       e.que = "Question is required";
-    } else if (
-      form.que.trim().length < 5
-    ) {
-      e.que =
-        "Question must contain at least 5 characters";
     }
 
     // =====================================
     // ANSWER
     // =====================================
 
-    if (!form.ans.trim()) {
+    const plainAnswer = form.ans.replace(/<[^>]*>/g, "").trim();
+
+    if (!plainAnswer) {
       e.ans = "Answer is required";
-    } else if (
-      form.ans.trim().length < 2
-    ) {
-      e.ans =
-        "Answer must contain at least 2 characters";
     }
 
     setErrors(e);
 
-    return (
-      Object.keys(e).length === 0
-    );
+    return Object.keys(e).length === 0;
+  };
+
+  // =====================================
+  // INPUT CHANGE
+  // =====================================
+
+  const handleChange = (field: keyof FaqForm, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
   };
 
   // =====================================
   // SUBMIT
   // =====================================
 
-  const handleSubmit = async (
-    ev: React.FormEvent,
-  ) => {
+  const handleSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
 
     if (!validate()) {
@@ -181,9 +163,13 @@ const FaqMaster: React.FC = () => {
     try {
       setLoading(true);
 
+      // =====================================
+      // PAYLOAD
+      // =====================================
+
       const payload: FaqForm = {
         que: form.que.trim(),
-        ans: form.ans.trim(),
+        ans: form.ans,
       };
 
       // =====================================
@@ -191,53 +177,31 @@ const FaqMaster: React.FC = () => {
       // =====================================
 
       if (editingId) {
-        const updated =
-          await updateFaq(
-            editingId,
-            payload,
-          );
+        const updated = await updateFaq(editingId, payload);
 
         setRows((rows) =>
-          rows.map((row) =>
-            row._id === editingId
-              ? updated
-              : row,
-          ),
+          rows.map((row) => (row._id === editingId ? updated : row)),
         );
 
-        showSuccess(
-          "FAQ updated successfully",
-        );
+        showSuccess("FAQ updated successfully");
       }
 
       // =====================================
       // CREATE
       // =====================================
-
       else {
-        const created =
-          await createFaq(payload);
+        const created = await createFaq(payload);
 
-        setRows((rows) => [
-          created,
-          ...rows,
-        ]);
+        setRows((rows) => [created, ...rows]);
 
-        showSuccess(
-          "FAQ added successfully",
-        );
+        showSuccess("FAQ added successfully");
       }
 
-      resetForm();
+      closeForm();
     } catch (error) {
-      console.error(
-        "Error saving FAQ:",
-        error,
-      );
+      console.error("Error saving FAQ:", error);
 
-      showError(
-        "Something went wrong while saving FAQ",
-      );
+      showError("Something went wrong while saving FAQ");
     } finally {
       setLoading(false);
     }
@@ -277,41 +241,17 @@ const FaqMaster: React.FC = () => {
     try {
       setLoading(true);
 
-      await deleteFaq(
-        deleteTarget._id,
-      );
+      await deleteFaq(deleteTarget._id);
 
-      setRows((rows) =>
-        rows.filter(
-          (row) =>
-            row._id !==
-            deleteTarget._id,
-        ),
-      );
-
-      // If deleted row is currently
-      // being edited
-      if (
-        editingId ===
-        deleteTarget._id
-      ) {
-        resetForm();
-      }
+      setRows((rows) => rows.filter((row) => row._id !== deleteTarget._id));
 
       setDeleteTarget(null);
 
-      showSuccess(
-        "FAQ deleted successfully",
-      );
+      showSuccess("FAQ deleted successfully");
     } catch (error) {
-      console.error(
-        "Error deleting FAQ:",
-        error,
-      );
+      console.error("Error deleting FAQ:", error);
 
-      showError(
-        "Something went wrong while deleting FAQ",
-      );
+      showError("Something went wrong while deleting FAQ");
     } finally {
       setLoading(false);
     }
@@ -335,21 +275,17 @@ const FaqMaster: React.FC = () => {
     {
       header: "Answer",
 
-      render: (row) => (
-        <div
-          className="cell-muted"
-          style={{
-            maxWidth: 500,
-            fontSize: 13,
-          }}
-        >
-          {row.ans.slice(0, 100)}
+      render: (row) => {
+        const plainText = row.ans.replace(/<[^>]*>/g, "").trim();
 
-          {row.ans.length > 100
-            ? "..."
-            : ""}
-        </div>
-      ),
+        return (
+          <span className="cell-muted">
+            {plainText.slice(0, 100)}
+
+            {plainText.length > 100 ? "..." : ""}
+          </span>
+        );
+      },
     },
   ];
 
@@ -357,71 +293,74 @@ const FaqMaster: React.FC = () => {
   // VIEW FIELDS
   // =====================================
 
-  const getViewFields = (
-    row: Faq,
-  ): ViewField[] => [
+  const getViewFields = (row: Faq): ViewField[] => [
     {
       label: "Question",
+
       value: row.que,
-      fullWidth: true,
     },
 
     {
       label: "Answer",
-      value: row.ans,
+
+      value: (
+        <div
+          className="cms-content-preview"
+          dangerouslySetInnerHTML={{
+            __html: row.ans,
+          }}
+        />
+      ),
+
       fullWidth: true,
     },
 
     {
+      label: "Active",
+
+      value: row.isActive ? "Yes" : "No",
+    },
+
+    {
       label: "Display",
-      value: row.isDisplay
-        ? "Yes"
-        : "No",
+
+      value: row.isDisplay ? "Yes" : "No",
     },
 
     {
       label: "Created By",
-      value:
-        row.createdBy || "-",
+
+      value: row.createdBy || "-",
     },
 
     {
       label: "Created At",
-      value: row.createdAt
-        ? new Date(
-            row.createdAt,
-          ).toLocaleString()
-        : "-",
+
+      value: row.createdAt ? new Date(row.createdAt).toLocaleString() : "-",
     },
 
     {
       label: "Updated By",
-      value:
-        row.updatedBy || "-",
+
+      value: row.updatedBy || "-",
     },
 
     {
       label: "Updated At",
-      value: row.updatedAt
-        ? new Date(
-            row.updatedAt,
-          ).toLocaleString()
-        : "-",
+
+      value: row.updatedAt ? new Date(row.updatedAt).toLocaleString() : "-",
     },
 
     {
       label: "Delete By",
-      value:
-        row.deleteBy || "-",
+
+      value: row.deleteBy || "-",
     },
 
     {
       label: "Delete At",
-      value: row.deleteAt
-        ? new Date(
-            row.deleteAt,
-          ).toLocaleString()
-        : "-",
+
+      value: row.deleteAt ? new Date(row.deleteAt).toLocaleString() : "-",
     },
   ];
 
@@ -431,105 +370,44 @@ const FaqMaster: React.FC = () => {
 
   return (
     <>
-      <PageHeader
-        title="FAQ"
-        section="Engagement"
-      />
+      <PageHeader title="FAQ" section="Content" />
 
       {/* =====================================
-          MAIN FAQ CARD
+          FORM
       ===================================== */}
 
-      <div className="card-panel">
+      {showForm && (
+        <div className="card-panel">
+          <div className="card-panel-head">
+            <div>
+              <h2>{editingId ? "Edit FAQ" : "Add FAQ"}</h2>
 
-        {/* =====================================
-            CARD HEADER
-        ===================================== */}
+              <p>Manage frequently asked questions and answers.</p>
+            </div>
 
-        <div className="card-panel-head">
-          <div>
-            <h2>
-              {editingId
-                ? "Edit FAQ"
-                : "FAQ Management"}
-            </h2>
-
-            <p>
-              {loading
-                ? "Loading FAQs..."
-                : `${rows.length} FAQs available`}
-            </p>
-          </div>
-
-          <div>
-            {!showForm && (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleAdd}
-              >
-                <Icon
-                  name="plus"
-                  size={15}
-                />
-
-                Add FAQ
-              </button>
-            )}
-
-            {showForm && (
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={resetForm}
-                disabled={loading}
-              >
-                <Icon
-                  name="x"
-                  size={14}
-                />
-
-                Cancel
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* =====================================
-            FORM
-        ===================================== */}
-
-        {showForm && (
-          <div className="card-panel-body">
-            <form
-              onSubmit={handleSubmit}
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={closeForm}
+              disabled={loading}
             >
-              <div className="form-grid">
+              <Icon name="x" size={14} />
+              Cancel
+            </button>
+          </div>
 
+          <div className="card-panel-body">
+            <form onSubmit={handleSubmit}>
+              <div className="form-grid">
                 {/* =====================================
                     QUESTION
                 ===================================== */}
 
-                <Field
-                  label="Question"
-                  required
-                  error={errors.que}
-                  span2
-                >
+                <Field label="Question" required error={errors.que} span2>
                   <input
                     value={form.que}
-                    onChange={(e) => {
-                      setForm({
-                        ...form,
-                        que: e.target.value,
-                      });
-
-                      setErrors({
-                        ...errors,
-                        que: "",
-                      });
-                    }}
-                    placeholder="e.g. How can I create an account?"
+                    onChange={(e) => handleChange("que", e.target.value)}
+                    placeholder="Enter FAQ question"
                     disabled={loading}
                   />
                 </Field>
@@ -538,36 +416,63 @@ const FaqMaster: React.FC = () => {
                     ANSWER
                 ===================================== */}
 
-                <Field
-                  label="Answer"
-                  required
-                  error={errors.ans}
-                  span2
-                >
-                  <textarea
+                <Field label="Answer" required error={errors.ans} span2>
+                  <Editor
+                    apiKey={
+                      (
+                        import.meta as ImportMeta & {
+                          env: {
+                            VITE_TINYMCE_API_KEY?: string;
+                          };
+                        }
+                      ).env.VITE_TINYMCE_API_KEY
+                    }
                     value={form.ans}
-                    onChange={(e) => {
-                      setForm({
-                        ...form,
-                        ans: e.target.value,
-                      });
+                    onEditorChange={(content: string) =>
+                      handleChange("ans", content)
+                    }
+                    init={{
+                      height: 400,
 
-                      setErrors({
-                        ...errors,
-                        ans: "",
-                      });
+                      menubar: false,
+
+                      plugins: [
+                        "advlist",
+                        "autolink",
+                        "lists",
+                        "link",
+                        "image",
+                        "charmap",
+                        "anchor",
+                        "searchreplace",
+                        "visualblocks",
+                        "code",
+                        "fullscreen",
+                        "insertdatetime",
+                        "media",
+                        "table",
+                        "preview",
+                        "help",
+                        "wordcount",
+                      ],
+
+                      toolbar:
+                        "undo redo | blocks | " +
+                        "bold italic underline forecolor | " +
+                        "alignleft aligncenter alignright alignjustify | " +
+                        "bullist numlist outdent indent | " +
+                        "link image media table | " +
+                        "removeformat | code fullscreen",
+
+                      content_style:
+                        "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; }",
                     }}
-                    placeholder="Enter the answer..."
-                    style={{
-                      minHeight: 160,
-                    }}
-                    disabled={loading}
                   />
                 </Field>
               </div>
 
               {/* =====================================
-                  ACTIONS
+                  FORM ACTIONS
               ===================================== */}
 
               <div className="form-actions">
@@ -585,64 +490,54 @@ const FaqMaster: React.FC = () => {
                   className="btn btn-primary"
                   disabled={loading}
                 >
-                  <Icon
-                    name={
-                      editingId
-                        ? "edit"
-                        : "plus"
-                    }
-                    size={15}
-                  />
+                  <Icon name={editingId ? "edit" : "plus"} size={15} />
 
-                  {loading
-                    ? "Saving..."
-                    : editingId
-                      ? "Update FAQ"
-                      : "Add FAQ"}
+                  {loading ? "Saving..." : editingId ? "Update FAQ" : "Add FAQ"}
                 </button>
               </div>
             </form>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* =====================================
-            TABLE
-        ===================================== */}
+      {/* =====================================
+          DATA TABLE
+      ===================================== */}
 
-        {!loading ? (
-          <DataTable
-            columns={columns}
-            rows={rows}
-            rowKey={(row) =>
-              row._id
-            }
-            searchPlaceholder="Search FAQs..."
-            onSearch={(
-              row,
-              query,
-            ) =>
-              row.que
-                .toLowerCase()
-                .includes(query) ||
-              row.ans
-                .toLowerCase()
-                .includes(query)
-            }
-            onView={(row) =>
-              setViewTarget(row)
-            }
-            onEdit={handleEdit}
-            onDelete={(row) =>
-              setDeleteTarget(row)
-            }
-          />
-        ) : (
-          <div className="card-panel-body">
-            <p className="cell-muted">
-              Loading FAQs...
-            </p>
-          </div>
-        )}
+      <div className="card-panel">
+        <div className="card-panel-header">
+          {/* =====================================
+              ADD BUTTON
+          ===================================== */}
+
+          {!showForm && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                resetForm();
+                setShowForm(true);
+              }}
+            >
+              <Icon name="plus" size={15} />
+              Add FAQ
+            </button>
+          )}
+        </div>
+
+        <DataTable
+          columns={columns}
+          rows={rows}
+          rowKey={(row) => row._id}
+          searchPlaceholder="Search FAQ..."
+          onSearch={(row, query) =>
+            row.que.toLowerCase().includes(query) ||
+            row.ans.toLowerCase().includes(query)
+          }
+          onView={(row) => setViewTarget(row)}
+          onEdit={handleEdit}
+          onDelete={(row) => setDeleteTarget(row)}
+        />
       </div>
 
       {/* =====================================
@@ -652,16 +547,8 @@ const FaqMaster: React.FC = () => {
       <ViewModal
         open={!!viewTarget}
         title="FAQ Details"
-        fields={
-          viewTarget
-            ? getViewFields(
-                viewTarget,
-              )
-            : []
-        }
-        onClose={() =>
-          setViewTarget(null)
-        }
+        fields={viewTarget ? getViewFields(viewTarget) : []}
+        onClose={() => setViewTarget(null)}
       />
 
       {/* =====================================
@@ -671,13 +558,9 @@ const FaqMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete FAQ?"
-        message={`"${deleteTarget?.que}" will be permanently removed.`}
-        onCancel={() =>
-          setDeleteTarget(null)
-        }
-        onConfirm={
-          handleDelete
-        }
+        message={`"${deleteTarget?.que}" FAQ will be deleted.`}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
       />
     </>
   );

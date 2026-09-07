@@ -1,4 +1,7 @@
+import { Link } from "react-router";
+
 export interface IBlogLatestPostCard {
+  _id: string;
   blogImg: string;
   category: string;
   title: string;
@@ -10,6 +13,7 @@ export interface IBlogLatestPostCard {
 }
 
 function BlogLatestPostCard({
+  _id,
   blogImg,
   authorImg,
   authorName,
@@ -36,8 +40,9 @@ function BlogLatestPostCard({
   return (
     <div className="col-lg-6 mb-30">
       <div className="card-grid-3 hover-up">
+        {/* Blog Image */}
         <div className="text-center card-grid-3-image">
-          <a href="blog-details">
+          <Link to={`/blog-details/${_id}`}>
             <figure>
               <img
                 alt={title}
@@ -47,16 +52,18 @@ function BlogLatestPostCard({
                 }}
               />
             </figure>
-          </a>
+          </Link>
         </div>
 
         <div className="card-block-info">
+          {/* Category */}
           <div className="tags mb-15">
-            <a className="btn btn-tag" href="blog-grid">
+            <Link className="btn btn-tag" to={`/blog-details/${_id}`}>
               {category}
-            </a>
+            </Link>
           </div>
 
+          {/* Title */}
           <h5
             style={{
               display: "-webkit-box",
@@ -65,9 +72,10 @@ function BlogLatestPostCard({
               overflow: "hidden",
             }}
           >
-            <a href="blog-details">{title}</a>
+            <Link to={`/blog-details/${_id}`}>{title}</Link>
           </h5>
 
+          {/* Description */}
           <p
             className="mt-10 color-text-paragraph font-sm"
             style={{
@@ -77,11 +85,12 @@ function BlogLatestPostCard({
               overflow: "hidden",
             }}
           >
-            {description}
+            {description.replace(/<[^>]*>/g, "").trim()}
           </p>
 
           <div className="card-2-bottom mt-20">
             <div className="row">
+              {/* Author */}
               <div className="col-lg-6 col-6">
                 <div className="d-flex">
                   <img
@@ -112,6 +121,7 @@ function BlogLatestPostCard({
                 </div>
               </div>
 
+              {/* Reading Time */}
               <div className="col-lg-6 text-end col-6 pt-15">
                 <span className="color-text-paragraph-2 font-xs">
                   {durationInMin} mins to read

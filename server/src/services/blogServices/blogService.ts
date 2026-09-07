@@ -1,7 +1,12 @@
 import BlogMaster from "../../models/BlogModel/BlogModel.js";
-import JobCategoryMaster from "../../models/JobCategoryModel/jobCategoryModel.js";
 
 export type IBlogMaster = InstanceType<typeof BlogMaster>;
+
+// =====================================
+// STATIC BLOG CATEGORIES
+// =====================================
+
+const BLOG_CATEGORIES = ["Job Seekers", "Recruiters"] as const;
 
 // =====================================
 // CREATE BLOG
@@ -13,18 +18,16 @@ export async function createBlogService(blogData: Partial<IBlogMaster>) {
     // Category Validation
     // ==============================
 
-    if (!blogData.categoryId) {
+    if (!blogData.categoryId?.trim()) {
       throw new Error("Blog category is required");
     }
 
-    const category = await JobCategoryMaster.findOne({
-      _id: blogData.categoryId,
-      isActive: true,
-      isDisplay: true,
-    });
-
-    if (!category) {
-      throw new Error("Selected blog category not found");
+    if (
+      !BLOG_CATEGORIES.includes(
+        blogData.categoryId.trim() as (typeof BLOG_CATEGORIES)[number],
+      )
+    ) {
+      throw new Error("Blog category must be either Job Seekers or Recruiters");
     }
 
     // ==============================
@@ -152,7 +155,8 @@ export async function createBlogService(blogData: Partial<IBlogMaster>) {
     const blog = new BlogMaster({
       ...blogData,
 
-      // Store normalized values
+      categoryId: blogData.categoryId.trim(),
+
       title: blogData.title.trim(),
 
       description: blogData.description.trim(),
@@ -185,12 +189,7 @@ export async function createBlogService(blogData: Partial<IBlogMaster>) {
       deleteBy: null,
     });
 
-    const savedBlog = await blog.save();
-
-    return await BlogMaster.findById(savedBlog._id).populate(
-      "categoryId",
-      "name",
-    );
+    return await blog.save();
   } catch (error) {
     console.error("Error creating blog:", error);
 
@@ -207,9 +206,9 @@ export async function getBlogService() {
     return await BlogMaster.find({
       isActive: true,
       isDisplay: true,
-    })
-      .populate("categoryId", "name")
-      .sort({ createdAt: -1 });
+    }).sort({
+      createdAt: -1,
+    });
   } catch (error) {
     console.error("Error getting blogs:", error);
 
@@ -227,7 +226,7 @@ export async function getBlogByIdService(id: string) {
       _id: id,
       isActive: true,
       isDisplay: true,
-    }).populate("categoryId", "name");
+    });
   } catch (error) {
     console.error(`Error getting blog with id ${id}:`, error);
 
@@ -249,14 +248,18 @@ export async function updateBlogService(
     // ==============================
 
     if (updateData.categoryId !== undefined) {
-      const category = await JobCategoryMaster.findOne({
-        _id: updateData.categoryId,
-        isActive: true,
-        isDisplay: true,
-      });
+      if (!updateData.categoryId?.trim()) {
+        throw new Error("Blog category is required");
+      }
 
-      if (!category) {
-        throw new Error("Selected blog category not found");
+      if (
+        !BLOG_CATEGORIES.includes(
+          updateData.categoryId.trim() as (typeof BLOG_CATEGORIES)[number],
+        )
+      ) {
+        throw new Error(
+          "Blog category must be either Job Seekers or Recruiters",
+        );
       }
     }
 
@@ -384,9 +387,7 @@ export async function updateBlogService(
     if (updateData.title !== undefined) {
       const existingBlog = await BlogMaster.findOne({
         _id: { $ne: id },
-
         title: updateData.title.trim(),
-
         isActive: true,
         isDisplay: true,
       });
@@ -403,6 +404,10 @@ export async function updateBlogService(
     const data: Partial<IBlogMaster> = {
       ...updateData,
     };
+
+    if (data.categoryId !== undefined) {
+      data.categoryId = data.categoryId.trim();
+    }
 
     if (data.title !== undefined) {
       data.title = data.title.trim();
@@ -463,12 +468,7 @@ export async function updateBlogService(
       throw new Error("Blog not found");
     }
 
-    // Populate category before returning response
-    return await BlogMaster.findById(updatedBlog._id).populate(
-      "categoryId",
-      "name",
-    );
-    
+    return updatedBlog;
   } catch (error) {
     console.error(`Error updating blog with id ${id}:`, error);
 
@@ -525,7 +525,9 @@ export async function deleteBlogService(id: string, deleteBy: string) {
 
 export async function getAllBlogForAdminService() {
   try {
-    return await BlogMaster.find();
+    return await BlogMaster.find().sort({
+      createdAt: -1,
+    });
   } catch (error) {
     console.error("Error getting blogs for admin:", error);
 

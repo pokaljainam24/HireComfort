@@ -415,6 +415,16 @@ button {
   flex-wrap: wrap;
 }
 
+.card-panel-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border-c);
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .card-panel-head h2 {
   font-size: 15px;
   font-weight: 600;
@@ -676,7 +686,7 @@ table.data-table {
   letter-spacing: 0.03em;
   color: var(--text-muted);
   background: var(--surface);
-  padding: 11px 50px;
+  padding: 11px 20px;
   white-space: nowrap;
   border-bottom: 1px solid var(--border-c);
 }

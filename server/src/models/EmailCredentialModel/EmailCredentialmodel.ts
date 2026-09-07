@@ -1,12 +1,12 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface IEmailCredentialMaster {
-  emailSetUpName: string;
-  email: string;
-  host: string;
-  port: string;
-  isSSL: boolean;
+  smtpServer: string;
+  emailFrom: string;
+  username: string;
+  securityType: string;
   password: string;
+  port: string;
 
   // Status
   isActive: boolean;
@@ -25,40 +25,41 @@ export interface IEmailCredentialMaster {
 
 const emailCredentialSchema = new Schema<IEmailCredentialMaster>(
   {
-    emailSetUpName: {
+    smtpServer: {
       type: String,
       required: true,
       trim: true,
     },
 
-    email: {
+    emailFrom: {
       type: String,
       required: true,
       trim: true,
       lowercase: true,
     },
 
-    host: {
+    username: {
       type: String,
       required: true,
       trim: true,
+      lowercase: true,
+    },
+
+    securityType: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
     },
 
     port: {
       type: String,
       required: true,
       trim: true,
-    },
-
-    isSSL: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-
-    password: {
-      type: String,
-      required: true,
     },
 
     // Status

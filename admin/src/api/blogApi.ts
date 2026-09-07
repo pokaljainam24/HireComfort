@@ -49,12 +49,18 @@ export const createBlog = async (form: BlogForm): Promise<Blog> => {
 
   formData.append("section", form.section);
 
-  // Blog Image
+  // =====================================
+  // BLOG IMAGE
+  // =====================================
+
   if (form.blogImg) {
     formData.append("blogImg", form.blogImg);
   }
 
-  // Author Image
+  // =====================================
+  // AUTHOR IMAGE
+  // =====================================
+
   if (form.authorImg) {
     formData.append("authorImg", form.authorImg);
   }
@@ -89,12 +95,18 @@ export const updateBlog = async (id: string, form: BlogForm): Promise<Blog> => {
 
   formData.append("section", form.section);
 
-  // Blog Image
+  // =====================================
+  // BLOG IMAGE
+  // =====================================
+
   if (form.blogImg) {
     formData.append("blogImg", form.blogImg);
   }
 
-  // Author Image
+  // =====================================
+  // AUTHOR IMAGE
+  // =====================================
+
   if (form.authorImg) {
     formData.append("authorImg", form.authorImg);
   }

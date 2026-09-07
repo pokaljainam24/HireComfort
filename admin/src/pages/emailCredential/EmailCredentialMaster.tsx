@@ -23,12 +23,12 @@ import { showSuccess, showError } from "@/utils/swal";
 // =====================================
 
 const empty: EmailCredentialForm = {
-  emailSetUpName: "",
-  email: "",
-  host: "",
-  port: "",
-  isSSL: false,
+  smtpServer: "",
+  emailFrom: "",
+  username: "",
+  securityType: "",
   password: "",
+  port: "",
 };
 
 // =====================================
@@ -42,7 +42,9 @@ const EmailCredentialMaster: React.FC = () => {
 
   const [rows, setRows] = useState<EmailCredential[]>([]);
 
-  const [form, setForm] = useState<EmailCredentialForm>(empty);
+  const [form, setForm] = useState<EmailCredentialForm>({
+    ...empty,
+  });
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -93,7 +95,10 @@ const EmailCredentialMaster: React.FC = () => {
   // =====================================
 
   const handleAdd = () => {
-    setForm(empty);
+    setForm({
+      ...empty,
+    });
+
     setEditingId(null);
     setErrors({});
     setShowForm(true);
@@ -104,10 +109,29 @@ const EmailCredentialMaster: React.FC = () => {
   // =====================================
 
   const resetForm = () => {
-    setForm(empty);
+    setForm({
+      ...empty,
+    });
+
     setEditingId(null);
     setErrors({});
     setShowForm(false);
+  };
+
+  // =====================================
+  // FORM CHANGE
+  // =====================================
+
+  const handleChange = (field: keyof EmailCredentialForm, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
   };
 
   // =====================================
@@ -118,31 +142,39 @@ const EmailCredentialMaster: React.FC = () => {
     const e: Record<string, string> = {};
 
     // =====================================
-    // EMAIL SETUP NAME
+    // SMTP SERVER
     // =====================================
 
-    if (!form.emailSetUpName.trim()) {
-      e.emailSetUpName = "Email setup name is required";
-    } else if (form.emailSetUpName.trim().length < 2) {
-      e.emailSetUpName = "Email setup name must contain at least 2 characters";
+    if (!form.smtpServer.trim()) {
+      e.smtpServer = "SMTP server is required";
     }
 
     // =====================================
-    // EMAIL
+    // EMAIL FROM
     // =====================================
 
-    if (!form.email.trim()) {
-      e.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      e.email = "Please enter a valid email address";
+    if (!form.emailFrom.trim()) {
+      e.emailFrom = "Email from is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.emailFrom.trim())) {
+      e.emailFrom = "Please enter a valid email address";
     }
 
     // =====================================
-    // HOST
+    // USERNAME
     // =====================================
 
-    if (!form.host.trim()) {
-      e.host = "Host is required";
+    if (!form.username.trim()) {
+      e.username = "Username is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.username.trim())) {
+      e.username = "Please enter a valid email address";
+    }
+
+    // =====================================
+    // SECURITY TYPE
+    // =====================================
+
+    if (!form.securityType.trim()) {
+      e.securityType = "Security type is required";
     }
 
     // =====================================
@@ -232,20 +264,21 @@ const EmailCredentialMaster: React.FC = () => {
     setEditingId(row._id);
 
     setForm({
-      emailSetUpName: row.emailSetUpName,
-      email: row.email,
-      host: row.host,
-      port: row.port,
-      isSSL: row.isSSL,
-
-      // Password GET API se nahi aayega
+      smtpServer: row.smtpServer,
+      emailFrom: row.emailFrom,
+      username: row.username,
+      securityType: row.securityType,
       password: "",
+      port: row.port,
     });
 
     setErrors({});
-
-    // Edit par form open
     setShowForm(true);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   // =====================================
@@ -285,49 +318,32 @@ const EmailCredentialMaster: React.FC = () => {
 
   const columns: ColumnDef<EmailCredential>[] = [
     {
-      header: "Setup Name",
+      header: "SMTP Server",
       render: (row) => (
         <div>
-          <b>{row.emailSetUpName}</b>
+          <b>{row.smtpServer}</b>
         </div>
       ),
     },
 
     {
-      header: "Email",
-      render: (row) => <div className="cell-muted">{row.email}</div>,
+      header: "Email From",
+      render: (row) => <div className="cell-muted">{row.emailFrom}</div>,
     },
 
     {
-      header: "Host",
-      render: (row) => <div className="cell-muted">{row.host}</div>,
+      header: "Username",
+      render: (row) => <div className="cell-muted">{row.username}</div>,
+    },
+
+    {
+      header: "Security Type",
+      render: (row) => <div className="cell-muted">{row.securityType}</div>,
     },
 
     {
       header: "Port",
       render: (row) => <div className="cell-muted">{row.port}</div>,
-    },
-
-    {
-      header: "Password",
-      render: (row) => (
-        <div className="cell-muted">
-          {showPassword ? row.password || "Password not available" : "••••••••"}
-        </div>
-      ),
-    },
-
-    {
-      header: "SSL",
-      render: (row) => (
-        <span
-          className={`badge ${
-            row.isSSL ? "text-bg-success" : "text-bg-secondary"
-          }`}
-        >
-          {row.isSSL ? "Enabled" : "Disabled"}
-        </span>
-      ),
     },
   ];
 
@@ -346,19 +362,24 @@ const EmailCredentialMaster: React.FC = () => {
 
   const getViewFields = (row: EmailCredential): ViewField[] => [
     {
-      label: "Email Setup Name",
-      value: row.emailSetUpName,
+      label: "SMTP Server",
+      value: row.smtpServer,
       fullWidth: true,
     },
 
     {
-      label: "Email",
-      value: row.email,
+      label: "Email From",
+      value: row.emailFrom,
     },
 
     {
-      label: "Host",
-      value: row.host,
+      label: "Username",
+      value: row.username,
+    },
+
+    {
+      label: "Security Type",
+      value: row.securityType,
     },
 
     {
@@ -367,19 +388,10 @@ const EmailCredentialMaster: React.FC = () => {
     },
 
     {
-      label: "SSL",
-      value: row.isSSL ? "Enabled" : "Disabled",
-    },
-
-    {
       label: "Password",
       value: (
         <div className="d-flex align-items-center justify-content-between gap-2">
-          <span>
-            {showPassword
-              ? row.password || "Password not available"
-              : "••••••••"}
-          </span>
+          <span>{showPassword ? "Password is protected" : "••••••••"}</span>
 
           <button
             type="button"
@@ -454,7 +466,7 @@ const EmailCredentialMaster: React.FC = () => {
                 {editingId ? "Edit Email Credential" : "Add Email Credential"}
               </h2>
 
-              <p>Manage email server credentials.</p>
+              <p>Manage SMTP email credentials.</p>
             </div>
 
             <button
@@ -471,93 +483,65 @@ const EmailCredentialMaster: React.FC = () => {
           <div className="card-panel-body">
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
-                {/* EMAIL SETUP NAME */}
+                {/* SMTP SERVER */}
 
-                <Field
-                  label="Email Setup Name"
-                  required
-                  error={errors.emailSetUpName}
-                >
+                <Field label="SMTP Server" required error={errors.smtpServer}>
                   <input
-                    value={form.emailSetUpName}
-                    onChange={(e) => {
-                      setForm({
-                        ...form,
-                        emailSetUpName: e.target.value,
-                      });
-
-                      setErrors({
-                        ...errors,
-                        emailSetUpName: "",
-                      });
-                    }}
-                    placeholder="e.g. Gmail SMTP"
-                    disabled={loading}
-                  />
-                </Field>
-
-                {/* EMAIL */}
-
-                <Field label="Email" required error={errors.email}>
-                  <input
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => {
-                      setForm({
-                        ...form,
-                        email: e.target.value,
-                      });
-
-                      setErrors({
-                        ...errors,
-                        email: "",
-                      });
-                    }}
-                    placeholder="example@gmail.com"
-                    disabled={loading}
-                  />
-                </Field>
-
-                {/* HOST */}
-
-                <Field label="Host" required error={errors.host}>
-                  <input
-                    value={form.host}
-                    onChange={(e) => {
-                      setForm({
-                        ...form,
-                        host: e.target.value,
-                      });
-
-                      setErrors({
-                        ...errors,
-                        host: "",
-                      });
-                    }}
+                    value={form.smtpServer}
+                    onChange={(e) => handleChange("smtpServer", e.target.value)}
                     placeholder="smtp.gmail.com"
                     disabled={loading}
                   />
                 </Field>
 
-                {/* PORT */}
+                {/* EMAIL FROM */}
 
-                <Field label="Port" required error={errors.port}>
+                <Field label="Email From" required error={errors.emailFrom}>
                   <input
-                    value={form.port}
-                    onChange={(e) => {
-                      setForm({
-                        ...form,
-                        port: e.target.value,
-                      });
-
-                      setErrors({
-                        ...errors,
-                        port: "",
-                      });
-                    }}
-                    placeholder="587"
+                    type="email"
+                    value={form.emailFrom}
+                    onChange={(e) => handleChange("emailFrom", e.target.value)}
+                    placeholder="otp@otpmanager.com"
                     disabled={loading}
                   />
+                </Field>
+
+                {/* USERNAME */}
+
+                <Field label="Username" required error={errors.username}>
+                  <input
+                    type="email"
+                    value={form.username}
+                    onChange={(e) => handleChange("username", e.target.value)}
+                    placeholder="otp@otpmanager.com"
+                    disabled={loading}
+                  />
+                </Field>
+
+                {/* SECURITY TYPE */}
+
+                <Field
+                  label="Security Type"
+                  required
+                  error={errors.securityType}
+                >
+                  <select
+                    value={form.securityType}
+                    onChange={(e) =>
+                      handleChange("securityType", e.target.value)
+                    }
+                    disabled={loading}
+                  >
+                    <option value="">Select Security Type</option>
+
+                    <option value="SSL">SSL</option>
+
+                    <option value="TLS">TLS</option>
+
+                    <option value="STARTTLS">STARTTLS</option>
+
+                    <option value="NONE">None</option>
+                  </select>
                 </Field>
 
                 {/* PASSWORD */}
@@ -574,17 +558,7 @@ const EmailCredentialMaster: React.FC = () => {
                   <input
                     type="password"
                     value={form.password}
-                    onChange={(e) => {
-                      setForm({
-                        ...form,
-                        password: e.target.value,
-                      });
-
-                      setErrors({
-                        ...errors,
-                        password: "",
-                      });
-                    }}
+                    onChange={(e) => handleChange("password", e.target.value)}
                     placeholder={
                       editingId ? "Enter new password" : "Enter password"
                     }
@@ -592,28 +566,16 @@ const EmailCredentialMaster: React.FC = () => {
                   />
                 </Field>
 
-                {/* SSL */}
+                {/* PORT */}
 
-                <Field label="SSL">
-                  <div className="form-check mt-2 ssl-checkbox">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="isSSL"
-                      checked={form.isSSL}
-                      onChange={(e) => {
-                        setForm({
-                          ...form,
-                          isSSL: e.target.checked,
-                        });
-                      }}
-                      disabled={loading}
-                    />
-
-                    <label htmlFor="isSSL" className="form-check-label">
-                      Enable SSL
-                    </label>
-                  </div>
+                <Field label="Port" required error={errors.port}>
+                  <input
+                    value={form.port}
+                    onChange={(e) => handleChange("port", e.target.value)}
+                    placeholder="465"
+                    inputMode="numeric"
+                    disabled={loading}
+                  />
                 </Field>
               </div>
 
@@ -653,14 +615,7 @@ const EmailCredentialMaster: React.FC = () => {
       ===================================== */}
 
       <div className="card-panel">
-        <div className="card-panel-head">
-          <div>
-            <h2>Email Credentials</h2>
-
-            <p>{rows.length} email credentials available</p>
-          </div>
-
-          {/* ADD BUTTON */}
+        <div className="card-panel-header">
 
           {!showForm && (
             <button
@@ -680,9 +635,10 @@ const EmailCredentialMaster: React.FC = () => {
           rowKey={(row) => row._id}
           searchPlaceholder="Search email credentials..."
           onSearch={(row, query) =>
-            row.emailSetUpName.toLowerCase().includes(query) ||
-            row.email.toLowerCase().includes(query) ||
-            row.host.toLowerCase().includes(query) ||
+            row.smtpServer.toLowerCase().includes(query) ||
+            row.emailFrom.toLowerCase().includes(query) ||
+            row.username.toLowerCase().includes(query) ||
+            row.securityType.toLowerCase().includes(query) ||
             row.port.toLowerCase().includes(query)
           }
           onView={handleView}
@@ -712,7 +668,7 @@ const EmailCredentialMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete Email Credential?"
-        message={`"${deleteTarget?.emailSetUpName}" will be permanently removed.`}
+        message={`"${deleteTarget?.emailFrom}" email credential will be deleted.`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />

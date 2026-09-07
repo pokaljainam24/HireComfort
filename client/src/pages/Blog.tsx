@@ -86,7 +86,7 @@ function Blog() {
 
       blogImg: blog.blogImg,
 
-      category: typeof blog.categoryId === "object" ? blog.categoryId.name : "",
+      category: blog.categoryId,
 
       title: blog.title,
 
@@ -167,6 +167,7 @@ function Blog() {
                 Don&apos;t miss the trending news
               </p>
             </div>
+            
             <div className="row mt-30">
               <div className="col-lg-8">
                 <div className="row">

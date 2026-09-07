@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 
+import { Editor } from "@tinymce/tinymce-react";
+
 import PageHeader from "@/components/common/PageHeader";
-
 import Field from "@/components/common/Field";
-
 import DataTable, { ColumnDef } from "@/components/common/DataTable";
-
 import ConfirmModal from "@/components/common/ConfirmModal";
-
 import ViewModal, { ViewField } from "@/components/common/ViewModal";
-
 import { Icon } from "@/components/common/Icon";
 
 import { getBlogs, createBlog, updateBlog, deleteBlog } from "@/api/blogApi";
 
-import { getJobCategories } from "@/api/jobCategoryApi";
+import type { Blog, BlogForm, BlogCategory } from "@/types/blog";
 
-import { Blog, BlogCategory, BlogForm } from "@/types/blog";
+// =====================================
+// STATIC BLOG CATEGORIES
+// =====================================
 
-import { JobCategory } from "@/types/jobCategory";
+const BLOG_CATEGORIES: BlogCategory[] = ["Job Seekers", "Recruiters"];
 
 // =====================================
 // EMPTY FORM
@@ -26,15 +25,25 @@ import { JobCategory } from "@/types/jobCategory";
 
 const empty: BlogForm = {
   categoryId: "",
+
   title: "",
+
   authorName: "",
+
   authorImg: null,
+
   date: "",
+
   durationInMin: "",
+
   description: "",
+
   metaTitle: "",
+
   metaDescription: "",
+
   blogImg: null,
+
   section: "latest",
 };
 
@@ -48,8 +57,6 @@ const BlogsMaster: React.FC = () => {
   // =====================================
 
   const [rows, setRows] = useState<Blog[]>([]);
-
-  const [categories, setCategories] = useState<JobCategory[]>([]);
 
   const [form, setForm] = useState<BlogForm>(empty);
 
@@ -77,14 +84,9 @@ const BlogsMaster: React.FC = () => {
     try {
       setLoading(true);
 
-      const [blogs, jobCategories] = await Promise.all([
-        getBlogs(),
-        getJobCategories(),
-      ]);
+      const blogs = await getBlogs();
 
       setRows(blogs);
-
-      setCategories(jobCategories);
     } catch (error) {
       console.error("Error loading blogs:", error);
     } finally {
@@ -140,12 +142,8 @@ const BlogsMaster: React.FC = () => {
   // CATEGORY NAME
   // =====================================
 
-  const categoryName = (categoryId: string | BlogCategory) => {
-    if (typeof categoryId === "object") {
-      return categoryId.name || "Unknown";
-    }
-
-    return categoryId || "Unknown";
+  const categoryName = (category: BlogCategory | "") => {
+    return category || "Unknown";
   };
 
   // =====================================
@@ -166,6 +164,26 @@ const BlogsMaster: React.FC = () => {
     const cleanPath = imagePath.replace(/^\/+/, "");
 
     return `http://localhost:5000/${cleanPath}`;
+  };
+
+  // =====================================
+  // STRIP HTML
+  // =====================================
+
+  const stripHtml = (html: string) => {
+    if (!html) {
+      return "";
+    }
+
+    return html
+      .replace(/<[^>]*>/g, "")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&amp;/gi, "&")
+      .replace(/&lt;/gi, "<")
+      .replace(/&gt;/gi, ">")
+      .replace(/&quot;/gi, '"')
+      .replace(/&#39;/gi, "'")
+      .trim();
   };
 
   // =====================================
@@ -191,6 +209,8 @@ const BlogsMaster: React.FC = () => {
 
     if (!form.categoryId) {
       e.categoryId = "Select a category";
+    } else if (!BLOG_CATEGORIES.includes(form.categoryId)) {
+      e.categoryId = "Invalid category";
     }
 
     // =====================================
@@ -230,12 +250,14 @@ const BlogsMaster: React.FC = () => {
     }
 
     // =====================================
-    // CONTENT
+    // BLOG CONTENT
     // =====================================
 
-    if (!form.description.trim()) {
+    const plainDescription = stripHtml(form.description);
+
+    if (!plainDescription) {
       e.description = "Blog content is required";
-    } else if (form.description.trim().length < 10) {
+    } else if (plainDescription.length < 10) {
       e.description = "Blog content must contain at least 10 characters";
     }
 
@@ -319,39 +341,53 @@ const BlogsMaster: React.FC = () => {
 
   const handleEdit = (row: Blog) => {
     setShowForm(true);
-    setEditingId(row._id);
 
-    const categoryId =
-      typeof row.categoryId === "object" ? row.categoryId._id : row.categoryId;
+    setEditingId(row._id);
 
     const formattedDate = row.date
       ? new Date(row.date).toISOString().split("T")[0]
       : "";
 
     setForm({
-      categoryId,
+      categoryId: row.categoryId,
+
       title: row.title,
+
       description: row.description,
+
       metaTitle: row.metaTitle,
+
       metaDescription: row.metaDescription,
+
       blogImg: null,
+
       authorImg: null,
+
       authorName: row.authorName,
+
       date: formattedDate,
+
       durationInMin: row.durationInMin,
+
       section: row.section,
     });
 
     setErrors({});
 
-    // Existing Author Image
+    // =====================================
+    // EXISTING AUTHOR IMAGE
+    // =====================================
+
     if (row.authorImg) {
       setImgPreview(getImageUrl(row.authorImg));
     } else {
       setImgPreview("");
     }
 
-    // Existing Blog Image
+    // =====================================
+    // EXISTING BLOG IMAGE
+    // =====================================
+
     if (row.blogImg) {
       setBlogImgPreview(getImageUrl(row.blogImg));
     } else {
@@ -388,6 +424,10 @@ const BlogsMaster: React.FC = () => {
   // =====================================
 
   const columns: ColumnDef<Blog>[] = [
+    // =====================================
+    // BLOG IMAGE
+    // =====================================
+
     {
       header: "Blog Image",
 
@@ -433,36 +473,49 @@ const BlogsMaster: React.FC = () => {
       ),
     },
 
+    // =====================================
+    // TITLE
+    // =====================================
+
     {
       header: "Title",
 
-      render: (row) => (
-        <div>
-          <b
-            style={{
-              display: "block",
-              maxWidth: 210,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            title={row.title}
-          >
-            {row.title}
-          </b>
+      render: (row) => {
+        const plainDescription = stripHtml(row.description);
 
-          <div
-            className="cell-muted"
-            style={{
-              fontSize: 12,
-            }}
-          >
-            {row.description.slice(0, 60)}
-            {row.description.length > 60 ? "..." : ""}
+        return (
+          <div>
+            <b
+              style={{
+                display: "block",
+                maxWidth: 210,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+              title={row.title}
+            >
+              {row.title}
+            </b>
+
+            <div
+              className="cell-muted"
+              style={{
+                fontSize: 12,
+              }}
+            >
+              {plainDescription.slice(0, 60)}
+
+              {plainDescription.length > 60 ? "..." : ""}
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
+
+    // =====================================
+    // CATEGORY
+    // =====================================
 
     {
       header: "Category",
@@ -471,6 +524,10 @@ const BlogsMaster: React.FC = () => {
         <span className="badge badge-blue">{categoryName(row.categoryId)}</span>
       ),
     },
+
+    // =====================================
+    // AUTHOR
+    // =====================================
 
     {
       header: "Author",
@@ -520,11 +577,19 @@ const BlogsMaster: React.FC = () => {
       ),
     },
 
+    // =====================================
+    // DATE
+    // =====================================
+
     {
       header: "Date",
 
       render: (row) => new Date(row.date).toLocaleDateString(),
     },
+
+    // =====================================
+    // READING TIME
+    // =====================================
 
     {
       header: "Reading Time",
@@ -538,6 +603,10 @@ const BlogsMaster: React.FC = () => {
   // =====================================
 
   const getViewFields = (row: Blog): ViewField[] => [
+    // =====================================
+    // BLOG IMAGE
+    // =====================================
+
     {
       label: "Blog Image",
 
@@ -559,36 +628,71 @@ const BlogsMaster: React.FC = () => {
       fullWidth: true,
     },
 
+    // =====================================
+    // TITLE
+    // =====================================
+
     {
       label: "Title",
+
       value: row.title,
+
       fullWidth: true,
     },
 
+    // =====================================
+    // CATEGORY
+    // =====================================
+
     {
       label: "Category",
+
       value: categoryName(row.categoryId),
     },
 
+    // =====================================
+    // AUTHOR
+    // =====================================
+
     {
       label: "Author",
+
       value: row.authorName,
     },
 
+    // =====================================
+    // DATE
+    // =====================================
+
     {
       label: "Date",
+
       value: row.date ? new Date(row.date).toLocaleDateString() : "-",
     },
 
+    // =====================================
+    // READING TIME
+    // =====================================
+
     {
       label: "Reading Time",
+
       value: `${row.durationInMin} min`,
     },
 
+    // =====================================
+    // SECTION
+    // =====================================
+
     {
       label: "Section",
+
       value: row.section || "-",
     },
+
+    // =====================================
+    // AUTHOR IMAGE
+    // =====================================
 
     {
       label: "Author Image",
@@ -609,56 +713,121 @@ const BlogsMaster: React.FC = () => {
       ),
     },
 
+    // =====================================
+    // META TITLE
+    // =====================================
+
     {
       label: "Meta Title",
+
       value: row.metaTitle || "-",
+
       fullWidth: true,
     },
+
+    // =====================================
+    // META DESCRIPTION
+    // =====================================
 
     {
       label: "Meta Description",
+
       value: row.metaDescription || "-",
+
       fullWidth: true,
     },
+
+    // =====================================
+    // BLOG CONTENT
+    // =====================================
 
     {
       label: "Blog Content",
-      value: row.description,
+
+      value: (
+        <div
+          className="cms-content-preview"
+          style={{
+            width: "100%",
+            lineHeight: 1.7,
+            overflowWrap: "anywhere",
+          }}
+          dangerouslySetInnerHTML={{
+            __html: row.description || "",
+          }}
+        />
+      ),
+
       fullWidth: true,
     },
 
+    // =====================================
+    // DISPLAY
+    // =====================================
+
     {
       label: "Display",
+
       value: row.isDisplay ? "Yes" : "No",
     },
 
+    // =====================================
+    // CREATED BY
+    // =====================================
+
     {
       label: "Created By",
+
       value: row.createdBy || "-",
     },
 
+    // =====================================
+    // CREATED AT
+    // =====================================
+
     {
       label: "Created At",
+
       value: row.createdAt ? new Date(row.createdAt).toLocaleString() : "-",
     },
 
+    // =====================================
+    // UPDATED BY
+    // =====================================
+
     {
       label: "Updated By",
+
       value: row.updatedBy || "-",
     },
 
+    // =====================================
+    // UPDATED AT
+    // =====================================
+
     {
       label: "Updated At",
+
       value: row.updatedAt ? new Date(row.updatedAt).toLocaleString() : "-",
     },
 
+    // =====================================
+    // DELETE BY
+    // =====================================
+
     {
       label: "Delete By",
+
       value: row.deleteBy || "-",
     },
 
+    // =====================================
+    // DELETE AT
+    // =====================================
+
     {
       label: "Delete At",
+
       value: row.deleteAt ? new Date(row.deleteAt).toLocaleString() : "-",
     },
   ];
@@ -725,6 +894,10 @@ const BlogsMaster: React.FC = () => {
 
       {showForm && (
         <div className="card-panel">
+          {/* =====================================
+              FORM HEADER
+          ===================================== */}
+
           <div className="card-panel-head">
             <div>
               <h2>{editingId ? "Edit Blog" : "Add Blog"}</h2>
@@ -743,10 +916,16 @@ const BlogsMaster: React.FC = () => {
             </button>
           </div>
 
+          {/* =====================================
+              FORM BODY
+          ===================================== */}
+
           <div className="card-panel-body">
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
-                {/* TITLE */}
+                {/* =====================================
+                    TITLE
+                ===================================== */}
 
                 <Field label="Blog Title" required error={errors.title} span2>
                   <input
@@ -767,7 +946,9 @@ const BlogsMaster: React.FC = () => {
                   />
                 </Field>
 
-                {/* CATEGORY */}
+                {/* =====================================
+                    CATEGORY
+                ===================================== */}
 
                 <Field label="Category" required error={errors.categoryId}>
                   <select
@@ -775,7 +956,7 @@ const BlogsMaster: React.FC = () => {
                     onChange={(e) => {
                       setForm({
                         ...form,
-                        categoryId: e.target.value,
+                        categoryId: e.target.value as BlogCategory | "",
                       });
 
                       setErrors({
@@ -787,15 +968,17 @@ const BlogsMaster: React.FC = () => {
                   >
                     <option value="">Select category</option>
 
-                    {categories.map((category) => (
-                      <option key={category._id} value={category._id}>
-                        {category.name}
+                    {BLOG_CATEGORIES.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
                       </option>
                     ))}
                   </select>
                 </Field>
 
-                {/* AUTHOR */}
+                {/* =====================================
+                    AUTHOR
+                ===================================== */}
 
                 <Field label="Author Name" required error={errors.authorName}>
                   <input
@@ -816,10 +999,12 @@ const BlogsMaster: React.FC = () => {
                   />
                 </Field>
 
-                {/* AUTHOR IMAGE */}
+                {/* =====================================
+                    AUTHOR IMAGE
+                ===================================== */}
 
                 <Field
-                  label="Author Image"
+                  label="Author Image (200 × 200 px)"
                   required={!editingId}
                   error={errors.authorImg}
                 >
@@ -831,7 +1016,11 @@ const BlogsMaster: React.FC = () => {
                   />
 
                   {imgPreview && (
-                    <div style={{ marginTop: 10 }}>
+                    <div
+                      style={{
+                        marginTop: 10,
+                      }}
+                    >
                       <img
                         src={imgPreview}
                         alt="Author image preview"
@@ -846,7 +1035,9 @@ const BlogsMaster: React.FC = () => {
                   )}
                 </Field>
 
-                {/* DATE */}
+                {/* =====================================
+                    DATE
+                ===================================== */}
 
                 <Field label="Date" required error={errors.date}>
                   <input
@@ -867,7 +1058,9 @@ const BlogsMaster: React.FC = () => {
                   />
                 </Field>
 
-                {/* READING TIME */}
+                {/* =====================================
+                    READING TIME
+                ===================================== */}
 
                 <Field
                   label="Reading Time (minutes)"
@@ -894,7 +1087,9 @@ const BlogsMaster: React.FC = () => {
                   />
                 </Field>
 
-                {/* SECTION */}
+                {/* =====================================
+                    SECTION
+                ===================================== */}
 
                 <Field label="Section" required error={errors.section}>
                   <select
@@ -918,10 +1113,12 @@ const BlogsMaster: React.FC = () => {
                   </select>
                 </Field>
 
-                {/* BLOG IMAGE */}
+                {/* =====================================
+                    BLOG IMAGE
+                ===================================== */}
 
                 <Field
-                  label="Blog Image"
+                  label="Blog Image (1200 × 630 px)"
                   required={!editingId}
                   error={errors.blogImg}
                 >
@@ -952,7 +1149,9 @@ const BlogsMaster: React.FC = () => {
                   )}
                 </Field>
 
-                {/* META TITLE */}
+                {/* =====================================
+                    META TITLE
+                ===================================== */}
 
                 <Field
                   label="Meta Title"
@@ -978,7 +1177,9 @@ const BlogsMaster: React.FC = () => {
                   />
                 </Field>
 
-                {/* META DESCRIPTION */}
+                {/* =====================================
+                    META DESCRIPTION
+                ===================================== */}
 
                 <Field
                   label="Meta Description"
@@ -1004,7 +1205,9 @@ const BlogsMaster: React.FC = () => {
                   />
                 </Field>
 
-                {/* BLOG CONTENT */}
+                {/* =====================================
+                    BLOG CONTENT - TINYMCE
+                ===================================== */}
 
                 <Field
                   label="Blog Content"
@@ -1012,12 +1215,21 @@ const BlogsMaster: React.FC = () => {
                   error={errors.description}
                   span2
                 >
-                  <textarea
+                  <Editor
+                    apiKey={
+                      (
+                        import.meta as ImportMeta & {
+                          env: {
+                            VITE_TINYMCE_API_KEY?: string;
+                          };
+                        }
+                      ).env.VITE_TINYMCE_API_KEY
+                    }
                     value={form.description}
-                    onChange={(e) => {
+                    onEditorChange={(content: string) => {
                       setForm({
                         ...form,
-                        description: e.target.value,
+                        description: content,
                       });
 
                       setErrors({
@@ -1025,16 +1237,51 @@ const BlogsMaster: React.FC = () => {
                         description: "",
                       });
                     }}
-                    placeholder="Write the blog content here..."
-                    style={{
-                      minHeight: 180,
+                    init={{
+                      height: 400,
+
+                      menubar: false,
+
+                      plugins: [
+                        "advlist",
+                        "autolink",
+                        "lists",
+                        "link",
+                        "image",
+                        "charmap",
+                        "anchor",
+                        "searchreplace",
+                        "visualblocks",
+                        "code",
+                        "fullscreen",
+                        "insertdatetime",
+                        "media",
+                        "table",
+                        "preview",
+                        "help",
+                        "wordcount",
+                      ],
+
+                      toolbar:
+                        "undo redo | blocks | " +
+                        "bold italic underline forecolor | " +
+                        "alignleft aligncenter alignright alignjustify | " +
+                        "bullist numlist outdent indent | " +
+                        "link image media table | " +
+                        "removeformat | code fullscreen",
+
+                      content_style:
+                        "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; }",
+
+                      placeholder: "Write the blog content here...",
                     }}
-                    disabled={loading}
                   />
                 </Field>
               </div>
 
-              {/* ACTIONS */}
+              {/* =====================================
+                  ACTIONS
+              ===================================== */}
 
               <div className="form-actions">
                 <button
@@ -1070,12 +1317,7 @@ const BlogsMaster: React.FC = () => {
       ===================================== */}
 
       <div className="card-panel">
-        <div className="card-panel-head">
-          <div>
-            <h2>All Blogs</h2>
-
-            <p>{rows.length} articles published</p>
-          </div>
+        <div className="card-panel-header">
 
           {!showForm && (
             <button
@@ -1098,7 +1340,8 @@ const BlogsMaster: React.FC = () => {
           onSearch={(row, query) =>
             row.title.toLowerCase().includes(query) ||
             row.authorName.toLowerCase().includes(query) ||
-            categoryName(row.categoryId).toLowerCase().includes(query)
+            row.categoryId.toLowerCase().includes(query) ||
+            stripHtml(row.description).toLowerCase().includes(query)
           }
           onView={(row) => setViewTarget(row)}
           onEdit={handleEdit}

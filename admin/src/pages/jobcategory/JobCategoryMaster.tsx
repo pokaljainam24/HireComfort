@@ -37,8 +37,7 @@ const JobCategoryMaster: React.FC = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [deleteTarget, setDeleteTarget] =
-    useState<JobCategory | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<JobCategory | null>(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -58,10 +57,7 @@ const JobCategoryMaster: React.FC = () => {
 
       setRows(data ?? []);
     } catch (error) {
-      console.error(
-        "Error loading job categories:",
-        error,
-      );
+      console.error("Error loading job categories:", error);
     } finally {
       setLoading(false);
     }
@@ -121,8 +117,7 @@ const JobCategoryMaster: React.FC = () => {
     if (!form.name.trim()) {
       e.name = "Category name is required";
     } else if (form.name.trim().length < 2) {
-      e.name =
-        "Category name must contain at least 2 characters";
+      e.name = "Category name must contain at least 2 characters";
     }
 
     // =====================================
@@ -131,11 +126,8 @@ const JobCategoryMaster: React.FC = () => {
 
     if (!form.description.trim()) {
       e.description = "Description is required";
-    } else if (
-      form.description.trim().length < 2
-    ) {
-      e.description =
-        "Description must contain at least 2 characters";
+    } else if (form.description.trim().length < 2) {
+      e.description = "Description must contain at least 2 characters";
     }
 
     // =====================================
@@ -155,9 +147,7 @@ const JobCategoryMaster: React.FC = () => {
   // ICON CHANGE
   // =====================================
 
-  const handleIconChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleIconChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (!file) {
@@ -169,9 +159,7 @@ const JobCategoryMaster: React.FC = () => {
       icon: file,
     });
 
-    setIconPreview(
-      URL.createObjectURL(file),
-    );
+    setIconPreview(URL.createObjectURL(file));
 
     setErrors({
       ...errors,
@@ -183,9 +171,7 @@ const JobCategoryMaster: React.FC = () => {
   // CREATE / UPDATE
   // =====================================
 
-  const handleSubmit = async (
-    ev: React.FormEvent,
-  ) => {
+  const handleSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
 
     // =====================================
@@ -204,43 +190,33 @@ const JobCategoryMaster: React.FC = () => {
       // =====================================
 
       if (editingId) {
-        const updatedCategory =
-          await updateJobCategory(
-            editingId,
-            form.name,
-            form.description,
-            form.icon || undefined,
-          );
+        const updatedCategory = await updateJobCategory(
+          editingId,
+          form.name,
+          form.description,
+          form.icon || undefined,
+        );
 
         setRows((rows) =>
-          rows.map((row) =>
-            row._id === editingId
-              ? updatedCategory
-              : row,
-          ),
+          rows.map((row) => (row._id === editingId ? updatedCategory : row)),
         );
       }
 
       // =====================================
       // CREATE
       // =====================================
-
       else {
         if (!form.icon) {
           return;
         }
 
-        const newCategory =
-          await createJobCategory(
-            form.name,
-            form.description,
-            form.icon,
-          );
+        const newCategory = await createJobCategory(
+          form.name,
+          form.description,
+          form.icon,
+        );
 
-        setRows((rows) => [
-          newCategory,
-          ...rows,
-        ]);
+        setRows((rows) => [newCategory, ...rows]);
       }
 
       // =====================================
@@ -249,10 +225,7 @@ const JobCategoryMaster: React.FC = () => {
 
       resetForm();
     } catch (error) {
-      console.error(
-        "Error saving job category:",
-        error,
-      );
+      console.error("Error saving job category:", error);
     } finally {
       setLoading(false);
     }
@@ -262,9 +235,7 @@ const JobCategoryMaster: React.FC = () => {
   // EDIT
   // =====================================
 
-  const handleEdit = (
-    row: JobCategory,
-  ) => {
+  const handleEdit = (row: JobCategory) => {
     setEditingId(row._id);
 
     setForm({
@@ -273,11 +244,7 @@ const JobCategoryMaster: React.FC = () => {
       icon: null,
     });
 
-    setIconPreview(
-      row.icon
-        ? `http://localhost:5000${row.icon}`
-        : "",
-    );
+    setIconPreview(row.icon ? `http://localhost:5000${row.icon}` : "");
 
     setErrors({});
 
@@ -301,23 +268,13 @@ const JobCategoryMaster: React.FC = () => {
     try {
       setLoading(true);
 
-      await deleteJobCategory(
-        deleteTarget._id,
-      );
+      await deleteJobCategory(deleteTarget._id);
 
-      setRows((rows) =>
-        rows.filter(
-          (row) =>
-            row._id !== deleteTarget._id,
-        ),
-      );
+      setRows((rows) => rows.filter((row) => row._id !== deleteTarget._id));
 
       setDeleteTarget(null);
     } catch (error) {
-      console.error(
-        "Error deleting job category:",
-        error,
-      );
+      console.error("Error deleting job category:", error);
     } finally {
       setLoading(false);
     }
@@ -351,10 +308,7 @@ const JobCategoryMaster: React.FC = () => {
                 }}
               />
             ) : (
-              <Icon
-                name="folder"
-                size={20}
-              />
+              <Icon name="folder" size={20} />
             )}
           </div>
 
@@ -366,11 +320,7 @@ const JobCategoryMaster: React.FC = () => {
     {
       header: "Description",
 
-      render: (row) => (
-        <span className="cell-muted">
-          {row.description}
-        </span>
-      ),
+      render: (row) => <span className="cell-muted">{row.description}</span>,
     },
   ];
 
@@ -380,10 +330,7 @@ const JobCategoryMaster: React.FC = () => {
 
   return (
     <>
-      <PageHeader
-        title="Job Category Master"
-        section="Job Masters"
-      />
+      <PageHeader title="Job Category Master" section="Job Masters" />
 
       {/* =====================================
           FORM
@@ -393,16 +340,9 @@ const JobCategoryMaster: React.FC = () => {
         <div className="card-panel">
           <div className="card-panel-head">
             <div>
-              <h2>
-                {editingId
-                  ? "Edit Job Category"
-                  : "Add Job Category"}
-              </h2>
+              <h2>{editingId ? "Edit Job Category" : "Add Job Category"}</h2>
 
-              <p>
-                Top-level categories jobs are
-                grouped under.
-              </p>
+              <p>Top-level categories jobs are grouped under.</p>
             </div>
 
             {editingId && (
@@ -412,30 +352,20 @@ const JobCategoryMaster: React.FC = () => {
                 type="button"
                 disabled={loading}
               >
-                <Icon
-                  name="x"
-                  size={14}
-                />
-
+                <Icon name="x" size={14} />
                 Cancel edit
               </button>
             )}
           </div>
 
           <div className="card-panel-body">
-            <form
-              onSubmit={handleSubmit}
-            >
+            <form onSubmit={handleSubmit}>
               <div className="form-grid">
                 {/* =====================================
                     NAME
                 ===================================== */}
 
-                <Field
-                  label="Category Name"
-                  required
-                  error={errors.name}
-                >
+                <Field label="Category Name" required error={errors.name}>
                   <input
                     value={form.name}
                     onChange={(e) => {
@@ -458,17 +388,11 @@ const JobCategoryMaster: React.FC = () => {
                     ICON
                 ===================================== */}
 
-                <Field
-                  label="Icon"
-                  required={!editingId}
-                  error={errors.icon}
-                >
+                <Field label="Icon" required={!editingId} error={errors.icon}>
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={
-                      handleIconChange
-                    }
+                    onChange={handleIconChange}
                     disabled={loading}
                   />
 
@@ -484,8 +408,7 @@ const JobCategoryMaster: React.FC = () => {
                         style={{
                           width: 50,
                           height: 50,
-                          objectFit:
-                            "contain",
+                          objectFit: "contain",
                         }}
                       />
                     </div>
@@ -503,14 +426,11 @@ const JobCategoryMaster: React.FC = () => {
                   span2
                 >
                   <textarea
-                    value={
-                      form.description
-                    }
+                    value={form.description}
                     onChange={(e) => {
                       setForm({
                         ...form,
-                        description:
-                          e.target.value,
+                        description: e.target.value,
                       });
 
                       setErrors({
@@ -543,14 +463,6 @@ const JobCategoryMaster: React.FC = () => {
                   className="btn btn-primary"
                   disabled={loading}
                 >
-                  <Icon
-                    name={
-                      editingId
-                        ? "edit"
-                        : "plus"
-                    }
-                    size={15}
-                  />
 
                   {loading
                     ? "Saving..."
@@ -570,28 +482,13 @@ const JobCategoryMaster: React.FC = () => {
 
       <div className="card-panel">
         <div className="card-panel-head">
-          <div>
-            <h2>
-              All Job Categories
-            </h2>
-
-            <p>
-              {rows.length} categories
-              configured
-            </p>
-          </div>
-
           {!showForm && (
             <button
               type="button"
               className="btn btn-primary"
               onClick={handleAdd}
             >
-              <Icon
-                name="plus"
-                size={15}
-              />
-
+              <Icon name="plus" size={15} />
               Add Job Category
             </button>
           )}
@@ -603,17 +500,11 @@ const JobCategoryMaster: React.FC = () => {
           rowKey={(row) => row._id}
           searchPlaceholder="Search category..."
           onSearch={(row, query) =>
-            row.name
-              .toLowerCase()
-              .includes(query) ||
-            row.description
-              .toLowerCase()
-              .includes(query)
+            row.name.toLowerCase().includes(query) ||
+            row.description.toLowerCase().includes(query)
           }
           onEdit={handleEdit}
-          onDelete={(row) =>
-            setDeleteTarget(row)
-          }
+          onDelete={(row) => setDeleteTarget(row)}
         />
       </div>
 
@@ -625,9 +516,7 @@ const JobCategoryMaster: React.FC = () => {
         open={!!deleteTarget}
         title="Delete job category?"
         message={`"${deleteTarget?.name}" will be permanently removed.`}
-        onCancel={() =>
-          setDeleteTarget(null)
-        }
+        onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />
     </>

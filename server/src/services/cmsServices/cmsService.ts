@@ -8,34 +8,9 @@ export type ICmsMaster = InstanceType<typeof CmsMaster>;
 
 export async function createCmsService(cmsData: Partial<ICmsMaster>) {
   try {
-    // SMTP Server
-    if (!cmsData.smtpServer?.trim()) {
-      throw new Error("SMTP server is required");
-    }
-
-    // Email From
-    if (!cmsData.emailFrom?.trim()) {
-      throw new Error("Email from is required");
-    }
-
-    // Username
-    if (!cmsData.username?.trim()) {
-      throw new Error("Username is required");
-    }
-
-    // Security Type
-    if (!cmsData.securityType?.trim()) {
-      throw new Error("Security type is required");
-    }
-
-    // Password
-    if (!cmsData.password?.trim()) {
-      throw new Error("Password is required");
-    }
-
-    // Port
-    if (!cmsData.port) {
-      throw new Error("Port is required");
+    // Title
+    if (!cmsData.title?.trim()) {
+      throw new Error("Title is required");
     }
 
     // Content
@@ -48,29 +23,12 @@ export async function createCmsService(cmsData: Partial<ICmsMaster>) {
       throw new Error("Created by is required");
     }
 
-    // =====================================
-    // Create CMS
-    // =====================================
-
     const cms = new CmsMaster({
-      ...cmsData,
-
-      smtpServer: cmsData.smtpServer.trim(),
-
-      emailFrom: cmsData.emailFrom.trim().toLowerCase(),
-
-      username: cmsData.username.trim(),
-
-      securityType: cmsData.securityType.trim(),
-
-      password: cmsData.password.trim(),
-
-      port: Number(cmsData.port),
+      title: cmsData.title.trim(),
 
       content: cmsData.content.trim(),
 
       isActive: true,
-
       isDisplay: true,
 
       createdBy: cmsData.createdBy.trim(),
@@ -78,7 +36,6 @@ export async function createCmsService(cmsData: Partial<ICmsMaster>) {
       updatedBy: null,
 
       deleteAt: null,
-
       deleteBy: null,
     });
 
@@ -99,7 +56,7 @@ export async function getCmsService() {
     return await CmsMaster.find({
       isActive: true,
       isDisplay: true,
-    });
+    }).sort({ createdAt: -1 });
   } catch (error) {
     console.error("Error getting CMS:", error);
 
@@ -134,44 +91,15 @@ export async function updateCmsService(
   updateData: Partial<ICmsMaster>,
 ) {
   try {
-    // SMTP Server
-    if (!updateData.smtpServer?.trim()) {
-      throw new Error("SMTP server is required");
-    }
-
-    // Email From
-    if (!updateData.emailFrom?.trim()) {
-      throw new Error("Email from is required");
-    }
-
-    // Username
-    if (!updateData.username?.trim()) {
-      throw new Error("Username is required");
-    }
-
-    // Security Type
-    if (!updateData.securityType?.trim()) {
-      throw new Error("Security type is required");
-    }
-
-    // Password
-    if (!updateData.password?.trim()) {
-      throw new Error("Password is required");
-    }
-
-    // Port
-    if (!updateData.port) {
-      throw new Error("Port is required");
+    // Title
+    if (!updateData.title?.trim()) {
+      throw new Error("Title is required");
     }
 
     // Content
     if (!updateData.content?.trim()) {
       throw new Error("Content is required");
     }
-
-    // =====================================
-    // Update CMS
-    // =====================================
 
     return await CmsMaster.findOneAndUpdate(
       {
@@ -180,19 +108,7 @@ export async function updateCmsService(
         isDisplay: true,
       },
       {
-        ...updateData,
-
-        smtpServer: updateData.smtpServer.trim(),
-
-        emailFrom: updateData.emailFrom.trim().toLowerCase(),
-
-        username: updateData.username.trim(),
-
-        securityType: updateData.securityType.trim(),
-
-        password: updateData.password.trim(),
-
-        port: Number(updateData.port),
+        title: updateData.title.trim(),
 
         content: updateData.content.trim(),
 
@@ -244,7 +160,7 @@ export async function deleteCmsService(id: string, deleteBy: string) {
 
 export async function getAllCmsForAdminService() {
   try {
-    return await CmsMaster.find();
+    return await CmsMaster.find().sort({ createdAt: -1 });
   } catch (error) {
     console.error("Error getting CMS for admin:", error);
 

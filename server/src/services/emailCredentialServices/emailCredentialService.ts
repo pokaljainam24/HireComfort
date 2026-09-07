@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 import EmailCredentialMaster from "../../models/EmailCredentialModel/EmailCredentialmodel.js";
 
 export type IEmailCredentialMaster = InstanceType<typeof EmailCredentialMaster>;
@@ -12,37 +13,53 @@ export const createEmailCredentialService = async (
 ) => {
   try {
     // =====================================
-    // Email Setup Name Validation
+    // SMTP Server Validation
     // =====================================
 
-    if (!emailCredentialData.emailSetUpName?.trim()) {
-      throw new Error("Email setup name is required");
-    }
-
-    if (emailCredentialData.emailSetUpName.trim().length < 2) {
-      throw new Error("Email setup name must contain at least 2 characters");
+    if (!emailCredentialData.smtpServer?.trim()) {
+      throw new Error("SMTP server is required");
     }
 
     // =====================================
-    // Email Validation
+    // Email From Validation
     // =====================================
 
-    if (!emailCredentialData.email?.trim()) {
-      throw new Error("Email is required");
+    if (!emailCredentialData.emailFrom?.trim()) {
+      throw new Error("Email from is required");
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(emailCredentialData.email.trim())) {
-      throw new Error("Invalid email format");
+    if (!emailRegex.test(emailCredentialData.emailFrom.trim())) {
+      throw new Error("Invalid email from format");
     }
 
     // =====================================
-    // Host Validation
+    // Username Validation
     // =====================================
 
-    if (!emailCredentialData.host?.trim()) {
-      throw new Error("Host is required");
+    if (!emailCredentialData.username?.trim()) {
+      throw new Error("Username is required");
+    }
+
+    if (!emailRegex.test(emailCredentialData.username.trim())) {
+      throw new Error("Invalid username email format");
+    }
+
+    // =====================================
+    // Security Type Validation
+    // =====================================
+
+    if (!emailCredentialData.securityType?.trim()) {
+      throw new Error("Security type is required");
+    }
+
+    // =====================================
+    // Password Validation
+    // =====================================
+
+    if (!emailCredentialData.password?.trim()) {
+      throw new Error("Password is required");
     }
 
     // =====================================
@@ -58,14 +75,6 @@ export const createEmailCredentialService = async (
     }
 
     // =====================================
-    // Password Validation
-    // =====================================
-
-    if (!emailCredentialData.password?.trim()) {
-      throw new Error("Password is required");
-    }
-
-    // =====================================
     // Created By Validation
     // =====================================
 
@@ -74,11 +83,11 @@ export const createEmailCredentialService = async (
     }
 
     // =====================================
-    // Duplicate Email Check
+    // Duplicate Email From Check
     // =====================================
 
     const existingEmail = await EmailCredentialMaster.findOne({
-      email: emailCredentialData.email.trim().toLowerCase(),
+      emailFrom: emailCredentialData.emailFrom.trim().toLowerCase(),
       isActive: true,
       isDisplay: true,
     });
@@ -88,35 +97,21 @@ export const createEmailCredentialService = async (
     }
 
     // =====================================
-    // Duplicate Setup Name Check
-    // =====================================
-
-    const existingSetupName = await EmailCredentialMaster.findOne({
-      emailSetUpName: emailCredentialData.emailSetUpName.trim(),
-      isActive: true,
-      isDisplay: true,
-    });
-
-    if (existingSetupName) {
-      throw new Error("Email setup name already exists");
-    }
-
-    // =====================================
     // Create
     // =====================================
 
     const emailCredential = new EmailCredentialMaster({
-      emailSetUpName: emailCredentialData.emailSetUpName.trim(),
+      smtpServer: emailCredentialData.smtpServer.trim(),
 
-      email: emailCredentialData.email.trim().toLowerCase(),
+      emailFrom: emailCredentialData.emailFrom.trim().toLowerCase(),
 
-      host: emailCredentialData.host.trim(),
+      username: emailCredentialData.username.trim().toLowerCase(),
 
-      port: emailCredentialData.port.trim(),
-
-      isSSL: Boolean(emailCredentialData.isSSL),
+      securityType: emailCredentialData.securityType.trim(),
 
       password: emailCredentialData.password.trim(),
+
+      port: emailCredentialData.port.trim(),
 
       isActive: true,
       isDisplay: true,
@@ -124,7 +119,6 @@ export const createEmailCredentialService = async (
       createdBy: emailCredentialData.createdBy.trim(),
 
       updatedBy: null,
-
       deleteAt: null,
       deleteBy: null,
     });
@@ -190,37 +184,45 @@ export const updateEmailCredentialService = async (
     }
 
     // =====================================
-    // Email Setup Name Validation
+    // SMTP Server Validation
     // =====================================
 
-    if (!updateData.emailSetUpName?.trim()) {
-      throw new Error("Email setup name is required");
-    }
-
-    if (updateData.emailSetUpName.trim().length < 2) {
-      throw new Error("Email setup name must contain at least 2 characters");
+    if (!updateData.smtpServer?.trim()) {
+      throw new Error("SMTP server is required");
     }
 
     // =====================================
-    // Email Validation
+    // Email From Validation
     // =====================================
 
-    if (!updateData.email?.trim()) {
-      throw new Error("Email is required");
+    if (!updateData.emailFrom?.trim()) {
+      throw new Error("Email from is required");
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(updateData.email.trim())) {
-      throw new Error("Invalid email format");
+    if (!emailRegex.test(updateData.emailFrom.trim())) {
+      throw new Error("Invalid email from format");
     }
 
     // =====================================
-    // Host Validation
+    // Username Validation
     // =====================================
 
-    if (!updateData.host?.trim()) {
-      throw new Error("Host is required");
+    if (!updateData.username?.trim()) {
+      throw new Error("Username is required");
+    }
+
+    if (!emailRegex.test(updateData.username.trim())) {
+      throw new Error("Invalid username email format");
+    }
+
+    // =====================================
+    // Security Type Validation
+    // =====================================
+
+    if (!updateData.securityType?.trim()) {
+      throw new Error("Security type is required");
     }
 
     // =====================================
@@ -244,12 +246,14 @@ export const updateEmailCredentialService = async (
     }
 
     // =====================================
-    // Duplicate Email Check
+    // Duplicate Email From Check
     // =====================================
 
     const existingEmail = await EmailCredentialMaster.findOne({
-      email: updateData.email.trim().toLowerCase(),
+      emailFrom: updateData.emailFrom.trim().toLowerCase(),
+
       _id: { $ne: id },
+
       isActive: true,
       isDisplay: true,
     });
@@ -259,34 +263,19 @@ export const updateEmailCredentialService = async (
     }
 
     // =====================================
-    // Duplicate Setup Name Check
-    // =====================================
-
-    const existingSetupName = await EmailCredentialMaster.findOne({
-      emailSetUpName: updateData.emailSetUpName.trim(),
-      _id: { $ne: id },
-      isActive: true,
-      isDisplay: true,
-    });
-
-    if (existingSetupName) {
-      throw new Error("Email setup name already exists");
-    }
-
-    // =====================================
     // Prepare Update
     // =====================================
 
-    const updateFields: any = {
-      emailSetUpName: updateData.emailSetUpName.trim(),
+    const updateFields: Partial<IEmailCredentialMaster> = {
+      smtpServer: updateData.smtpServer.trim(),
 
-      email: updateData.email.trim().toLowerCase(),
+      emailFrom: updateData.emailFrom.trim().toLowerCase(),
 
-      host: updateData.host.trim(),
+      username: updateData.username.trim().toLowerCase(),
+
+      securityType: updateData.securityType.trim(),
 
       port: updateData.port.trim(),
-
-      isSSL: Boolean(updateData.isSSL),
 
       updatedBy: updateData.updatedBy.trim(),
     };
@@ -368,7 +357,9 @@ export const deleteEmailCredentialService = async (
 
 export const getAllEmailCredentialForAdminService = async () => {
   try {
-    return await EmailCredentialMaster.find();
+    return await EmailCredentialMaster.find()
+      .select("-password")
+      .sort({ createdAt: -1 });
   } catch (error) {
     console.error("Get All Email Credential Admin Service Error:", error);
 
