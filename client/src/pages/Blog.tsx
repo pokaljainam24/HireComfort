@@ -2,13 +2,8 @@ import BlogLatestPostCard from "../components/BlogLatestPostCard";
 import trendingImg from "../assets/imgs/page/blog/img-trending.png";
 import gallery1 from "../assets/imgs/page/blog/gallery1.png";
 import gallery2 from "../assets/imgs/page/blog/gallery2.png";
-import gallery3 from "../assets/imgs/page/blog/gallery3.png";
 import gallery4 from "../assets/imgs/page/blog/gallery4.png";
 import gallery5 from "../assets/imgs/page/blog/gallery5.png";
-import gallery6 from "../assets/imgs/page/blog/gallery6.png";
-import gallery7 from "../assets/imgs/page/blog/gallery7.png";
-import gallery8 from "../assets/imgs/page/blog/gallery8.png";
-import gallery9 from "../assets/imgs/page/blog/gallery9.png";
 import newsletterLeft from "../assets/imgs/template/newsletter-left.png";
 import newsletterRight from "../assets/imgs/template/newsletter-right.png";
 
@@ -276,71 +271,6 @@ function Blog() {
                         </div>
                       </div>
                     ))}
-                  </div>
-                </div>
-                <div className="sidebar-border-bg bg-right">
-                  <span className="text-grey">WE ARE</span>
-                  <span className="text-hiring">HIRING</span>
-                  <p className="font-xxs color-text-paragraph mt-5">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Recusandae architecto
-                  </p>
-                  <div className="mt-15">
-                    <Link className="btn btn-paragraph-2" to="#">
-                      Know More
-                    </Link>
-                  </div>
-                </div>
-                <div className="sidebar-shadow sidebar-news-small">
-                  <h5 className="sidebar-title">Gallery</h5>
-                  <div className="post-list-small">
-                    <ul className="gallery-3">
-                      <li>
-                        <Link to="#">
-                          <img src={gallery1} />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#">
-                          <img src={gallery2} />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#">
-                          <img src={gallery3} />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#">
-                          <img src={gallery4} />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#">
-                          <img src={gallery5} />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#">
-                          <img src={gallery6} />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#">
-                          <img src={gallery7} />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#">
-                          <img src={gallery8} />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#">
-                          <img src={gallery9} />
-                        </Link>
-                      </li>
-                    </ul>
                   </div>
                 </div>
               </div>

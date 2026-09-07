@@ -3796,7 +3796,9 @@ function Home() {
           </div>
         </section>
 
+        {/* News and Blogs */}
         <NewsBlogCarousel></NewsBlogCarousel>
+
         <section className="section-box mt-50 mb-20">
           <div className="container">
             <div className="box-newsletter">

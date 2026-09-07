@@ -1,76 +1,109 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { Link } from "react-router";
+
 import { Swiper, SwiperSlide } from "swiper/react";
+
 import { Autoplay } from "swiper/modules";
+
 import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 
-import newsImage1 from "../assets/imgs/page/homepage1/img-news1.png";
-import newsImage2 from "../assets/imgs/page/homepage1/img-news2.png";
-import newsImage3 from "../assets/imgs/page/homepage1/img-news3.png";
+import { getBlogsApi } from "../api/blog/blogApi.ts";
 
-import user1 from "../assets/imgs/page/homepage1/user1.png";
-import user2 from "../assets/imgs/page/homepage1/user2.png";
-import user3 from "../assets/imgs/page/homepage1/user3.png";
-
-interface BlogPost {
-  id: number;
-  image: string;
-  category: string;
+interface Blog {
+  _id: string;
+  categoryId: string;
   title: string;
   description: string;
-  author: string;
-  authorImage: string;
+  metaTitle: string;
+  metaDescription: string;
+  blogImg: string;
+  authorImg: string;
+  authorName: string;
   date: string;
-  readTime: string;
+  durationInMin: string;
+  section: "big" | "latest";
+  isActive: boolean;
+  isDisplay: boolean;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string | null;
+  deleteAt: string | null;
+  deleteBy: string | null;
 }
-
-const blogPosts: BlogPost[] = [
-  {
-    id: 1,
-    image: newsImage1,
-    category: "News",
-    title: "21 Job Interview Tips: How To Make a Great Impression",
-    description:
-      "Our mission is to create the world's most sustainable healthcare company by creating high-quality healthcare products in iconic, sustainable packaging.",
-    author: "Sarah Harding",
-    authorImage: user1,
-    date: "06 September",
-    readTime: "8 mins to read",
-  },
-  {
-    id: 2,
-    image: newsImage2,
-    category: "Events",
-    title: "39 Strengths and Weaknesses To Discuss in a Job Interview",
-    description:
-      "Our mission is to create the world's most sustainable healthcare company by creating high-quality healthcare products in iconic, sustainable packaging.",
-    author: "Steven Jobs",
-    authorImage: user2,
-    date: "06 September",
-    readTime: "6 mins to read",
-  },
-  {
-    id: 3,
-    image: newsImage3,
-    category: "News",
-    title: "Interview Question: Why Dont You Have a Degree?",
-    description:
-      "Learn how to respond if an interviewer asks you why you dont have a degree, and read example answers that can help you craft",
-    author: "Wiliam Kend",
-    authorImage: user3,
-    date: "06 September",
-    readTime: "9 mins to read",
-  },
-];
-
-const loopedBlogPosts = [...blogPosts, ...blogPosts];
 
 interface BlogCardProps {
-  post: BlogPost;
+  post: Blog;
 }
 
+// =====================================
+// IMAGE URL
+// =====================================
+
+const getImageUrl = (image?: string) => {
+  if (!image) return "";
+
+  if (image.startsWith("http://") || image.startsWith("https://")) {
+    return image;
+  }
+
+  const cleanPath = image.replace(/\\/g, "/").replace(/^\/+/, "");
+
+  return `http://localhost:5000/${cleanPath}`;
+};
+
+// =====================================
+// STRIP HTML FROM TINYMCE CONTENT
+// =====================================
+
+const stripHtml = (html: string) => {
+  if (!html) return "";
+
+  return html
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
+// =====================================
+// DATE FORMAT
+// =====================================
+
+const formatDate = (date: string) => {
+  if (!date) return "";
+
+  const parsedDate = new Date(date);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "";
+  }
+
+  return parsedDate.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+};
+
+// =====================================
+// BLOG CARD
+// =====================================
+
 const BlogCard = ({ post }: BlogCardProps) => {
+  const description = stripHtml(post.description);
+
+  // Particular blog details URL
+  const blogDetailsUrl = `/blog-details/${post._id}`;
+
   return (
     <div
       style={{
@@ -84,9 +117,10 @@ const BlogCard = ({ post }: BlogCardProps) => {
         transition: "all 0.3s ease",
       }}
     >
-      {/* Image */}
-      <a
-        href="/blog-details"
+      {/* ================= IMAGE ================= */}
+
+      <Link
+        to={blogDetailsUrl}
         style={{
           display: "block",
           textDecoration: "none",
@@ -100,33 +134,55 @@ const BlogCard = ({ post }: BlogCardProps) => {
             borderRadius: "12px",
           }}
         >
-          <img
-            src={post.image}
-            alt={post.title}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            }}
-          />
+          {post.blogImg ? (
+            <img
+              src={getImageUrl(post.blogImg)}
+              alt={post.title}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: "#f1f4f9",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#8290a5",
+                fontSize: "14px",
+              }}
+            >
+              No Image
+            </div>
+          )}
         </div>
-      </a>
+      </Link>
 
-      {/* Content */}
+      {/* ================= CONTENT ================= */}
+
       <div
         style={{
           padding: "15px 8px 10px",
         }}
       >
-        {/* Category */}
+        {/* ================= CATEGORY ================= */}
+
         <div
           style={{
             marginBottom: "16px",
           }}
         >
-          <a
-            href="/blog-grid"
+          <Link
+            to={blogDetailsUrl}
             style={{
               display: "inline-block",
               padding: "6px 12px",
@@ -138,11 +194,12 @@ const BlogCard = ({ post }: BlogCardProps) => {
               textDecoration: "none",
             }}
           >
-            {post.category}
-          </a>
+            {post.categoryId}
+          </Link>
         </div>
 
-        {/* Title */}
+        {/* ================= TITLE ================= */}
+
         <h5
           style={{
             margin: "0 0 10px",
@@ -150,20 +207,25 @@ const BlogCard = ({ post }: BlogCardProps) => {
             lineHeight: "1.3",
             fontWeight: 600,
             color: "#002d62",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
-          <a
-            href="/blog-details"
+          <Link
+            to={blogDetailsUrl}
             style={{
               color: "inherit",
               textDecoration: "none",
             }}
           >
             {post.title}
-          </a>
+          </Link>
         </h5>
 
-        {/* Description */}
+        {/* ================= DESCRIPTION ================= */}
+
         <p
           style={{
             margin: 0,
@@ -171,12 +233,17 @@ const BlogCard = ({ post }: BlogCardProps) => {
             color: "#50627a",
             fontSize: "14px",
             lineHeight: "1.6",
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
-          {post.description}
+          {description}
         </p>
 
-        {/* Bottom */}
+        {/* ================= BOTTOM ================= */}
+
         <div
           style={{
             marginTop: "20px",
@@ -186,36 +253,58 @@ const BlogCard = ({ post }: BlogCardProps) => {
             gap: "10px",
           }}
         >
-          {/* Author */}
+          {/* ================= AUTHOR ================= */}
+
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: "10px",
+              minWidth: 0,
             }}
           >
-            <img
-              src={post.authorImage}
-              alt={post.author}
-              style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                flexShrink: 0,
-              }}
-            />
+            {post.authorImg ? (
+              <img
+                src={getImageUrl(post.authorImg)}
+                alt={post.authorName}
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  flexShrink: 0,
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "50%",
+                  backgroundColor: "#e8eefc",
+                  flexShrink: 0,
+                }}
+              />
+            )}
 
-            <div>
+            <div
+              style={{
+                minWidth: 0,
+              }}
+            >
               <div
                 style={{
                   fontSize: "14px",
                   fontWeight: 600,
                   color: "#4169a1",
                   lineHeight: "1.3",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  maxWidth: "150px",
                 }}
               >
-                {post.author}
+                {post.authorName}
               </div>
 
               <div
@@ -225,12 +314,13 @@ const BlogCard = ({ post }: BlogCardProps) => {
                   color: "#8290a5",
                 }}
               >
-                {post.date}
+                {formatDate(post.date)}
               </div>
             </div>
           </div>
 
-          {/* Read time */}
+          {/* ================= READ TIME ================= */}
+
           <span
             style={{
               fontSize: "12px",
@@ -238,7 +328,7 @@ const BlogCard = ({ post }: BlogCardProps) => {
               whiteSpace: "nowrap",
             }}
           >
-            {post.readTime}
+            {post.durationInMin} mins to read
           </span>
         </div>
       </div>
@@ -246,8 +336,65 @@ const BlogCard = ({ post }: BlogCardProps) => {
   );
 };
 
+// =====================================
+// MAIN COMPONENT
+// =====================================
+
 const NewsBlogCarousel = () => {
   const swiperRef = useRef<SwiperType | null>(null);
+
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // =====================================
+  // FETCH BLOGS FUNCTION
+  // =====================================
+
+  const fetchBlogs = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getBlogsApi();
+
+      console.log("NEWS BLOG API RESPONSE:", response);
+
+      /*
+       * Backend response handle
+       *
+       * Possible:
+       * response.data
+       * response.blogs
+       * direct array
+       */
+
+      const blogData = response?.data || response?.blogs || response;
+
+      const blogList = Array.isArray(blogData) ? blogData : [];
+
+      // Only active + display blogs
+      const activeBlogs = blogList.filter(
+        (blog: Blog) => blog.isActive === true && blog.isDisplay === true,
+      );
+
+      console.log("ACTIVE BLOGS:", activeBlogs);
+
+      setBlogs(activeBlogs);
+    } catch (error) {
+      console.error("NEWS BLOG FETCH ERROR:", error);
+
+      setBlogs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =====================================
+  // USE EFFECT
+  // =====================================
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
 
   return (
     <section
@@ -258,6 +405,7 @@ const NewsBlogCarousel = () => {
       }}
     >
       {/* ================= HEADER ================= */}
+
       <div
         style={{
           textAlign: "center",
@@ -290,6 +438,7 @@ const NewsBlogCarousel = () => {
       </div>
 
       {/* ================= CAROUSEL ================= */}
+
       <div
         style={{
           position: "relative",
@@ -300,172 +449,201 @@ const NewsBlogCarousel = () => {
           boxSizing: "border-box",
         }}
       >
-        {/* LEFT BUTTON */}
-        <button
-          type="button"
-          aria-label="Previous blog posts"
-          onClick={() => swiperRef.current?.slidePrev()}
-          style={{
-            position: "absolute",
-            top: "-88px",
-            right: "68px",
-            zIndex: 10,
+        {/* ================= BUTTONS ================= */}
 
-            width: "40px",
-            height: "40px",
+        {!loading && blogs.length > 1 && (
+          <>
+            {/* LEFT BUTTON */}
 
-            border: "none",
-            borderRadius: "50%",
-
-            backgroundColor: "#edf2ff",
-            color: "#9aabc8",
-
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-
-            cursor: "pointer",
-
-            transition: "all 0.25s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#dce6ff";
-            e.currentTarget.style.color = "#4169e1";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "#edf2ff";
-            e.currentTarget.style.color = "#9aabc8";
-          }}
-        >
-          <i className="fi-rr-angle-left" />
-        </button>
-
-        {/* RIGHT BUTTON */}
-        <button
-          type="button"
-          aria-label="Next blog posts"
-          onClick={() => swiperRef.current?.slideNext()}
-          style={{
-            position: "absolute",
-            top: "-88px",
-            right: "20px",
-            zIndex: 10,
-
-            width: "40px",
-            height: "40px",
-
-            border: "none",
-            borderRadius: "50%",
-
-            backgroundColor: "#edf2ff",
-            color: "#9aabc8",
-
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-
-            cursor: "pointer",
-
-            transition: "all 0.25s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#dce6ff";
-            e.currentTarget.style.color = "#4169e1";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "#edf2ff";
-            e.currentTarget.style.color = "#9aabc8";
-          }}
-        >
-          <i className="fi-rr-angle-right" />
-        </button>
-
-        <Swiper
-          modules={[Autoplay]}
-          onSwiper={(swiper) => {
-            swiperRef.current = swiper;
-          }}
-          loop={true}
-          speed={700}
-          slidesPerView={1}
-          slidesPerGroup={1}
-          spaceBetween={20}
-          autoplay={{
-            delay: 3500,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          }}
-          breakpoints={{
-            0: {
-              slidesPerView: 1,
-              spaceBetween: 15,
-            },
-
-            576: {
-              slidesPerView: 1,
-              spaceBetween: 20,
-            },
-
-            768: {
-              slidesPerView: 2,
-              spaceBetween: 20,
-            },
-
-            992: {
-              slidesPerView: 3,
-              spaceBetween: 24,
-            },
-          }}
-          style={{
-            width: "100%",
-            paddingBottom: "10px",
-          }}
-        >
-          {loopedBlogPosts.map((post, index) => (
-            <SwiperSlide
-              key={`${post.id}-${index}`}
+            <button
+              type="button"
+              aria-label="Previous blog posts"
+              onClick={() => swiperRef.current?.slidePrev()}
               style={{
-                height: "auto",
+                position: "absolute",
+                top: "-88px",
+                right: "68px",
+                zIndex: 10,
+                width: "40px",
+                height: "40px",
+                border: "none",
+                borderRadius: "50%",
+                backgroundColor: "#edf2ff",
+                color: "#9aabc8",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                transition: "all 0.25s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#dce6ff";
+                e.currentTarget.style.color = "#4169e1";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#edf2ff";
+                e.currentTarget.style.color = "#9aabc8";
               }}
             >
-              <BlogCard post={post} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+              <i className="fi-rr-angle-left" />
+            </button>
+
+            {/* RIGHT BUTTON */}
+
+            <button
+              type="button"
+              aria-label="Next blog posts"
+              onClick={() => swiperRef.current?.slideNext()}
+              style={{
+                position: "absolute",
+                top: "-88px",
+                right: "20px",
+                zIndex: 10,
+                width: "40px",
+                height: "40px",
+                border: "none",
+                borderRadius: "50%",
+                backgroundColor: "#edf2ff",
+                color: "#9aabc8",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                transition: "all 0.25s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#dce6ff";
+                e.currentTarget.style.color = "#4169e1";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#edf2ff";
+                e.currentTarget.style.color = "#9aabc8";
+              }}
+            >
+              <i className="fi-rr-angle-right" />
+            </button>
+          </>
+        )}
+
+        {/* ================= LOADING ================= */}
+
+        {loading && (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "50px 20px",
+              color: "#607aa5",
+            }}
+          >
+            Loading blogs...
+          </div>
+        )}
+
+        {/* ================= NO BLOGS ================= */}
+
+        {!loading && blogs.length === 0 && (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "50px 20px",
+              color: "#607aa5",
+            }}
+          >
+            No blogs available.
+          </div>
+        )}
+
+        {/* ================= SWIPER ================= */}
+
+        {!loading && blogs.length > 0 && (
+          <Swiper
+            modules={[Autoplay]}
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper;
+            }}
+            loop={blogs.length > 3}
+            speed={700}
+            slidesPerView={1}
+            slidesPerGroup={1}
+            spaceBetween={20}
+            autoplay={
+              blogs.length > 1
+                ? {
+                    delay: 3500,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                  }
+                : false
+            }
+            breakpoints={{
+              0: {
+                slidesPerView: 1,
+                spaceBetween: 15,
+              },
+
+              576: {
+                slidesPerView: 1,
+                spaceBetween: 20,
+              },
+
+              768: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+
+              992: {
+                slidesPerView: 3,
+                spaceBetween: 24,
+              },
+            }}
+            style={{
+              width: "100%",
+              paddingBottom: "10px",
+            }}
+          >
+            {blogs.map((post) => (
+              <SwiperSlide
+                key={post._id}
+                style={{
+                  height: "auto",
+                }}
+              >
+                <BlogCard post={post} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
       </div>
 
       {/* ================= LOAD MORE ================= */}
-      <div
-        style={{
-          textAlign: "center",
-          marginTop: "25px",
-        }}
-      >
-        <a
-          href="/blog-grid"
+
+      {!loading && blogs.length > 0 && (
+        <div
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-
-            padding: "13px 25px",
-
-            borderRadius: "6px",
-
-            backgroundColor: "#4169e1",
-            color: "#ffffff",
-
-            fontSize: "14px",
-            fontWeight: 600,
-
-            textDecoration: "none",
-
-            transition: "all 0.3s ease",
+            textAlign: "center",
+            marginTop: "25px",
           }}
         >
-          Load More Posts
-        </a>
-      </div>
+          <Link
+            to="/blog-grid"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "13px 25px",
+              borderRadius: "6px",
+              backgroundColor: "#4169e1",
+              color: "#ffffff",
+              fontSize: "14px",
+              fontWeight: 600,
+              textDecoration: "none",
+              transition: "all 0.3s ease",
+            }}
+          >
+            Load More Posts
+          </Link>
+        </div>
+      )}
     </section>
   );
 };
