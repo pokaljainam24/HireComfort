@@ -2,251 +2,198 @@ import React, { useEffect, useState } from "react";
 
 import PageHeader from "@/components/common/PageHeader";
 import DataTable, { ColumnDef } from "@/components/common/DataTable";
-import ConfirmModal from "@/components/common/ConfirmModal";
-import { City } from "@/types/city";
+import ViewModal, { ViewField } from "@/components/common/ViewModal";
 
-interface ApiState {
-  iso2: string;
-  name: string;
-}
+import {
+  getCities,
+  getCityById,
+} from "@/api/CityApi";
 
-interface ApiCity {
-  id: number;
-  name: string;
-}
+import type { City } from "@/types/city";
 
-interface CityRow extends City {
-  stateName: string;
-}
+import { showError } from "@/utils/swal";
+
+// =====================================
+// COMPONENT
+// =====================================
 
 const CityMaster: React.FC = () => {
-  const [rows, setRows] = useState<CityRow[]>([]);
+  // =====================================
+  // STATE
+  // =====================================
+
+  const [rows, setRows] = useState<City[]>([]);
+
+  const [viewTarget, setViewTarget] = useState<City | null>(null);
 
   const [loading, setLoading] = useState(false);
 
-  const [apiError, setApiError] = useState("");
+  // =====================================
+  // LOAD DATA
+  // =====================================
 
-  const [deleteTarget, setDeleteTarget] = useState<CityRow | null>(null);
+  const loadData = async () => {
+    try {
+      setLoading(true);
 
-  const apiKey = (
-    import.meta as ImportMeta & {
-      env: {
-        VITE_REST_COUNTRIES_API_KEY?: string;
-      };
+      const data = await getCities();
+
+      setRows(data);
+    } catch (error) {
+      console.error("Error loading cities:", error);
+
+      showError("Failed to load cities");
+    } finally {
+      setLoading(false);
     }
-  ).env.VITE_REST_COUNTRIES_API_KEY;
+  };
+
+  // =====================================
+  // INITIAL LOAD
+  // =====================================
 
   useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        setLoading(true);
-        setApiError("");
+    loadData();
+  }, []);
 
-        // =====================================
-        // FETCH ALL STATES OF INDIA
-        // =====================================
+  // =====================================
+  // VIEW
+  // =====================================
 
-        const statesResponse = await fetch(
-          "https://api.countrystatecity.in/v1/countries/IN/states",
-          {
-            headers: apiKey
-              ? {
-                  "X-CSCAPI-KEY": apiKey,
-                }
-              : undefined,
-          },
-        );
+  const handleView = async (row: City) => {
+    try {
+      setLoading(true);
 
-        if (statesResponse.status === 429) {
-          throw new Error("Too many requests. Please try again later.");
-        }
+      const city = await getCityById(row.id);
 
-        if (!statesResponse.ok) {
-          throw new Error(`Failed to fetch states: ${statesResponse.status}`);
-        }
+      setViewTarget(city);
+    } catch (error) {
+      console.error("Error loading city:", error);
 
-        const states: ApiState[] = await statesResponse.json();
-
-        // =====================================
-        // FETCH CITIES STATE BY STATE
-        // =====================================
-
-        const allCities: {
-          id: string;
-          stateId: string;
-          name: string;
-          stateName: string;
-        }[] = [];
-
-        for (const state of states) {
-          try {
-            const response = await fetch(
-              `https://api.countrystatecity.in/v1/countries/IN/states/${state.iso2}/cities`,
-              {
-                headers: apiKey
-                  ? {
-                      "X-CSCAPI-KEY": apiKey,
-                    }
-                  : undefined,
-              },
-            );
-
-            // =====================================
-            // RATE LIMIT
-            // =====================================
-
-            if (response.status === 429) {
-              console.warn(`Rate limit reached for ${state.name}. Waiting...`);
-
-              // Wait 2 seconds before retry
-              await new Promise((resolve) => setTimeout(resolve, 2000));
-
-              const retryResponse = await fetch(
-                `https://api.countrystatecity.in/v1/countries/IN/states/${state.iso2}/cities`,
-                {
-                  headers: apiKey
-                    ? {
-                        "X-CSCAPI-KEY": apiKey,
-                      }
-                    : undefined,
-                },
-              );
-
-              if (!retryResponse.ok) {
-                console.error(
-                  `Failed to fetch cities for ${state.name}: ${retryResponse.status}`,
-                );
-
-                continue;
-              }
-
-              const retryCities: ApiCity[] = await retryResponse.json();
-
-              allCities.push(
-                ...retryCities.map((city) => ({
-                  id: String(city.id),
-                  stateId: state.iso2,
-                  name: city.name,
-                  stateName: state.name,
-                })),
-              );
-
-              // Small delay before next state
-              await new Promise((resolve) => setTimeout(resolve, 500));
-
-              continue;
-            }
-
-            if (!response.ok) {
-              console.error(
-                `Failed to fetch cities for ${state.name}: ${response.status}`,
-              );
-
-              continue;
-            }
-
-            const cities: ApiCity[] = await response.json();
-
-            allCities.push(
-              ...cities.map((city) => ({
-                id: String(city.id),
-                stateId: state.iso2,
-                name: city.name,
-                stateName: state.name,
-              })),
-            );
-
-            // =====================================
-            // DELAY BETWEEN API REQUESTS
-            // =====================================
-
-            await new Promise((resolve) => setTimeout(resolve, 500));
-          } catch (error) {
-            console.error(`Error fetching cities for ${state.name}:`, error);
-          }
-        }
-
-        // =====================================
-        // SET ALL CITIES
-        // =====================================
-
-        setRows(allCities);
-
-        console.log(`Total cities loaded: ${allCities.length}`);
-      } catch (error) {
-        console.error("City API error:", error);
-
-        setRows([]);
-
-        setApiError("Unable to load cities. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (apiKey) {
-      fetchCities();
+      showError("Failed to load city details");
+    } finally {
+      setLoading(false);
     }
-  }, [apiKey]);
+  };
 
-  const columns: ColumnDef<CityRow>[] = [
+  // =====================================
+  // TABLE
+  // =====================================
+
+  const columns: ColumnDef<City>[] = [
     {
-      header: "City Name",
-      render: (row) => <b>{row.name}</b>,
+      header: "ID",
+      render: (row) => <div>{row.id}</div>,
     },
+
     {
-      header: "State",
-      render: (row) => row.stateName,
+      header: "City",
+      render: (row) => (
+        <div>
+          <b>{row.name}</b>
+        </div>
+      ),
+    },
+
+    {
+      header: "State ID",
+      render: (row) => (
+        <div className="cell-muted">{row.state_id}</div>
+      ),
+    },
+
+    {
+      header: "Latitude",
+      render: (row) => (
+        <div className="cell-muted">{row.latitude}</div>
+      ),
+    },
+
+    {
+      header: "Longitude",
+      render: (row) => (
+        <div className="cell-muted">{row.longitude}</div>
+      ),
     },
   ];
 
+  // =====================================
+  // VIEW FIELDS
+  // =====================================
+
+  const getViewFields = (row: City): ViewField[] => [
+    {
+      label: "ID",
+      value: row.id,
+    },
+
+    {
+      label: "City Name",
+      value: row.name,
+      fullWidth: true,
+    },
+
+    {
+      label: "State ID",
+      value: row.state_id,
+    },
+
+    {
+      label: "Latitude",
+      value: row.latitude,
+    },
+
+    {
+      label: "Longitude",
+      value: row.longitude,
+    },
+  ];
+
+  // =====================================
+  // UI
+  // =====================================
+
   return (
     <>
-      <PageHeader title="City Master" section="Location Masters" />
+      <PageHeader title="City" section="Master" />
 
-      {/* ALL CITIES */}
+      {/* =====================================
+          DATA TABLE
+      ===================================== */}
 
       <div className="card-panel">
         <div className="card-panel-head">
           <div>
-            <h2>All Cities</h2>
+            <h2>Cities</h2>
 
-            <p>
-              {loading
-                ? "Loading cities..."
-                : `${rows.length} cities configured`}
-            </p>
+            <p>{rows.length} cities available</p>
           </div>
         </div>
 
         <DataTable
           columns={columns}
           rows={rows}
-          rowKey={(row) => row.id}
-          searchPlaceholder="Search city..."
-          onSearch={(row, query) => row.name.toLowerCase().includes(query)}
-          onDelete={(row) => setDeleteTarget(row)}
+         rowKey={(row) => String(row.id)}
+          searchPlaceholder="Search cities..."
+          onSearch={(row, query) =>
+            row.name.toLowerCase().includes(query) ||
+            String(row.state_id).includes(query) ||
+            row.latitude.includes(query) ||
+            row.longitude.includes(query)
+          }
+          onView={handleView}
         />
       </div>
 
-      {/* API ERROR */}
+      {/* =====================================
+          VIEW MODAL
+      ===================================== */}
 
-      {apiError && <div className="alert alert-danger">{apiError}</div>}
-
-      {/* DELETE */}
-
-      <ConfirmModal
-        open={!!deleteTarget}
-        title="Delete city?"
-        message={`"${deleteTarget?.name}" will be permanently removed.`}
-        onCancel={() => setDeleteTarget(null)}
-        onConfirm={() => {
-          setRows((currentRows) =>
-            currentRows.filter((row) => row.id !== deleteTarget?.id),
-          );
-
-          setDeleteTarget(null);
-        }}
+      <ViewModal
+        open={!!viewTarget}
+        title="City Details"
+        fields={viewTarget ? getViewFields(viewTarget) : []}
+        onClose={() => setViewTarget(null)}
       />
     </>
   );

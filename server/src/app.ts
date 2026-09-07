@@ -32,6 +32,15 @@ import industryRoutes from "./routes/IndustryRoutes/IndustryRoutes.js";
 // Employment Type Routes
 import employmentTypeRoutes from "./routes/EmploymentTypeRoutes/EmploymentTypeRoutes.js";
 
+// Country Routes
+import countryRoutes from "./routes/CountryRoutes/CountryRoutes.js";
+
+// State Routes
+import stateRoutes from "./routes/StateRoutes/StateRoutes.js";
+
+// City Routes
+import cityRoutes from "./routes/CityRoutes/CityRoutes.js";
+
 import path from "path";
 
 const app = express();
@@ -78,5 +87,11 @@ app.use("/api/industries", industryRoutes);
 
 // Employment Type Routes
 app.use("/api/employment-types", employmentTypeRoutes);
+
+app.use("/api/countries", countryRoutes);
+
+app.use("/api/states", stateRoutes);
+
+app.use("/api/cities", cityRoutes);
 
 export default app;

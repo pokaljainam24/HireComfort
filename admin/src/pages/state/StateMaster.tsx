@@ -1,223 +1,213 @@
 import React, { useEffect, useState } from "react";
+
 import PageHeader from "@/components/common/PageHeader";
 import Field from "@/components/common/Field";
 import DataTable, { ColumnDef } from "@/components/common/DataTable";
-import ConfirmModal from "@/components/common/ConfirmModal";
-import { Icon } from "@/components/common/Icon";
-import { StateItem } from "@/types/state";
-import { genId, seedCountries, seedStates } from "@/data/seed";
+import ViewModal, { ViewField } from "@/components/common/ViewModal";
 
-const empty: Omit<StateItem, "id"> = {
-  countryId: "",
-  name: "",
-  code: "",
-};
+import {
+  getStates,
+  getStateById,
+} from "@/api/stateApi";
+
+import type { State } from "@/types/state";
+
+import { showError } from "@/utils/swal";
+
+// =====================================
+// COMPONENT
+// =====================================
 
 const StateMaster: React.FC = () => {
-  const [rows, setRows] = useState<StateItem[]>(seedStates);
+  // =====================================
+  // STATE
+  // =====================================
 
-  const [form, setForm] = useState<Omit<StateItem, "id">>(empty);
+  const [rows, setRows] = useState<State[]>([]);
 
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [viewTarget, setViewTarget] = useState<State | null>(null);
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
 
-  const [deleteTarget, setDeleteTarget] = useState<StateItem | null>(null);
+  // =====================================
+  // LOAD DATA
+  // =====================================
 
-  const [loadingStates, setLoadingStates] = useState(false);
+  const loadData = async () => {
+    try {
+      setLoading(true);
 
-  const [apiError, setApiError] = useState("");
+      const data = await getStates();
 
-  const countryName = (id: string) =>
-    seedCountries.find((c) => c.id === id)?.name ?? "—";
+      setRows(data);
+    } catch (error) {
+      console.error("Error loading states:", error);
 
-  /*
-   * Fetch states from CountryStateCity API
-   */
+      showError("Failed to load states");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =====================================
+  // INITIAL LOAD
+  // =====================================
+
   useEffect(() => {
-    const fetchStates = async () => {
-      try {
-        setLoadingStates(true);
-        setApiError("");
-
-        const cachedStates = sessionStorage.getItem("india_states");
-
-        if (cachedStates) {
-          setRows(JSON.parse(cachedStates));
-          return;
-        }
-
-        const response = await fetch(
-          "https://api.countrystatecity.in/v1/countries/IN/states",
-          {
-            headers: (() => {
-              const apiKey = (
-                import.meta as ImportMeta & {
-                  env: { VITE_REST_COUNTRIES_API_KEY?: string };
-                }
-              ).env.VITE_REST_COUNTRIES_API_KEY;
-
-              return apiKey ? { "X-CSCAPI-KEY": apiKey } : undefined;
-            })(),
-          },
-        );
-
-        if (response.status === 429) {
-          throw new Error("Too many API requests. Please try again later.");
-        }
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch states: ${response.status}`);
-        }
-
-        const states = await response.json();
-
-        const india = seedCountries.find(
-          (country) => country.name.toLowerCase() === "india",
-        );
-
-        if (!india) {
-          throw new Error("India not found");
-        }
-
-        const apiStates: StateItem[] = states.map(
-          (state: { id: string; name: string; iso2: string }) => ({
-            id: `api_st_${state.iso2.toLowerCase()}`,
-            countryId: india.id,
-            name: state.name,
-            code: state.iso2,
-          }),
-        );
-
-        sessionStorage.setItem("india_states", JSON.stringify(apiStates));
-
-        setRows(apiStates);
-      } catch (error) {
-        console.error("Error fetching states:", error);
-
-        setRows(seedStates);
-        setApiError("Unable to load states from API. Showing default states.");
-      } finally {
-        setLoadingStates(false);
-      }
-    };
-
-    fetchStates();
+    loadData();
   }, []);
 
-  const resetForm = () => {
-    setForm(empty);
-    setEditingId(null);
-    setErrors({});
+  // =====================================
+  // VIEW
+  // =====================================
+
+  const handleView = async (row: State) => {
+    try {
+      setLoading(true);
+
+      const state = await getStateById(row.id);
+
+      setViewTarget(state);
+    } catch (error) {
+      console.error("Error loading state:", error);
+
+      showError("Failed to load state details");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const validate = () => {
-    const e: Record<string, string> = {};
+  // =====================================
+  // TABLE
+  // =====================================
 
-    if (!form.countryId) {
-      e.countryId = "Select a country";
-    }
-
-    if (!form.name.trim()) {
-      e.name = "State name is required";
-    }
-
-    if (!form.code.trim()) {
-      e.code = "State code is required";
-    }
-
-    setErrors(e);
-
-    return Object.keys(e).length === 0;
-  };
-
-  const handleSubmit = (ev: React.FormEvent) => {
-    ev.preventDefault();
-
-    if (!validate()) return;
-
-    if (editingId) {
-      setRows((r) =>
-        r.map((row) =>
-          row.id === editingId
-            ? {
-                ...row,
-                ...form,
-              }
-            : row,
-        ),
-      );
-    } else {
-      setRows((r) => [
-        {
-          id: genId("st"),
-          ...form,
-        },
-        ...r,
-      ]);
-    }
-
-    resetForm();
-  };
-
-  const columns: ColumnDef<StateItem>[] = [
+  const columns: ColumnDef<State>[] = [
     {
-      header: "State Name",
-      render: (r) => <b>{r.name}</b>,
+      header: "ID",
+      render: (row) => <div>{row.id}</div>,
     },
+
     {
-      header: "Code",
-      render: (r) => <span className="badge badge-blue">{r.code}</span>,
+      header: "State",
+      render: (row) => (
+        <div>
+          <b>{row.name}</b>
+        </div>
+      ),
     },
+
     {
-      header: "Country",
-      render: (r) => countryName(r.countryId),
+      header: "Country ID",
+      render: (row) => (
+        <div className="cell-muted">{row.country_id}</div>
+      ),
+    },
+
+    {
+      header: "ISO2",
+      render: (row) => (
+        <div className="cell-muted">{row.iso2}</div>
+      ),
+    },
+
+    {
+      header: "ISO3166-2",
+      render: (row) => (
+        <div className="cell-muted">{row.iso3166_2}</div>
+      ),
+    },
+
+    {
+      header: "Type",
+      render: (row) => (
+        <div className="cell-muted">{row.type}</div>
+      ),
     },
   ];
 
+  // =====================================
+  // VIEW FIELDS
+  // =====================================
+
+  const getViewFields = (row: State): ViewField[] => [
+    {
+      label: "ID",
+      value: row.id,
+    },
+
+    {
+      label: "State Name",
+      value: row.name,
+      fullWidth: true,
+    },
+
+    {
+      label: "Country ID",
+      value: row.country_id,
+    },
+
+    {
+      label: "ISO2",
+      value: row.iso2,
+    },
+
+    {
+      label: "ISO3166-2",
+      value: row.iso3166_2,
+    },
+
+    {
+      label: "Type",
+      value: row.type,
+    },
+  ];
+
+  // =====================================
+  // UI
+  // =====================================
+
   return (
     <>
-      <PageHeader title="State Master" section="Location Masters" />
+      <PageHeader title="State" section="Master" />
 
-      {/* ALL STATES */}
+      {/* =====================================
+          DATA TABLE
+      ===================================== */}
 
       <div className="card-panel">
         <div className="card-panel-head">
           <div>
-            <h2>All States</h2>
+            <h2>States</h2>
 
-            <p>
-              {loadingStates
-                ? "Loading states..."
-                : `${rows.length} states configured`}
-            </p>
+            <p>{rows.length} states available</p>
           </div>
         </div>
 
         <DataTable
           columns={columns}
           rows={rows}
-          rowKey={(r) => r.id}
-          searchPlaceholder="Search state..."
-          onSearch={(r, q) =>
-            r.name.toLowerCase().includes(q) || r.code.toLowerCase().includes(q)
+          rowKey={(row) => String(row.id)}
+          searchPlaceholder="Search states..."
+          onSearch={(row, query) =>
+            row.name.toLowerCase().includes(query) ||
+            row.iso2.toLowerCase().includes(query) ||
+            row.iso3166_2.toLowerCase().includes(query) ||
+            row.type.toLowerCase().includes(query) ||
+            String(row.country_id).includes(query)
           }
-          onDelete={(r) => setDeleteTarget(r)}
+          onView={handleView}
         />
       </div>
 
-      {/* DELETE */}
+      {/* =====================================
+          VIEW MODAL
+      ===================================== */}
 
-      <ConfirmModal
-        open={!!deleteTarget}
-        title="Delete state?"
-        message={`"${deleteTarget?.name}" will be permanently removed.`}
-        onCancel={() => setDeleteTarget(null)}
-        onConfirm={() => {
-          setRows((r) => r.filter((row) => row.id !== deleteTarget?.id));
-
-          setDeleteTarget(null);
-        }}
+      <ViewModal
+        open={!!viewTarget}
+        title="State Details"
+        fields={viewTarget ? getViewFields(viewTarget) : []}
+        onClose={() => setViewTarget(null)}
       />
     </>
   );
