@@ -181,7 +181,7 @@ const CityMaster: React.FC = () => {
             row.latitude.includes(query) ||
             row.longitude.includes(query)
           }
-          onView={handleView}
+          // onView={handleView}
         />
       </div>
 

@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 import BlogMaster from "../../models/BlogModel/BlogModel.js";
 
 export type IBlogMaster = InstanceType<typeof BlogMaster>;
@@ -9,10 +12,34 @@ export type IBlogMaster = InstanceType<typeof BlogMaster>;
 const BLOG_CATEGORIES = ["Job Seekers", "Recruiters"] as const;
 
 // =====================================
+// DELETE IMAGE FILE
+// =====================================
+
+const deleteImageFile = (imagePath?: string | null) => {
+  try {
+    if (!imagePath) {
+      return;
+    }
+
+    const filePath = path.resolve(imagePath);
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+
+      console.log("Image deleted:", filePath);
+    }
+  } catch (error) {
+    console.error("Error deleting image file:", error);
+  }
+};
+
+// =====================================
 // CREATE BLOG
 // =====================================
 
-export async function createBlogService(blogData: Partial<IBlogMaster>) {
+export async function createBlogService(
+  blogData: Partial<IBlogMaster>,
+) {
   try {
     // ==============================
     // Category Validation
@@ -27,7 +54,9 @@ export async function createBlogService(blogData: Partial<IBlogMaster>) {
         blogData.categoryId.trim() as (typeof BLOG_CATEGORIES)[number],
       )
     ) {
-      throw new Error("Blog category must be either Job Seekers or Recruiters");
+      throw new Error(
+        "Blog category must be either Job Seekers or Recruiters",
+      );
     }
 
     // ==============================
@@ -39,7 +68,9 @@ export async function createBlogService(blogData: Partial<IBlogMaster>) {
     }
 
     if (blogData.title.trim().length < 2) {
-      throw new Error("Blog title must contain at least 2 characters");
+      throw new Error(
+        "Blog title must contain at least 2 characters",
+      );
     }
 
     // ==============================
@@ -51,7 +82,9 @@ export async function createBlogService(blogData: Partial<IBlogMaster>) {
     }
 
     if (blogData.description.trim().length < 2) {
-      throw new Error("Blog description must contain at least 2 characters");
+      throw new Error(
+        "Blog description must contain at least 2 characters",
+      );
     }
 
     // ==============================
@@ -95,7 +128,9 @@ export async function createBlogService(blogData: Partial<IBlogMaster>) {
     }
 
     if (blogData.authorName.trim().length < 2) {
-      throw new Error("Author name must contain at least 2 characters");
+      throw new Error(
+        "Author name must contain at least 2 characters",
+      );
     }
 
     // ==============================
@@ -123,7 +158,9 @@ export async function createBlogService(blogData: Partial<IBlogMaster>) {
     }
 
     if (!["big", "latest"].includes(blogData.section)) {
-      throw new Error("Blog section must be either big or latest");
+      throw new Error(
+        "Blog section must be either big or latest",
+      );
     }
 
     // ==============================
@@ -267,12 +304,20 @@ export async function updateBlogService(
     // Title Validation
     // ==============================
 
-    if (updateData.title !== undefined && !updateData.title.trim()) {
+    if (
+      updateData.title !== undefined &&
+      !updateData.title.trim()
+    ) {
       throw new Error("Blog title is required");
     }
 
-    if (updateData.title !== undefined && updateData.title.trim().length < 2) {
-      throw new Error("Blog title must contain at least 2 characters");
+    if (
+      updateData.title !== undefined &&
+      updateData.title.trim().length < 2
+    ) {
+      throw new Error(
+        "Blog title must contain at least 2 characters",
+      );
     }
 
     // ==============================
@@ -290,14 +335,19 @@ export async function updateBlogService(
       updateData.description !== undefined &&
       updateData.description.trim().length < 2
     ) {
-      throw new Error("Blog description must contain at least 2 characters");
+      throw new Error(
+        "Blog description must contain at least 2 characters",
+      );
     }
 
     // ==============================
     // Meta Title Validation
     // ==============================
 
-    if (updateData.metaTitle !== undefined && !updateData.metaTitle.trim()) {
+    if (
+      updateData.metaTitle !== undefined &&
+      !updateData.metaTitle.trim()
+    ) {
       throw new Error("Meta title is required");
     }
 
@@ -316,7 +366,10 @@ export async function updateBlogService(
     // Blog Image Validation
     // ==============================
 
-    if (updateData.blogImg !== undefined && !updateData.blogImg.trim()) {
+    if (
+      updateData.blogImg !== undefined &&
+      !updateData.blogImg.trim()
+    ) {
       throw new Error("Blog image is required");
     }
 
@@ -324,7 +377,10 @@ export async function updateBlogService(
     // Author Image Validation
     // ==============================
 
-    if (updateData.authorImg !== undefined && !updateData.authorImg.trim()) {
+    if (
+      updateData.authorImg !== undefined &&
+      !updateData.authorImg.trim()
+    ) {
       throw new Error("Author image is required");
     }
 
@@ -332,7 +388,10 @@ export async function updateBlogService(
     // Author Name Validation
     // ==============================
 
-    if (updateData.authorName !== undefined && !updateData.authorName.trim()) {
+    if (
+      updateData.authorName !== undefined &&
+      !updateData.authorName.trim()
+    ) {
       throw new Error("Author name is required");
     }
 
@@ -340,14 +399,19 @@ export async function updateBlogService(
       updateData.authorName !== undefined &&
       updateData.authorName.trim().length < 2
     ) {
-      throw new Error("Author name must contain at least 2 characters");
+      throw new Error(
+        "Author name must contain at least 2 characters",
+      );
     }
 
     // ==============================
     // Date Validation
     // ==============================
 
-    if (updateData.date !== undefined && !updateData.date) {
+    if (
+      updateData.date !== undefined &&
+      !updateData.date
+    ) {
       throw new Error("Blog date is required");
     }
 
@@ -368,7 +432,9 @@ export async function updateBlogService(
 
     if (updateData.section !== undefined) {
       if (!["big", "latest"].includes(updateData.section)) {
-        throw new Error("Blog section must be either big or latest");
+        throw new Error(
+          "Blog section must be either big or latest",
+        );
       }
     }
 
@@ -393,9 +459,28 @@ export async function updateBlogService(
       });
 
       if (existingBlog) {
-        throw new Error("Blog with this title already exists");
+        throw new Error(
+          "Blog with this title already exists",
+        );
       }
     }
+
+    // ==============================
+    // GET OLD BLOG
+    // ==============================
+
+    const oldBlog = await BlogMaster.findOne({
+      _id: id,
+      isActive: true,
+      isDisplay: true,
+    });
+
+    if (!oldBlog) {
+      throw new Error("Blog not found");
+    }
+
+    const oldBlogImg = oldBlog.blogImg;
+    const oldAuthorImg = oldBlog.authorImg;
 
     // ==============================
     // Normalize Values
@@ -468,6 +553,30 @@ export async function updateBlogService(
       throw new Error("Blog not found");
     }
 
+    // ==============================
+    // DELETE OLD BLOG IMAGE
+    // ==============================
+
+    if (
+      data.blogImg !== undefined &&
+      oldBlogImg &&
+      oldBlogImg !== data.blogImg
+    ) {
+      deleteImageFile(oldBlogImg);
+    }
+
+    // ==============================
+    // DELETE OLD AUTHOR IMAGE
+    // ==============================
+
+    if (
+      data.authorImg !== undefined &&
+      oldAuthorImg &&
+      oldAuthorImg !== data.authorImg
+    ) {
+      deleteImageFile(oldAuthorImg);
+    }
+
     return updatedBlog;
   } catch (error) {
     console.error(`Error updating blog with id ${id}:`, error);
@@ -480,7 +589,10 @@ export async function updateBlogService(
 // DELETE BLOG
 // =====================================
 
-export async function deleteBlogService(id: string, deleteBy: string) {
+export async function deleteBlogService(
+  id: string,
+  deleteBy: string,
+) {
   try {
     // ==============================
     // Delete By Validation
@@ -488,6 +600,35 @@ export async function deleteBlogService(id: string, deleteBy: string) {
 
     if (!deleteBy?.trim()) {
       throw new Error("Delete by is required");
+    }
+
+    // ==============================
+    // GET BLOG
+    // ==============================
+
+    const blog = await BlogMaster.findOne({
+      _id: id,
+      isActive: true,
+    });
+
+    if (!blog) {
+      return null;
+    }
+
+    // ==============================
+    // DELETE BLOG IMAGE
+    // ==============================
+
+    if (blog.blogImg) {
+      deleteImageFile(blog.blogImg);
+    }
+
+    // ==============================
+    // DELETE AUTHOR IMAGE
+    // ==============================
+
+    if (blog.authorImg) {
+      deleteImageFile(blog.authorImg);
     }
 
     // ==============================

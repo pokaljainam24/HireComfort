@@ -195,7 +195,7 @@ const StateMaster: React.FC = () => {
             row.type.toLowerCase().includes(query) ||
             String(row.country_id).includes(query)
           }
-          onView={handleView}
+          // onView={handleView}
         />
       </div>
 
@@ -212,5 +212,6 @@ const StateMaster: React.FC = () => {
     </>
   );
 };
+
 
 export default StateMaster;

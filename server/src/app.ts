@@ -7,7 +7,7 @@ import cors from "cors";
 // AdminPannel Menues routes
 import joobCategoryRoutes from "./routes/jobCategoryRoutes/jobCategoryRoutes.js";
 import jobSubCategoryRoutes from "./routes/jobSubCategoryRoutes/jobSubCategoryRoutes.js";
-import blogRoutes from "./routes/blogRoutes/blogRoutes.js";
+import blogRoutes  from "./routes/blogRoutes/blogRoutes.js";
 import cmsRoutes from "./routes/cmsRoutes/cmsRoutes.js";
 import faqRoutes from "./routes/FaqRoutes/faqRoutes.js";
 import emailCredentialRoutes from "./routes/EmailCredentialRoutes/emailCredentialRoutes.js";
@@ -26,6 +26,7 @@ import chatMessageRoutes from "./routes/Chat-MessageRoutes/MessageRoute.js";
 import interviewMasterRoutes from "./routes/RecruiterRoutes/InterviewMasterRoutes.js";
 import authRouter from "./routes/adminRoutes.js";
 
+
 // Website routes
 // Industry Routes
 import industryRoutes from "./routes/IndustryRoutes/IndustryRoutes.js";
@@ -41,6 +42,12 @@ import stateRoutes from "./routes/StateRoutes/StateRoutes.js";
 
 // City Routes
 import cityRoutes from "./routes/CityRoutes/CityRoutes.js";
+
+// auth
+import signupRoutes from "./routes/SignUpRoutes/SignUpRoutes.js";
+
+
+import loginRoutes from "./routes/LoginRoutes/LoginRoutes.js";
 
 import path from "path";
 
@@ -96,4 +103,10 @@ app.use("/api/states", stateRoutes);
 
 app.use("/api/cities", cityRoutes);
 
+app.use("/api/auth", signupRoutes);
+
+app.use("/api/auth", loginRoutes);
+
 export default app;
+
+
