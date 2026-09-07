@@ -207,7 +207,7 @@ const CountryMaster: React.FC = () => {
             row.capital.toLowerCase().includes(query) ||
             row.currency.toLowerCase().includes(query)
           }
-          onView={handleView}
+          // onView={handleView}
         />
       </div>
 

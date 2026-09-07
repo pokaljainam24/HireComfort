@@ -4,6 +4,8 @@ import { useNavigate } from "react-router";
 import loginImg4 from "../assets/imgs/page/login-register/img-4.svg";
 import loginImg3 from "../assets/imgs/page/login-register/img-3.svg";
 
+import { signupApi } from "../api/SignUpApi/SignUpApi.ts";
+
 // TODO: Add validation for the form fields, especially for email and password.
 
 type AccountType = "Applicant" | "Recruiter";
@@ -11,46 +13,124 @@ type AccountType = "Applicant" | "Recruiter";
 function Signup() {
   const navigate = useNavigate();
 
-  const [accountType, setAccountType] = useState<AccountType>("Applicant");
+  const [accountType, setAccountType] =
+    useState<AccountType>("Applicant");
 
-  const handleSignup = async (event: FormEvent<HTMLFormElement>) => {
+  const [loading, setLoading] = useState(false);
+
+  // =====================================
+  // HANDLE SIGNUP
+  // =====================================
+
+  const handleSignup = async (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: formData.get("FirstName"),
-          lastName: formData.get("LastName"),
-          email: formData.get("Email"),
-          mobileNumber: formData.get("MobileNumber"),
-          password: formData.get("Password"),
-          confirmPassword: formData.get("ConfirmPassword"),
+      setLoading(true);
 
-          accountType: accountType === "Recruiter" ? "recruiter" : "applicant",
-          username: formData.get("Username"),
-          companyName: formData.get("CompanyName"),
-        }),
-      });
+      // =====================================
+      // GET FORM DATA
+      // =====================================
 
-      const data = await response.json();
+      const firstName = String(
+        formData.get("FirstName") || "",
+      ).trim();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Signup failed");
-      }
+      const lastName = String(
+        formData.get("LastName") || "",
+      ).trim();
 
-      window.alert(data.message);
+      const email = String(
+        formData.get("Email") || "",
+      ).trim();
+
+      const mobileNumber = String(
+        formData.get("MobileNumber") || "",
+      ).trim();
+
+      const password = String(
+        formData.get("Password") || "",
+      );
+
+      const confirmPassword = String(
+        formData.get("ConfirmPassword") || "",
+      );
+
+      const username = String(
+        formData.get("Username") || "",
+      ).trim();
+
+      const companyName = String(
+        formData.get("CompanyName") || "",
+      ).trim();
+
+      // =====================================
+      // ACCOUNT TYPE
+      // =====================================
+
+      const selectedAccountType: "recruiter" | "applicant" =
+        accountType === "Recruiter"
+          ? "recruiter"
+          : "applicant";
+
+      // =====================================
+      // SIGNUP DATA
+      // =====================================
+
+      const signupData = {
+        firstName,
+        lastName,
+        email,
+        mobileNumber,
+        password,
+        confirmPassword,
+        accountType: selectedAccountType,
+        username,
+        companyName,
+      };
+
+      console.log("SIGNUP DATA:", signupData);
+
+      // =====================================
+      // CALL SIGNUP API
+      // =====================================
+
+      const data = await signupApi(signupData);
+
+      console.log("SIGNUP RESPONSE:", data);
+
+      // =====================================
+      // SUCCESS
+      // =====================================
+
+      window.alert(
+        data.message ||
+          "Account created successfully",
+      );
 
       navigate("/login");
-    } catch (error) {
-      console.error("Signup request failed:", error);
+    } catch (error: any) {
+      console.error(
+        "Signup request failed:",
+        error,
+      );
 
-      window.alert(error instanceof Error ? error.message : "Signup failed");
+      // =====================================
+      // ERROR MESSAGE
+      // =====================================
+
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Signup failed";
+
+      window.alert(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,14 +139,21 @@ function Signup() {
       <section className="pt-100 pb-100 login-register">
         <div className="container">
           <div className="row login-register-cover">
-            <div className="col-lg-6 col-md-8 col-sm-12 mx-auto">
-              <div className="text-center">
-                <p className="font-sm text-brand-2">Get started</p>
 
-                <h2 className="mt-10 mb-5 text-brand-1">Create your Account</h2>
+            <div className="col-lg-6 col-md-8 col-sm-12 mx-auto">
+
+              <div className="text-center">
+                <p className="font-sm text-brand-2">
+                  Get started
+                </p>
+
+                <h2 className="mt-10 mb-5 text-brand-1">
+                  Create your Account
+                </h2>
 
                 <p className="font-sm text-muted mb-30">
-                  Join HireComfort and start your hiring journey.
+                  Join HireComfort and start your
+                  hiring journey.
                 </p>
               </div>
 
@@ -75,21 +162,34 @@ function Signup() {
                 method="post"
                 onSubmit={handleSignup}
               >
-                {/* Account Type */}
+
+                {/* =====================================
+                    ACCOUNT TYPE
+                ===================================== */}
+
                 <div className="form-group">
-                  <label className="form-label mb-2">Register As</label>
+                  <label className="form-label mb-2">
+                    Register As
+                  </label>
 
                   <div className="d-flex">
+
                     <label className="cb-container me-4">
                       <input
                         type="radio"
                         name="AccountType"
                         value="Applicant"
-                        checked={accountType === "Applicant"}
-                        onChange={() => setAccountType("Applicant")}
+                        checked={
+                          accountType === "Applicant"
+                        }
+                        onChange={() =>
+                          setAccountType("Applicant")
+                        }
                       />
 
-                      <span className="text-small">Job Seeker</span>
+                      <span className="text-small">
+                        Job Seeker
+                      </span>
 
                       <span className="checkmark"></span>
                     </label>
@@ -99,21 +199,35 @@ function Signup() {
                         type="radio"
                         name="AccountType"
                         value="Recruiter"
-                        checked={accountType === "Recruiter"}
-                        onChange={() => setAccountType("Recruiter")}
+                        checked={
+                          accountType === "Recruiter"
+                        }
+                        onChange={() =>
+                          setAccountType("Recruiter")
+                        }
                       />
 
-                      <span className="text-small">Recruiter / Employer</span>
+                      <span className="text-small">
+                        Recruiter / Employer
+                      </span>
 
                       <span className="checkmark"></span>
                     </label>
+
                   </div>
                 </div>
 
-                {/* First Name + Last Name */}
+                {/* =====================================
+                    FIRST NAME + LAST NAME
+                ===================================== */}
+
                 <div className="row">
+
                   <div className="col-md-6 form-group">
-                    <label className="form-label" htmlFor="regFirstName">
+                    <label
+                      className="form-label"
+                      htmlFor="regFirstName"
+                    >
                       First Name *
                     </label>
 
@@ -127,7 +241,10 @@ function Signup() {
                   </div>
 
                   <div className="col-md-6 form-group">
-                    <label className="form-label" htmlFor="regLastName">
+                    <label
+                      className="form-label"
+                      htmlFor="regLastName"
+                    >
                       Last Name *
                     </label>
 
@@ -139,13 +256,21 @@ function Signup() {
                       required
                     />
                   </div>
+
                 </div>
 
-                {/* Company Name */}
+                {/* =====================================
+                    COMPANY NAME
+                ===================================== */}
+
                 {accountType === "Recruiter" && (
                   <div className="form-group">
-                    <label className="form-label" htmlFor="regCompanyName">
-                      Company Name
+
+                    <label
+                      className="form-label"
+                      htmlFor="regCompanyName"
+                    >
+                      Company Name *
                     </label>
 
                     <input
@@ -153,14 +278,23 @@ function Signup() {
                       id="regCompanyName"
                       type="text"
                       name="CompanyName"
+                      required
                     />
+
                   </div>
                 )}
 
-                {/* Username */}
+                {/* =====================================
+                    USERNAME
+                ===================================== */}
+
                 <div className="form-group">
-                  <label className="form-label" htmlFor="regUsername">
-                    Username
+
+                  <label
+                    className="form-label"
+                    htmlFor="regUsername"
+                  >
+                    Username *
                   </label>
 
                   <input
@@ -168,12 +302,21 @@ function Signup() {
                     id="regUsername"
                     type="text"
                     name="Username"
+                    required
                   />
+
                 </div>
 
-                {/* Email */}
+                {/* =====================================
+                    EMAIL
+                ===================================== */}
+
                 <div className="form-group">
-                  <label className="form-label" htmlFor="regEmail">
+
+                  <label
+                    className="form-label"
+                    htmlFor="regEmail"
+                  >
                     Email Address *
                   </label>
 
@@ -184,11 +327,19 @@ function Signup() {
                     name="Email"
                     required
                   />
+
                 </div>
 
-                {/* Mobile */}
+                {/* =====================================
+                    MOBILE
+                ===================================== */}
+
                 <div className="form-group">
-                  <label className="form-label" htmlFor="regMobile">
+
+                  <label
+                    className="form-label"
+                    htmlFor="regMobile"
+                  >
                     Mobile Number *
                   </label>
 
@@ -197,15 +348,24 @@ function Signup() {
                     id="regMobile"
                     type="text"
                     name="MobileNumber"
-                    maxLength={15}
+                    maxLength={10}
                     required
                   />
+
                 </div>
 
-                {/* Password + Confirm Password */}
+                {/* =====================================
+                    PASSWORD + CONFIRM PASSWORD
+                ===================================== */}
+
                 <div className="row">
+
                   <div className="col-md-6 form-group">
-                    <label className="form-label" htmlFor="regPassword">
+
+                    <label
+                      className="form-label"
+                      htmlFor="regPassword"
+                    >
                       Password *
                     </label>
 
@@ -214,12 +374,18 @@ function Signup() {
                       id="regPassword"
                       type="password"
                       name="Password"
+                      minLength={8}
                       required
                     />
+
                   </div>
 
                   <div className="col-md-6 form-group">
-                    <label className="form-label" htmlFor="regConfirmPassword">
+
+                    <label
+                      className="form-label"
+                      htmlFor="regConfirmPassword"
+                    >
                       Confirm Password *
                     </label>
 
@@ -228,38 +394,72 @@ function Signup() {
                       id="regConfirmPassword"
                       type="password"
                       name="ConfirmPassword"
+                      minLength={8}
                       required
                     />
+
                   </div>
+
                 </div>
 
-                {/* Terms */}
+                {/* =====================================
+                    TERMS
+                ===================================== */}
+
                 <div className="form-group">
+
                   <label className="cb-container">
-                    <input type="checkbox" required id="Terms" name="Terms" />
+
+                    <input
+                      type="checkbox"
+                      required
+                      id="Terms"
+                      name="Terms"
+                    />
 
                     <span className="text-small">
-                      I agree to the <a href="/terms">Terms &amp; Conditions</a>{" "}
-                      and <a href="/privacy">Privacy Policy</a>
+                      I agree to the{" "}
+                      <a href="/terms">
+                        Terms &amp; Conditions
+                      </a>{" "}
+                      and{" "}
+                      <a href="/privacy">
+                        Privacy Policy
+                      </a>
                     </span>
 
                     <span className="checkmark"></span>
+
                   </label>
+
                 </div>
 
-                {/* Create Account */}
+                {/* =====================================
+                    CREATE ACCOUNT
+                ===================================== */}
+
                 <div className="form-group">
+
                   <button
                     className="btn btn-brand-1 hover-up w-100"
                     type="submit"
+                    disabled={loading}
                   >
-                    Create Account
+                    {loading
+                      ? "Creating Account..."
+                      : "Create Account"}
                   </button>
+
                 </div>
 
-                {/* Login */}
+                {/* =====================================
+                    LOGIN
+                ===================================== */}
+
                 <div className="text-muted text-center">
+
                   Already have an account?{" "}
+
                   <a
                     href="/login"
                     className="switch-panel"
@@ -270,19 +470,35 @@ function Signup() {
                   >
                     Login
                   </a>
+
                 </div>
+
               </form>
             </div>
 
-            {/* Image 1 */}
+            {/* =====================================
+                IMAGE 1
+            ===================================== */}
+
             <div className="img-1 d-none d-lg-block">
-              <img className="shape-1" src={loginImg4} alt="HireComfort" />
+              <img
+                className="shape-1"
+                src={loginImg4}
+                alt="HireComfort"
+              />
             </div>
 
-            {/* Image 2 */}
+            {/* =====================================
+                IMAGE 2
+            ===================================== */}
+
             <div className="img-2">
-              <img src={loginImg3} alt="HireComfort" />
+              <img
+                src={loginImg3}
+                alt="HireComfort"
+              />
             </div>
+
           </div>
         </div>
       </section>

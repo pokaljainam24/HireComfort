@@ -1,51 +1,173 @@
-import { type FormEvent } from "react";
-import { useNavigate } from "react-router";
+import { useState, type FormEvent } from "react";
 
 import loginImg4 from "../assets/imgs/page/login-register/img-4.svg";
 import loginImg3 from "../assets/imgs/page/login-register/img-3.svg";
 
-// TODO: Add validation for the form fields, especially for email and password.
+import { loginApi } from "../api/SignUpApi/SignUpApi";
+
+// =====================================
+// Login
+// =====================================
 
 function Login() {
-  const navigate = useNavigate();
+  const navigate = (
+    path: string,
+    options?: { replace?: boolean },
+  ) => {
+    if (options?.replace) {
+      window.location.replace(path);
+    } else {
+      window.location.assign(path);
+    }
+  };
 
-  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
 
+    const username = String(
+      formData.get("Username") || "",
+    ).trim();
+
+    const password = String(
+      formData.get("Password") || "",
+    );
+
+    const loginAsValue = String(
+      formData.get("UserType") || "",
+    );
+
+    // =====================================
+    // Validation
+    // =====================================
+
+    if (!username) {
+      window.alert("Username is required");
+      return;
+    }
+
+    if (!password) {
+      window.alert("Password is required");
+      return;
+    }
+
+    if (!loginAsValue) {
+      window.alert("Please select Login as");
+      return;
+    }
+
+    if (
+      loginAsValue !== "applicant" &&
+      loginAsValue !== "recruiter"
+    ) {
+      window.alert("Invalid login type");
+      return;
+    }
+
+    const loginAs =
+      loginAsValue as "applicant" | "recruiter";
+
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: formData.get("Username"),
-          password: formData.get("Password"),
-          accountType: formData.get("UserType"),
-        }),
+      setLoading(true);
+
+      // =====================================
+      // Login API
+      // =====================================
+
+      const data = await loginApi({
+        username,
+        password,
+        loginAs,
       });
 
-      const data = await response.json();
+      console.log("LOGIN RESPONSE:", data);
 
-      if (!response.ok) {
-        throw new Error(data.message || `Login failed (${response.status})`);
+      // =====================================
+      // Validate Login Response
+      // =====================================
+
+      if (!data?.token) {
+        window.alert("Login failed. Token not received.");
+        return;
       }
 
-      localStorage.setItem("token", data.token);
+      if (!data?.user) {
+        window.alert("Login failed. User details not received.");
+        return;
+      }
 
-      navigate("/");
-    } catch (error) {
-      console.error("Login request failed:", error);
+      // =====================================
+      // Store Login Data
+      // =====================================
 
-      window.alert(
-        error instanceof TypeError
-          ? "Cannot reach the backend. Ensure it is running on http://localhost:5000 and CORS is enabled."
-          : error instanceof Error
-            ? error.message
-            : "Login failed",
+      localStorage.setItem(
+        "token",
+        data.token,
       );
+
+      localStorage.setItem(
+        "role",
+        data.role,
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user),
+      );
+
+      // =====================================
+      // Debug
+      // =====================================
+
+      console.log(
+        "TOKEN SAVED:",
+        localStorage.getItem("token"),
+      );
+
+      console.log(
+        "ROLE SAVED:",
+        localStorage.getItem("role"),
+      );
+
+      console.log(
+        "USER SAVED:",
+        localStorage.getItem("user"),
+      );
+
+      // =====================================
+      // Login Success
+      // =====================================
+
+      // window.alert(
+      //   data.message || "Login successful",
+      // );
+
+      // =====================================
+      // Redirect To Home
+      // =====================================
+
+      navigate("/", {
+        replace: true,
+      });
+    } catch (error: any) {
+      console.error(
+        "Login request failed:",
+        error,
+      );
+
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Login failed";
+
+      window.alert(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,12 +178,17 @@ function Login() {
           <div className="row login-register-cover">
             <div className="col-lg-4 col-md-6 col-sm-12 mx-auto">
               <div className="text-center">
-                <p className="font-sm text-brand-2">Welcome back!</p>
+                <p className="font-sm text-brand-2">
+                  Welcome back!
+                </p>
 
-                <h2 className="mt-10 mb-5 text-brand-1">Member Login</h2>
+                <h2 className="mt-10 mb-5 text-brand-1">
+                  Member Login
+                </h2>
 
                 <p className="font-sm text-muted mb-30">
-                  Access to all features. No credit card required.
+                  Access to all features. No credit
+                  card required.
                 </p>
               </div>
 
@@ -71,8 +198,12 @@ function Login() {
                 onSubmit={handleLogin}
               >
                 {/* Username */}
+
                 <div className="form-group">
-                  <label className="form-label" htmlFor="loginUsername">
+                  <label
+                    className="form-label"
+                    htmlFor="loginUsername"
+                  >
                     Username *
                   </label>
 
@@ -82,13 +213,18 @@ function Login() {
                     type="text"
                     name="Username"
                     required
-                    placeholder="you@example.com"
+                    placeholder="Enter username"
+                    disabled={loading}
                   />
                 </div>
 
                 {/* Password */}
+
                 <div className="form-group">
-                  <label className="form-label" htmlFor="loginPassword">
+                  <label
+                    className="form-label"
+                    htmlFor="loginPassword"
+                  >
                     Password *
                   </label>
 
@@ -99,28 +235,47 @@ function Login() {
                     name="Password"
                     required
                     placeholder="************"
+                    disabled={loading}
                   />
                 </div>
 
-                {/* User Type */}
+                {/* Login As */}
+
                 <div className="form-group">
-                  <label className="form-label" htmlFor="userType">
+                  <label
+                    className="form-label"
+                    htmlFor="userType"
+                  >
                     Login as *
                   </label>
 
-                  <div style={{ position: "relative" }}>
+                  <div
+                    style={{
+                      position: "relative",
+                    }}
+                  >
                     <select
                       className="form-control"
                       id="userType"
                       name="UserType"
                       required
                       defaultValue=""
+                      disabled={loading}
                     >
-                      <option value="" disabled>
+                      <option
+                        value=""
+                        disabled
+                      >
                         Select user type
                       </option>
-                      <option value="recruiter">Recruiter</option>
-                      <option value="applicant">Applicant</option>
+
+                      <option value="recruiter">
+                        Recruiter
+                      </option>
+
+                      <option value="applicant">
+                        Applicant
+                      </option>
                     </select>
 
                     <i
@@ -129,7 +284,8 @@ function Login() {
                         position: "absolute",
                         left: "90%",
                         top: "50%",
-                        transform: "translateY(-50%)",
+                        transform:
+                          "translateY(-50%)",
                         pointerEvents: "none",
                       }}
                     ></i>
@@ -137,38 +293,61 @@ function Login() {
                 </div>
 
                 {/* Remember Me */}
+
                 <div className="login_footer form-group d-flex justify-content-between">
                   <label className="cb-container">
-                    <input type="checkbox" name="RememberMe" id="RememberMe" />
+                    <input
+                      type="checkbox"
+                      name="RememberMe"
+                      id="RememberMe"
+                      disabled={loading}
+                    />
 
-                    <span className="text-small">Remember me</span>
+                    <span className="text-small">
+                      Remember me
+                    </span>
 
                     <span className="checkmark"></span>
                   </label>
 
-                  <a className="text-muted" href="/forgot-password">
+                  <a
+                    className="text-muted"
+                    href="/forgot-password"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      navigate(
+                        "/forgot-password",
+                      );
+                    }}
+                  >
                     Forgot Password
                   </a>
                 </div>
 
                 {/* Login Button */}
+
                 <div className="form-group">
                   <button
                     className="btn btn-brand-1 hover-up w-100"
                     type="submit"
+                    disabled={loading}
                   >
-                    Login
+                    {loading
+                      ? "Logging in..."
+                      : "Login"}
                   </button>
                 </div>
 
                 {/* Signup */}
+
                 <div className="text-muted text-center">
                   Don't have an account?{" "}
+
                   <a
                     href="/signup"
                     className="switch-panel"
-                    onClick={(e) => {
-                      e.preventDefault();
+                    onClick={(event) => {
+                      event.preventDefault();
                       navigate("/signup");
                     }}
                   >
@@ -179,13 +358,22 @@ function Login() {
             </div>
 
             {/* Image 1 */}
+
             <div className="img-1 d-none d-lg-block">
-              <img className="shape-1" src={loginImg4} alt="HireComfort" />
+              <img
+                className="shape-1"
+                src={loginImg4}
+                alt="HireComfort"
+              />
             </div>
 
             {/* Image 2 */}
+
             <div className="img-2">
-              <img src={loginImg3} alt="HireComfort" />
+              <img
+                src={loginImg3}
+                alt="HireComfort"
+              />
             </div>
           </div>
         </div>
