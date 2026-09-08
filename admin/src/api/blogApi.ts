@@ -10,6 +10,22 @@ const SERVER_URL = "http://localhost:5000";
 const API_URL = `${SERVER_URL}/api/blogs`;
 
 // =====================================
+// AUTH HEADER
+// =====================================
+
+const getAuthHeaders = () => {
+  const token = sessionStorage.getItem("admin_panel_auth_token");
+
+  if (!token) {
+    throw new Error("Authentication token not found");
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+// =====================================
 // IMAGE URL
 // =====================================
 
@@ -127,9 +143,16 @@ export const createBlog = async (
     );
   }
 
+  // =====================================
+  // API REQUEST
+  // =====================================
+
   const response = await axios.post(
     API_URL,
     formData,
+    {
+      headers: getAuthHeaders(),
+    },
   );
 
   return response.data.blog;
@@ -212,9 +235,16 @@ export const updateBlog = async (
     );
   }
 
+  // =====================================
+  // API REQUEST
+  // =====================================
+
   const response = await axios.patch(
     `${API_URL}/${id}`,
     formData,
+    {
+      headers: getAuthHeaders(),
+    },
   );
 
   return response.data.blog;
@@ -229,6 +259,9 @@ export const deleteBlog = async (
 ): Promise<Blog> => {
   const response = await axios.delete(
     `${API_URL}/${id}`,
+    {
+      headers: getAuthHeaders(),
+    },
   );
 
   return response.data.blog;

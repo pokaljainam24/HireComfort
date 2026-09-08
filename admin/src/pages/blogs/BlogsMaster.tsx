@@ -13,6 +13,9 @@ import { getBlogs, createBlog, updateBlog, deleteBlog } from "@/api/blogApi";
 
 import type { Blog, BlogForm, BlogCategory } from "@/types/blog";
 
+import { showSuccess, showError } from "@/utils/swal";
+
+
 // =====================================
 // STATIC BLOG CATEGORIES
 // =====================================
@@ -89,6 +92,9 @@ const BlogsMaster: React.FC = () => {
       setRows(blogs);
     } catch (error) {
       console.error("Error loading blogs:", error);
+
+      showError("Failed to load Blog data");
+
     } finally {
       setLoading(false);
     }
@@ -314,6 +320,9 @@ const BlogsMaster: React.FC = () => {
         setRows((rows) =>
           rows.map((row) => (row._id === editingId ? updated : row)),
         );
+
+        showSuccess("Blog updated successfully");
+
       }
 
       // =====================================
@@ -323,6 +332,9 @@ const BlogsMaster: React.FC = () => {
         const created = await createBlog(form);
 
         setRows((rows) => [created, ...rows]);
+
+        showSuccess("Blog added successfully");
+
       }
 
       resetForm();
@@ -330,6 +342,9 @@ const BlogsMaster: React.FC = () => {
       setShowForm(false);
     } catch (error) {
       console.error("Error saving blog:", error);
+
+      showError("Something went wrong while saving Blog");
+
     } finally {
       setLoading(false);
     }
@@ -412,8 +427,13 @@ const BlogsMaster: React.FC = () => {
       setRows((rows) => rows.filter((row) => row._id !== deleteTarget._id));
 
       setDeleteTarget(null);
+
+      showSuccess("Blog deleted successfully");
+
     } catch (error) {
       console.error("Error deleting blog:", error);
+
+      showError("Something went wrong while deleting Blog");
     } finally {
       setLoading(false);
     }

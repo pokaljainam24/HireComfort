@@ -7,10 +7,11 @@ import {
   updateCompany,
   deleteCompany,
 } from "../../controllers/Recruiter/companyController.js";
+import { authMiddleware } from "../../middleware/authMiddleware.js";
 
 const companyRoutes = express.Router();
 
-companyRoutes.post("/", createCompany);
+companyRoutes.post("/", authMiddleware, createCompany);
 companyRoutes.get("/", getCompanys);
 companyRoutes.get("/:id", getCompany);
 companyRoutes.patch("/:id", updateCompany);

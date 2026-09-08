@@ -14,6 +14,8 @@ export const authMiddleware = (
   try {
     const authHeader = req.headers.authorization;
 
+    console.log("AUTH HEADER:", authHeader);
+
     if (!authHeader) {
       return res.status(401).json({
         success: false,
@@ -24,6 +26,8 @@ export const authMiddleware = (
     const token = authHeader.startsWith("Bearer ")
       ? authHeader.split(" ")[1]
       : null;
+
+    console.log("TOKEN:", token);
 
     if (!token) {
       return res.status(401).json({
@@ -43,6 +47,8 @@ export const authMiddleware = (
 
     const decoded = jwt.verify(token, secret) as JwtUser;
 
+    console.log("DECODED USER:", decoded);
+
     req.user = {
       id: decoded.id,
       username: decoded.username,
@@ -50,6 +56,8 @@ export const authMiddleware = (
 
     next();
   } catch (error) {
+    console.error("AUTH ERROR:", error);
+
     return res.status(401).json({
       success: false,
       message: "Invalid or expired token",

@@ -14,6 +14,13 @@ import {
 
 export const createBlog = async (req: Request, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
@@ -26,7 +33,7 @@ export const createBlog = async (req: Request, res: Response) => {
       ...req.body,
       blogImg,
       authorImg,
-      createdBy: "admin",
+      createdBy: req.user.username,
     });
 
     return res.status(201).json({
@@ -110,13 +117,20 @@ export const updateBlog = async (req: Request, res: Response) => {
       });
     }
 
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
 
     const updateData: any = {
       ...req.body,
-      updatedBy: "admin",
+      updatedBy: req.user.username,
     };
 
     // =====================================
@@ -170,7 +184,14 @@ export const deleteBlog = async (req: Request, res: Response) => {
       });
     }
 
-    const deleteBy = "admin";
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const deleteBy = req.user.username;
 
     const blog = await deleteBlogService(blogId, deleteBy);
 

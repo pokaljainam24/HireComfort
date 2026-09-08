@@ -12,9 +12,6 @@ const Login: React.FC = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginAs, setLoginAs] = useState<
-    "applicant" | "recruiter" | ""
-  >("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -55,11 +52,6 @@ const Login: React.FC = () => {
       return;
     }
 
-    if (!loginAs) {
-      setError("Please select login role");
-      return;
-    }
-
     try {
       setLoading(true);
 
@@ -70,7 +62,6 @@ const Login: React.FC = () => {
       const success = await login(
         username.trim(),
         password,
-        loginAs,
       );
 
       if (!success) {
@@ -163,7 +154,7 @@ const Login: React.FC = () => {
               />
             </Field>
 
-            {/* Login As */}
+            {/* Login As
 
             <Field label="Login As" required>
               <select
@@ -191,7 +182,7 @@ const Login: React.FC = () => {
                   Recruiter
                 </option>
               </select>
-            </Field>
+            </Field> */}
           </div>
 
           {/* Login Button */}

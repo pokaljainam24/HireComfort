@@ -10,9 +10,16 @@ import {
 
 export const createCompany = async (req: Request, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
     const company = await createCompanyService({
       ...req.body,
-      createdBy: "admin",
+      createdBy: req.user.username,
     });
 
     return res.status(201).json({

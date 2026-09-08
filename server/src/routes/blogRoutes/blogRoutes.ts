@@ -10,6 +10,8 @@ import {
   deleteBlog,
 } from "../../controllers/blogController/blogController.js";
 
+import { authMiddleware } from "../../middleware/authMiddleware.js";
+
 const router = Router();
 
 // =====================================
@@ -31,7 +33,12 @@ const blogUpload = uploadIcon.fields([
 // CREATE
 // =====================================
 
-router.post("/", blogUpload, createBlog);
+router.post(
+  "/",
+  authMiddleware,
+  blogUpload,
+  createBlog
+);
 
 // =====================================
 // GET ALL
@@ -49,12 +56,21 @@ router.get("/:id", getBlog);
 // UPDATE
 // =====================================
 
-router.patch("/:id", blogUpload, updateBlog);
+router.patch(
+  "/:id",
+  authMiddleware,
+  blogUpload,
+  updateBlog
+);
 
 // =====================================
 // DELETE
 // =====================================
 
-router.delete("/:id", deleteBlog);
+router.delete(
+  "/:id",
+  authMiddleware,
+  deleteBlog
+);
 
 export default router;
