@@ -1,5 +1,6 @@
 import imgAbout2 from "../assets/imgs/page/about/img-about2.png";
 
+
 function About() {
   return (
     <main className="main">

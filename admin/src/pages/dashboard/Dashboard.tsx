@@ -11,9 +11,7 @@ import { getJobCategories } from "@/api/jobCategoryApi";
 import { getJobSubCategories } from "@/api/jobSubCategoryApi";
 import { getBlogs } from "@/api/blogApi";
 import { getCms } from "@/api/cmsApi";
-
-
-
+import { getVisitorCount } from "@/api/VisitorApi";
 
 const Dashboard: React.FC = () => {
   const [countryCount, setCountryCount] = useState(0);
@@ -25,7 +23,7 @@ const Dashboard: React.FC = () => {
   const [cmsSectionCount, setCmsSectionCount] = useState(0);
   const [newsletterCount, setNewsletterCount] = useState(0);
   const [contactQueryCount, setContactQueryCount] = useState(0);
-
+  const [visitorCount, setVisitorCount] = useState(0);
 
   // =====================================
   // Fetch Dashboard Counts
@@ -42,8 +40,7 @@ const Dashboard: React.FC = () => {
           jobSubCategories,
           blogs,
           cmsSections,
-          
-         
+          visitors,
         ] = await Promise.all([
           getCountries(),
           getStates(),
@@ -52,7 +49,7 @@ const Dashboard: React.FC = () => {
           getJobSubCategories(),
           getBlogs(),
           getCms(),
-          
+          getVisitorCount(),
         ]);
 
         setCountryCount(countries.length);
@@ -62,8 +59,13 @@ const Dashboard: React.FC = () => {
         setJobSubCategoryCount(jobSubCategories.length);
         setBlogCount(blogs.length);
         setCmsSectionCount(cmsSections.length);
+
+        // Temporary values as in your existing dashboard
         setNewsletterCount(3);
         setContactQueryCount(2);
+
+        // Visitor count from backend
+        setVisitorCount(visitors);
       } catch (error) {
         console.error(
           "Failed to fetch dashboard counts:",
@@ -74,6 +76,10 @@ const Dashboard: React.FC = () => {
 
     fetchDashboardCounts();
   }, []);
+
+  // =====================================
+  // Dashboard Stats
+  // =====================================
 
   const stats = [
     {
@@ -138,6 +144,13 @@ const Dashboard: React.FC = () => {
       icon: "message",
       color: "#dc3545",
       to: "/contact",
+    },
+    {
+      label: "Visitors",
+      value: visitorCount,
+      icon: "users",
+      color: "#6f42c1",
+      to: "#",
     },
   ];
 

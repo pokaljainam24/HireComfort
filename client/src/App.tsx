@@ -24,11 +24,13 @@ import Login from "./pages/Login";
 import BlogDetails from "./pages/BlogDetails";
 import Signup from "./pages/Signup";
 import Faq from "./pages/Faq.tsx";
+import VisitorTracker from "./components/VisitorCount.tsx";
 
 function App() {
   return (
     <>
       <Navbar />
+      <VisitorTracker />
       <Routes>
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />

@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import applicantRoutes from "./routes/applicantRoutes/applicantRoutes.js";
 // import authRouter from "./routes/auth/authRoutes.js";
 
@@ -46,20 +47,27 @@ import cityRoutes from "./routes/CityRoutes/CityRoutes.js";
 // auth
 import signupRoutes from "./routes/SignUpRoutes/SignUpRoutes.js";
 
-
+// login routes
 import loginRoutes from "./routes/LoginRoutes/LoginRoutes.js";
+//visitor routes
+import visitorRoutes from "./routes/VisitorRoutes/VisitorRoutes.js";
 
 import path from "path";
 
 const app = express();
 
+
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+    ],
     credentials: true,
-  }),
+  })
 );
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
@@ -106,6 +114,9 @@ app.use("/api/cities", cityRoutes);
 app.use("/api/auth", signupRoutes);
 
 app.use("/api/auth", loginRoutes);
+
+app.use("/api/visitor", visitorRoutes);
+
 
 export default app;
 
