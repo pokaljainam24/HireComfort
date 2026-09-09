@@ -120,7 +120,7 @@ function Contact() {
 
         phone: form.phone.trim(),
 
-        message: form.message.trim(),
+        subject: form.message.trim(),
       });
 
       console.log("CONTACT CREATE RESPONSE:", response);

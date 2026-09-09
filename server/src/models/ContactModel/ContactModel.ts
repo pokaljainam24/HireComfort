@@ -5,7 +5,7 @@ export interface IContact extends Document {
   company: string;
   email: string;
   phone: string;
-  message: string;
+  subject: string;
 
   isActive: boolean;
   isDisplay: boolean;
@@ -47,7 +47,7 @@ const ContactSchema = new Schema<IContact>(
       trim: true,
     },
 
-    message: {
+    subject: {
       type: String,
       required: true,
       trim: true,
@@ -89,6 +89,9 @@ const ContactSchema = new Schema<IContact>(
   },
 );
 
-const ContactModel = mongoose.model<IContact>("Contact", ContactSchema);
+const ContactModel = mongoose.model<IContact>(
+  "Contact",
+  ContactSchema,
+);
 
 export default ContactModel;

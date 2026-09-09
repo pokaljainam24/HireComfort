@@ -11,7 +11,7 @@ export const createContactApi = async (data: {
   company: string;
   email: string;
   phone: string;
-  message: string;
+  subject: string;
 }) => {
   const response = await axios.post(API_URL, data);
 
@@ -49,7 +49,7 @@ export const updateContactApi = async (
     company: string;
     email: string;
     phone: string;
-    message: string;
+    subject: string;
   },
 ) => {
   const response = await axios.put(`${API_URL}/${id}`, data);

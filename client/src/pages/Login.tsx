@@ -9,6 +9,13 @@ import { loginApi } from "../api/SignUpApi/SignUpApi";
 // Login
 // =====================================
 
+// Path where the recruiter panel app is deployed (same domain, different path)
+const RECRUITER_PANEL_PATH = "/recruiter-panel/";
+
+// The recruiter panel's http.ts reads the token from this exact
+// localStorage key (see src/api/http.ts -> TOKEN_KEY). Keep it in sync.
+const RECRUITER_PANEL_TOKEN_KEY = "recruiter_panel_token";
+
 function Login() {
   const navigate = (
     path: string,
@@ -140,15 +147,33 @@ function Login() {
       );
 
       // =====================================
-      // Login Success
+      // Login Success -> Redirect
       // =====================================
 
       // window.alert(
       //   data.message || "Login successful",
       // );
 
+      if (loginAs === "recruiter") {
+        // The recruiter panel is a separate app served under the same
+        // domain at RECRUITER_PANEL_PATH. It's a different app/build,
+        // so it can't be reached with react-router navigate() -- we
+        // need a full page redirect. Same domain means localStorage
+        // is shared, so we hand the token over under the key the
+        // recruiter panel's own http.ts expects it under.
+        localStorage.setItem(
+          RECRUITER_PANEL_TOKEN_KEY,
+          data.token,
+        );
+
+        navigate(RECRUITER_PANEL_PATH, {
+          replace: true,
+        });
+        return;
+      }
+
       // =====================================
-      // Redirect To Home
+      // Redirect To Home (applicant)
       // =====================================
 
       navigate("/", {
