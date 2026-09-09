@@ -12,12 +12,7 @@ const Login: React.FC = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-<<<<<<< Updated upstream
-=======
-  // const [loginAs, setLoginAs] = useState<
-  //   "applicant" | "recruiter" | ""
-  // >("");
->>>>>>> Stashed changes
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -58,14 +53,6 @@ const Login: React.FC = () => {
       return;
     }
 
-<<<<<<< Updated upstream
-=======
-    // if (!loginAs) {
-    //   setError("Please select login role");
-    //   return;
-    // }
-
->>>>>>> Stashed changes
     try {
       setLoading(true);
 
@@ -75,12 +62,7 @@ const Login: React.FC = () => {
 
       const success = await login(
         username.trim(),
-<<<<<<< Updated upstream
         password,
-=======
-        password
-        
->>>>>>> Stashed changes
       );
 
       if (!success) {
