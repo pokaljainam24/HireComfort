@@ -25,6 +25,7 @@ import BlogDetails from "./pages/BlogDetails";
 import Signup from "./pages/Signup";
 import Faq from "./pages/Faq.tsx";
 import VisitorTracker from "./components/VisitorCount.tsx";
+import RecruiterApp from "./recruiter/RecruiterApp.tsx";
 
 function App() {
   return (
@@ -51,6 +52,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/blog-details/:id" element={<BlogDetails />} />
         <Route path="/faq" element={<Faq />} />
+
+        <Route path="/recruiter-panel/*" element={<RecruiterApp />} />
       </Routes>
       <Footer />
     </>
