@@ -26,6 +26,7 @@ import Signup from "./pages/Signup";
 import Faq from "./pages/Faq.tsx";
 import VisitorTracker from "./components/VisitorCount.tsx";
 import RecruiterApp from "./recruiterDashboard/RecruiterApp.tsx";
+import ApplicantApp from "./ApplicantDashboard/ApplicantApp.tsx";
 
 function App() {
   const location = useLocation();
@@ -56,7 +57,8 @@ function App() {
         <Route path="/blog-details/:id" element={<BlogDetails />} />
         <Route path="/faq" element={<Faq />} />
 
-        <Route path="/recruiter-panel/*" element={<RecruiterApp />} />
+        <Route path="/recruiter-panel/*" element={<RecruiterApp />} /> 
+        <Route path="/applicant-panel/*" element={<ApplicantApp />} />
       </Routes>
       {!isRecruiterRoute && <Footer />}
     </>

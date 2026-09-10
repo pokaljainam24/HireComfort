@@ -49,19 +49,20 @@ const recruiterSchema = new Schema<IRecruiter>(
     },
     address: {
       type: String,
+      required: false,
     },
     userName: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
     },
     password: {
       type: String,
-      required: true,
+      required: false,
     },
     department: {
       type: String,
-      required: true,
+      required: false,
     },
     remark: {
       type: String,
@@ -73,7 +74,7 @@ const recruiterSchema = new Schema<IRecruiter>(
     },
     designation: {
       type: String,
-      required: true,
+      required: false,
     },
     // Status
     isActive: {

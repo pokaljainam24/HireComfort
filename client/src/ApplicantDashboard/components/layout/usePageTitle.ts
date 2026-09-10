@@ -1,5 +1,5 @@
 import { useLocation } from "react-router";
-import { navConfig } from "@/data/navConfig";
+import { navConfig } from "../../data/navConfig.ts";
 
 export function usePageTitle(): string {
   const { pathname } = useLocation();

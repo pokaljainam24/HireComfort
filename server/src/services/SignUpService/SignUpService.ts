@@ -152,21 +152,45 @@ export const signupApplicantService = async (data: any) => {
     // =====================================
     // Password Validation
     // =====================================
-
+    
     if (!data.password) {
       throw new Error("Password is required");
     }
-
+    
     if (data.password.length < 8) {
       throw new Error(
         "Password must contain at least 8 characters",
       );
     }
-
+    
+    if (!/[A-Z]/.test(data.password)) {
+      throw new Error(
+        "Password must contain at least one uppercase letter",
+      );
+    }
+    
+    if (!/[a-z]/.test(data.password)) {
+      throw new Error(
+        "Password must contain at least one lowercase letter",
+      );
+    }
+    
+    if (!/[0-9]/.test(data.password)) {
+      throw new Error(
+        "Password must contain at least one number",
+      );
+    }
+    
+    if (!/[!@#$%^&*(),.?":{}|<>_\-\\[\]/`~'+;=]/.test(data.password)) {
+      throw new Error(
+        "Password must contain at least one special character",
+      );
+    }
+    
     if (!data.confirmPassword) {
       throw new Error("Confirm password is required");
     }
-
+    
     if (data.password !== data.confirmPassword) {
       throw new Error(
         "Password and confirm password do not match",
@@ -310,19 +334,19 @@ export const signupRecruiterService = async (data: any) => {
         "Recruiter with this email already exists",
       );
     }
+  
+    // // =====================================
+    // // Check Applicant Email
+    // // =====================================
 
-    // =====================================
-    // Check Applicant Email
-    // =====================================
+    // const existingApplicant = await Applicant.findOne({
+    //   email,
+    //   deleteAt: null,
+    // });
 
-    const existingApplicant = await Applicant.findOne({
-      email,
-      deleteAt: null,
-    });
-
-    if (existingApplicant) {
-      throw new Error("Email already exists");
-    }
+    // if (existingApplicant) {
+    //   throw new Error("Email already exists");
+    // }
 
     // =====================================
     // Mobile Number Validation
@@ -396,21 +420,45 @@ export const signupRecruiterService = async (data: any) => {
     // =====================================
     // Password Validation
     // =====================================
-
+    
     if (!data.password) {
       throw new Error("Password is required");
     }
-
+    
     if (data.password.length < 8) {
       throw new Error(
         "Password must contain at least 8 characters",
       );
     }
-
+    
+    if (!/[A-Z]/.test(data.password)) {
+      throw new Error(
+        "Password must contain at least one uppercase letter",
+      );
+    }
+    
+    if (!/[a-z]/.test(data.password)) {
+      throw new Error(
+        "Password must contain at least one lowercase letter",
+      );
+    }
+    
+    if (!/[0-9]/.test(data.password)) {
+      throw new Error(
+        "Password must contain at least one number",
+      );
+    }
+    
+    if (!/[!@#$%^&*(),.?":{}|<>_\-\\[\]/`~'+;=]/.test(data.password)) {
+      throw new Error(
+        "Password must contain at least one special character",
+      );
+    }
+    
     if (!data.confirmPassword) {
       throw new Error("Confirm password is required");
     }
-
+    
     if (data.password !== data.confirmPassword) {
       throw new Error(
         "Password and confirm password do not match",

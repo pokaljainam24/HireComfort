@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useRef } from "react";
 
 import logo from "../assets/imgs/logo.png";
 
@@ -21,6 +22,17 @@ function Navbar() {
 
   const [token, setToken] =
     useState<string | null>(null);
+
+  // =====================================
+  // PROFILE DROPDOWN
+  // =====================================
+
+  const [profileOpen, setProfileOpen] =
+    useState(false);
+
+  const profileMenuRef = useRef<HTMLDivElement | null>(
+    null,
+  );
 
   // =====================================
   // PRELOADER
@@ -74,7 +86,6 @@ function Navbar() {
 
     checkLogin();
 
-    // Listen for login/logout changes
     window.addEventListener(
       "storage",
       checkLogin,
@@ -84,6 +95,37 @@ function Navbar() {
       window.removeEventListener(
         "storage",
         checkLogin,
+      );
+    };
+  }, []);
+
+  // =====================================
+  // CLOSE PROFILE DROPDOWN ON OUTSIDE CLICK
+  // =====================================
+
+  useEffect(() => {
+    const handleClickOutside = (
+      event: MouseEvent,
+    ) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(
+          event.target as Node,
+        )
+      ) {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside,
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside,
       );
     };
   }, []);
@@ -141,8 +183,25 @@ function Navbar() {
 
     setToken(null);
     setUser(null);
+    setProfileOpen(false);
 
     window.location.href = "/login";
+  };
+
+  // =====================================
+  // TOGGLE PROFILE DROPDOWN
+  // =====================================
+
+  const toggleProfileDropdown = () => {
+    setProfileOpen((previous) => !previous);
+  };
+
+  // =====================================
+  // CLOSE DROPDOWN
+  // =====================================
+
+  const closeProfileDropdown = () => {
+    setProfileOpen(false);
   };
 
   return (
@@ -484,9 +543,7 @@ function Navbar() {
                 }}
               >
 
-                {/* =====================================
-                    LOGGED OUT
-                ===================================== */}
+                {/* LOGGED OUT */}
 
                 {!token ? (
                   <>
@@ -509,25 +566,30 @@ function Navbar() {
                   </>
                 ) : (
 
-                  /* =====================================
-                     LOGGED IN
-                  ===================================== */
+                  /* LOGGED IN */
 
                   <div
+                    ref={profileMenuRef}
                     className="profile-menu"
                     style={{
                       position: "relative",
                     }}
                   >
+
+                    {/* PROFILE TRIGGER */}
+
                     <div
                       className="profile-trigger d-flex align-items-center"
                       style={{
                         gap: "10px",
                         cursor: "pointer",
                       }}
+                      onClick={
+                        toggleProfileDropdown
+                      }
                     >
 
-                      {/* NAME LEFT */}
+                      {/* NAME */}
 
                       <span
                         style={{
@@ -539,7 +601,7 @@ function Navbar() {
                         {getUserName()}
                       </span>
 
-                      {/* PROFILE PHOTO RIGHT */}
+                      {/* PROFILE PHOTO */}
 
                       <img
                         src={getProfileImage()}
@@ -553,16 +615,31 @@ function Navbar() {
                         }}
                       />
 
-                      <i className="bi bi-chevron-down"></i>
+                      <i
+                        className={
+                          profileOpen
+                            ? "bi bi-chevron-up"
+                            : "bi bi-chevron-down"
+                        }
+                      ></i>
                     </div>
 
                     {/* PROFILE DROPDOWN */}
 
-                    <div className="profile-dropdown">
+                    <div
+                      className={`profile-dropdown ${
+                        profileOpen
+                          ? "profile-dropdown-open"
+                          : ""
+                      }`}
+                    >
 
                       <Link
                         to="/profile"
                         className="profile-dropdown-item"
+                        onClick={
+                          closeProfileDropdown
+                        }
                       >
                         <i className="bi bi-person"></i>
                         <span>My Profile</span>
@@ -597,9 +674,7 @@ function Navbar() {
           <div className="mobile-header-content-area">
             <div className="perfect-scroll">
 
-              {/* =====================================
-                  MOBILE MENU
-              ===================================== */}
+              {/* MOBILE MENU */}
 
               <div className="mobile-menu-wrap mobile-header-border">
                 <nav>
@@ -743,9 +818,7 @@ function Navbar() {
                 </nav>
               </div>
 
-              {/* =====================================
-                  MOBILE ACCOUNT
-              ===================================== */}
+              {/* MOBILE ACCOUNT */}
 
               <div className="mobile-account">
                 <h6 className="mb-15">
@@ -782,6 +855,9 @@ function Navbar() {
                         position: "relative",
                       }}
                     >
+
+                      {/* MOBILE PROFILE TRIGGER */}
+
                       <div
                         className="profile-trigger d-flex align-items-center"
                         style={{
@@ -789,9 +865,12 @@ function Navbar() {
                           cursor: "pointer",
                           padding: "10px 0",
                         }}
+                        onClick={
+                          toggleProfileDropdown
+                        }
                       >
 
-                        {/* NAME LEFT */}
+                        {/* NAME */}
 
                         <span
                           style={{
@@ -802,7 +881,7 @@ function Navbar() {
                           {getUserName()}
                         </span>
 
-                        {/* PROFILE PHOTO RIGHT */}
+                        {/* PROFILE PHOTO */}
 
                         <img
                           src={getProfileImage()}
@@ -815,17 +894,32 @@ function Navbar() {
                           }}
                         />
 
-                        <i className="bi bi-chevron-down"></i>
+                        <i
+                          className={
+                            profileOpen
+                              ? "bi bi-chevron-up"
+                              : "bi bi-chevron-down"
+                          }
+                        ></i>
 
                       </div>
 
                       {/* MOBILE PROFILE DROPDOWN */}
 
-                      <div className="profile-dropdown">
+                      <div
+                        className={`profile-dropdown ${
+                          profileOpen
+                            ? "profile-dropdown-open"
+                            : ""
+                        }`}
+                      >
 
                         <Link
                           to="/profile"
                           className="profile-dropdown-item"
+                          onClick={
+                            closeProfileDropdown
+                          }
                         >
                           <i className="bi bi-person"></i>
                           <span>My Profile</span>
@@ -841,15 +935,14 @@ function Navbar() {
                         </button>
 
                       </div>
+
                     </div>
 
                   </div>
                 )}
               </div>
 
-              {/* =====================================
-                  COPYRIGHT
-              ===================================== */}
+              {/* COPYRIGHT */}
 
               <div className="site-copyright text-center mt-30">
                 © 2026 HireComfort. All Rights Reserved.
@@ -879,7 +972,7 @@ function Navbar() {
             z-index: 9999;
           }
 
-          .profile-menu:hover .profile-dropdown {
+          .profile-dropdown-open {
             display: block;
           }
 
@@ -908,3 +1001,4 @@ function Navbar() {
 }
 
 export default Navbar;
+

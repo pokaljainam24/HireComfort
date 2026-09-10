@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router";
 import { useAuth } from "@/context/AuthContext";
 import Field from "@/components/common/Field";
 import Swal from "sweetalert2";

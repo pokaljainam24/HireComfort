@@ -9,12 +9,18 @@ import { loginApi } from "../api/SignUpApi/SignUpApi";
 // Login
 // =====================================
 
-// Path where the recruiter panel app is deployed (same domain, different path)
+// Path where the recruiter panel app is deployed
+// (same domain, different path)
 const RECRUITER_PANEL_PATH = "/recruiter-panel/";
 
-// The recruiter panel's http.ts reads the token from this exact
-// localStorage key (see src/api/http.ts -> TOKEN_KEY). Keep it in sync.
+// Recruiter panel token key
 const RECRUITER_PANEL_TOKEN_KEY = "recruiter_panel_token";
+
+// Applicant panel token key
+const APPLICANT_PANEL_TOKEN_KEY = "applicant_panel_token";
+
+// Path where the applicant panel app is deployed
+const APPLICANT_PANEL_PATH = "/applicant-panel/";
 
 function Login() {
   const navigate = (
@@ -97,17 +103,21 @@ function Login() {
       // =====================================
 
       if (!data?.token) {
-        window.alert("Login failed. Token not received.");
+        window.alert(
+          "Login failed. Token not received.",
+        );
         return;
       }
 
       if (!data?.user) {
-        window.alert("Login failed. User details not received.");
+        window.alert(
+          "Login failed. User details not received.",
+        );
         return;
       }
 
       // =====================================
-      // Store Login Data
+      // Store Common Login Data
       // =====================================
 
       localStorage.setItem(
@@ -124,6 +134,17 @@ function Login() {
         "user",
         JSON.stringify(data.user),
       );
+
+      // =====================================
+      // Store Applicant Panel Token
+      // =====================================
+
+      if (loginAs === "applicant") {
+        localStorage.setItem(
+          APPLICANT_PANEL_TOKEN_KEY,
+          data.token,
+        );
+      }
 
       // =====================================
       // Debug
@@ -144,21 +165,19 @@ function Login() {
         localStorage.getItem("user"),
       );
 
-      // =====================================
-      // Login Success -> Redirect
-      // =====================================
+      console.log(
+        "APPLICANT PANEL TOKEN SAVED:",
+        localStorage.getItem(
+          APPLICANT_PANEL_TOKEN_KEY,
+        ),
+      );
 
-      // window.alert(
-      //   data.message || "Login successful",
-      // );
+      // =====================================
+      // Login Success -> Recruiter Redirect
+      // ====================================
+      
 
       if (loginAs === "recruiter") {
-        // The recruiter panel is a separate app served under the same
-        // domain at RECRUITER_PANEL_PATH. It's a different app/build,
-        // so it can't be reached with react-router navigate() -- we
-        // need a full page redirect. Same domain means localStorage
-        // is shared, so we hand the token over under the key the
-        // recruiter panel's own http.ts expects it under.
         localStorage.setItem(
           RECRUITER_PANEL_TOKEN_KEY,
           data.token,
@@ -167,16 +186,26 @@ function Login() {
         navigate(RECRUITER_PANEL_PATH, {
           replace: true,
         });
+
         return;
       }
 
       // =====================================
-      // Redirect To Home (applicant)
+      // Login Success -> Applicant Redirect
       // =====================================
 
-      navigate("/", {
-        replace: true,
-      });
+      if (loginAs === "applicant") {
+        localStorage.setItem(
+          APPLICANT_PANEL_TOKEN_KEY,
+          data.token,
+        );
+
+        navigate(APPLICANT_PANEL_PATH, {
+          replace: true,
+        });
+
+        return;
+      }
     } catch (error: any) {
       console.error(
         "Login request failed:",
@@ -338,6 +367,7 @@ function Login() {
                     href="/forgot-password"
                     onClick={(event) => {
                       event.preventDefault();
+
                       navigate(
                         "/forgot-password",
                       );
@@ -371,6 +401,7 @@ function Login() {
                     className="switch-panel"
                     onClick={(event) => {
                       event.preventDefault();
+
                       navigate("/signup");
                     }}
                   >

@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 import AdminLayout from "@/components/layout/AdminLayout";
 import ProtectedRoute from "@/components/routing/ProtectedRoute";
 import Login from "@/pages/auth/Login";

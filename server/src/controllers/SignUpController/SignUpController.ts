@@ -5,7 +5,6 @@ import {
   signupRecruiterService,
 } from "../../services/SignUpService/SignUpService.js";
 
-
 /* =========================
    SIGNUP
 ========================= */
@@ -40,25 +39,79 @@ export const signup = async (
     }
 
     // =====================================
+    // Password Validation
+    // =====================================
+
+    if (!password) {
+      return res.status(400).json({
+        message: "Password is required",
+      });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters long",
+      });
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      return res.status(400).json({
+        message: "Password must contain at least one uppercase letter",
+      });
+    }
+
+    if (!/[a-z]/.test(password)) {
+      return res.status(400).json({
+        message: "Password must contain at least one lowercase letter",
+      });
+    }
+
+    if (!/[0-9]/.test(password)) {
+      return res.status(400).json({
+        message: "Password must contain at least one number",
+      });
+    }
+
+    if (!/[!@#$%^&*(),.?":{}|<>_\-\\[\]/`~'+;=]/.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must contain at least one special character",
+      });
+    }
+
+    // =====================================
+    // Confirm Password Validation
+    // =====================================
+
+    if (!confirmPassword) {
+      return res.status(400).json({
+        message: "Confirm password is required",
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        message: "Password and confirm password do not match",
+      });
+    }
+
+    // =====================================
     // Applicant Signup
     // =====================================
 
     if (accountType === "applicant") {
-      const applicant =
-        await signupApplicantService({
-          firstName,
-          lastName,
-          email,
-          mobileNumber,
-          password,
-          confirmPassword,
-          userName: username,
-        });
+      const applicant = await signupApplicantService({
+        firstName,
+        lastName,
+        email,
+        mobileNumber,
+        password,
+        confirmPassword,
+        userName: username,
+      });
 
       return res.status(201).json({
-        message:
-          "Applicant account created successfully",
-
+        message: "Applicant account created successfully",
         applicant,
       });
     }
@@ -68,22 +121,19 @@ export const signup = async (
     // =====================================
 
     if (accountType === "recruiter") {
-      const recruiter =
-        await signupRecruiterService({
-          firstName,
-          lastName,
-          email,
-          mobileNumber,
-          password,
-          confirmPassword,
-          userName: username,
-          companyName,
-        });
+      const recruiter = await signupRecruiterService({
+        firstName,
+        lastName,
+        email,
+        mobileNumber,
+        password,
+        confirmPassword,
+        userName: username,
+        companyName,
+      });
 
       return res.status(201).json({
-        message:
-          "Recruiter account created successfully",
-
+        message: "Recruiter account created successfully",
         recruiter,
       });
     }

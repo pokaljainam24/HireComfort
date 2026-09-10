@@ -1,3 +1,4 @@
+
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 
@@ -5,8 +6,6 @@ import loginImg4 from "../assets/imgs/page/login-register/img-4.svg";
 import loginImg3 from "../assets/imgs/page/login-register/img-3.svg";
 
 import { signupApi } from "../api/SignUpApi/SignUpApi.ts";
-
-// TODO: Add validation for the form fields, especially for email and password.
 
 type AccountType = "Applicant" | "Recruiter";
 
@@ -19,6 +18,41 @@ function Signup() {
   const [loading, setLoading] = useState(false);
 
   // =====================================
+  // PASSWORD STATE
+  // =====================================
+
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
+
+  // =====================================
+  // PASSWORD VALIDATION
+  // =====================================
+
+  const passwordRules = {
+    minLength: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    special:
+      /[!@#$%^&*(),.?":{}|<>_\-\\[\]/+=;'`~]/.test(
+        password,
+      ),
+    match:
+      password.length > 0 &&
+      confirmPassword.length > 0 &&
+      password === confirmPassword,
+  };
+
+  const isPasswordValid =
+    passwordRules.minLength &&
+    passwordRules.uppercase &&
+    passwordRules.lowercase &&
+    passwordRules.number &&
+    passwordRules.special &&
+    passwordRules.match;
+
+  // =====================================
   // HANDLE SIGNUP
   // =====================================
 
@@ -28,6 +62,14 @@ function Signup() {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
+
+    // =====================================
+    // PASSWORD VALIDATION
+    // =====================================
+
+    if (!isPasswordValid) {
+      return;
+    }
 
     try {
       setLoading(true);
@@ -52,14 +94,6 @@ function Signup() {
         formData.get("MobileNumber") || "",
       ).trim();
 
-      const password = String(
-        formData.get("Password") || "",
-      );
-
-      const confirmPassword = String(
-        formData.get("ConfirmPassword") || "",
-      );
-
       const username = String(
         formData.get("Username") || "",
       ).trim();
@@ -72,7 +106,9 @@ function Signup() {
       // ACCOUNT TYPE
       // =====================================
 
-      const selectedAccountType: "recruiter" | "applicant" =
+      const selectedAccountType:
+        | "recruiter"
+        | "applicant" =
         accountType === "Recruiter"
           ? "recruiter"
           : "applicant";
@@ -360,6 +396,8 @@ function Signup() {
 
                 <div className="row">
 
+                  {/* PASSWORD */}
+
                   <div className="col-md-6 form-group">
 
                     <label
@@ -374,11 +412,87 @@ function Signup() {
                       id="regPassword"
                       type="password"
                       name="Password"
-                      minLength={8}
+                      value={password}
+                      onChange={(e) =>
+                        setPassword(e.target.value)
+                      }
                       required
                     />
 
+                    {/* PASSWORD REQUIREMENTS */}
+
+                    <div className="mt-2">
+
+                      <small
+                        className={
+                          passwordRules.minLength
+                            ? "text-success d-block"
+                            : "text-muted d-block"
+                        }
+                      >
+                        {passwordRules.minLength
+                          ? "✓"
+                          : "○"}{" "}
+                        At least 8 characters
+                      </small>
+
+                      <small
+                        className={
+                          passwordRules.uppercase
+                            ? "text-success d-block"
+                            : "text-muted d-block"
+                        }
+                      >
+                        {passwordRules.uppercase
+                          ? "✓"
+                          : "○"}{" "}
+                        One uppercase letter
+                      </small>
+
+                      <small
+                        className={
+                          passwordRules.lowercase
+                            ? "text-success d-block"
+                            : "text-muted d-block"
+                        }
+                      >
+                        {passwordRules.lowercase
+                          ? "✓"
+                          : "○"}{" "}
+                        One lowercase letter
+                      </small>
+
+                      <small
+                        className={
+                          passwordRules.number
+                            ? "text-success d-block"
+                            : "text-muted d-block"
+                        }
+                      >
+                        {passwordRules.number
+                          ? "✓"
+                          : "○"}{" "}
+                        One number
+                      </small>
+
+                      <small
+                        className={
+                          passwordRules.special
+                            ? "text-success d-block"
+                            : "text-muted d-block"
+                        }
+                      >
+                        {passwordRules.special
+                          ? "✓"
+                          : "○"}{" "}
+                        One special character
+                      </small>
+
+                    </div>
+
                   </div>
+
+                  {/* CONFIRM PASSWORD */}
 
                   <div className="col-md-6 form-group">
 
@@ -394,9 +508,30 @@ function Signup() {
                       id="regConfirmPassword"
                       type="password"
                       name="ConfirmPassword"
-                      minLength={8}
+                      value={confirmPassword}
+                      onChange={(e) =>
+                        setConfirmPassword(
+                          e.target.value,
+                        )
+                      }
                       required
                     />
+
+                    {/* PASSWORD MATCH */}
+
+                    {confirmPassword.length > 0 && (
+                      <small
+                        className={
+                          passwordRules.match
+                            ? "text-success d-block mt-2"
+                            : "text-danger d-block mt-2"
+                        }
+                      >
+                        {passwordRules.match
+                          ? "✓ Passwords match"
+                          : "✗ Passwords do not match"}
+                      </small>
+                    )}
 
                   </div>
 
@@ -443,7 +578,9 @@ function Signup() {
                   <button
                     className="btn btn-brand-1 hover-up w-100"
                     type="submit"
-                    disabled={loading}
+                    disabled={
+                      loading || !isPasswordValid
+                    }
                   >
                     {loading
                       ? "Creating Account..."

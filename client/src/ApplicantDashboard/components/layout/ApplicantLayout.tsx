@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
-import { usePageTitle } from "./usePageTitle";
+import Sidebar from "./Sidebar.tsx";
+import Header from "./Header.tsx";
+import { usePageTitle } from "./usePageTitle.ts";
 
-const AdminLayout: React.FC = () => {
+const ApplicantLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const title = usePageTitle();
@@ -30,4 +30,4 @@ const AdminLayout: React.FC = () => {
   );
 };
 
-export default AdminLayout;
+export default ApplicantLayout;

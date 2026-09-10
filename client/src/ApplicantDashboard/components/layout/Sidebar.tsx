@@ -2,9 +2,9 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
-import { navConfig } from "@/data/navConfig";
-import { Icon } from "@/components/common/Icon";
-import { useAuth } from "@/context/AuthContext";
+import { navConfig } from "../../data/navConfig.ts";
+import { Icon } from "../common/Icon.tsx";
+
 
 interface SidebarProps {
   collapsed: boolean;
@@ -17,7 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   mobileOpen,
   onCloseMobile,
 }) => {
-  const { logout } = useAuth();
+  // const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -34,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       return;
     }
 
-    logout();
+    handleLogout();
     onCloseMobile();
 
     await Swal.fire({
