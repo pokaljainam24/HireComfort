@@ -9,34 +9,43 @@ import {
 } from "../../services/JobCategoryServices/jobCategoryService.js";
 
 // =====================================
-// CREATE JOB CATEGORY
+// Create Job Category
 // =====================================
 
 export const createJobCategory = async (req: Request, res: Response) => {
   try {
-    const icon = req.file ? `/uploads/job-categories/${req.file.filename}` : "";
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const icon = req.file
+      ? `/uploads/job-categories/${req.file.filename}`
+      : "";
 
     const jobCategory = await createJobCategoryService({
       ...req.body,
       icon,
-      createdBy: "admin",
+      createdBy: req.user.username,
     });
 
     return res.status(201).json({
       message: "Job category created successfully",
       jobCategory,
     });
-  } catch (error) {
-    console.error("Error creating job category:", error);
+  } catch (error: any) {
+    console.error("Create Job Category Controller Error:", error);
 
     return res.status(500).json({
-      message: "Error creating job category",
+      message: error.message || "Failed to create job category",
     });
   }
 };
 
 // =====================================
-// GET ALL JOB CATEGORIES
+// Get Job Categories
 // =====================================
 
 export const getJobCategories = async (req: Request, res: Response) => {
@@ -46,30 +55,30 @@ export const getJobCategories = async (req: Request, res: Response) => {
     return res.status(200).json({
       jobCategories,
     });
-  } catch (error) {
-    console.error("Error getting job categories:", error);
+  } catch (error: any) {
+    console.error("Get Job Categories Controller Error:", error);
 
     return res.status(500).json({
-      message: "Error getting job categories",
+      message: error.message || "Failed to get job categories",
     });
   }
 };
 
 // =====================================
-// GET JOB CATEGORY BY ID
+// Get Job Category By ID
 // =====================================
 
 export const getJobCategory = async (req: Request, res: Response) => {
   try {
-    const jobCategoryId = req.params.id;
+    const { id } = req.params;
 
-    if (typeof jobCategoryId !== "string") {
+    if (typeof id !== "string") {
       return res.status(400).json({
         message: "Invalid job category ID",
       });
     }
 
-    const jobCategory = await getJobCategoryByIdService(jobCategoryId);
+    const jobCategory = await getJobCategoryByIdService(id);
 
     if (!jobCategory) {
       return res.status(404).json({
@@ -80,26 +89,33 @@ export const getJobCategory = async (req: Request, res: Response) => {
     return res.status(200).json({
       jobCategory,
     });
-  } catch (error) {
-    console.error("Error getting job category:", error);
+  } catch (error: any) {
+    console.error("Get Job Category By ID Controller Error:", error);
 
     return res.status(500).json({
-      message: "Error getting job category",
+      message: error.message || "Failed to get job category",
     });
   }
 };
 
 // =====================================
-// UPDATE JOB CATEGORY
+// Update Job Category
 // =====================================
 
 export const updateJobCategory = async (req: Request, res: Response) => {
   try {
-    const jobCategoryId = req.params.id;
+    const { id } = req.params;
 
-    if (typeof jobCategoryId !== "string") {
+    if (typeof id !== "string") {
       return res.status(400).json({
         message: "Invalid job category ID",
+      });
+    }
+
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
       });
     }
 
@@ -107,14 +123,14 @@ export const updateJobCategory = async (req: Request, res: Response) => {
       ? `/uploads/job-categories/${req.file.filename}`
       : undefined;
 
-    const jobCategory = await updateJobCategoryService(jobCategoryId, {
+    const jobCategory = await updateJobCategoryService(id, {
       ...req.body,
 
       ...(icon !== undefined && {
         icon,
       }),
 
-      updatedBy: "admin",
+      updatedBy: req.user.username,
     });
 
     if (!jobCategory) {
@@ -127,32 +143,39 @@ export const updateJobCategory = async (req: Request, res: Response) => {
       message: "Job category updated successfully",
       jobCategory,
     });
-  } catch (error) {
-    console.error("Error updating job category:", error);
+  } catch (error: any) {
+    console.error("Update Job Category Controller Error:", error);
 
     return res.status(500).json({
-      message: "Error updating job category",
+      message: error.message || "Failed to update job category",
     });
   }
 };
 
 // =====================================
-// DELETE JOB CATEGORY
+// Delete Job Category
 // =====================================
 
 export const deleteJobCategory = async (req: Request, res: Response) => {
   try {
-    const jobCategoryId = req.params.id;
+    const { id } = req.params;
 
-    if (typeof jobCategoryId !== "string") {
+    if (typeof id !== "string") {
       return res.status(400).json({
         message: "Invalid job category ID",
       });
     }
 
-    const deleteBy = "admin";
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
 
-    const jobCategory = await deleteJobCategoryService(jobCategoryId, deleteBy);
+    const deleteBy = req.user.username;
+
+    const jobCategory = await deleteJobCategoryService(id, deleteBy);
 
     if (!jobCategory) {
       return res.status(404).json({
@@ -164,11 +187,11 @@ export const deleteJobCategory = async (req: Request, res: Response) => {
       message: "Job category deleted successfully",
       jobCategory,
     });
-  } catch (error) {
-    console.error("Error deleting job category:", error);
+  } catch (error: any) {
+    console.error("Delete Job Category Controller Error:", error);
 
     return res.status(500).json({
-      message: "Error deleting job category",
+      message: error.message || "Failed to delete job category",
     });
   }
 };

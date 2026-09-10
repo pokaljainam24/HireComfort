@@ -119,4 +119,15 @@ export const navConfig: NavGroup[] = [
       },
     ],
   },
+
+  {
+    label: "Account",
+    items: [
+      {
+        label: "Change Password",
+        path: "/change-password",
+        icon: "lock",
+      },
+    ],
+  },
 ];

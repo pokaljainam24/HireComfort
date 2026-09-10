@@ -1,78 +1,138 @@
 import mongoose from "mongoose";
+
 import JobSubCategoryMaster from "../../models/JobSubCategoryModel/jobSubCategoryModel.js";
 import JobCategoryMaster from "../../models/JobCategoryModel/jobCategoryModel.js";
 
-export type IJobSubCategoryMaster = InstanceType<typeof JobSubCategoryMaster>;
+export type IJobSubCategoryMaster =
+  InstanceType<typeof JobSubCategoryMaster>;
 
 // =====================================
-// Create
+// Create Job Sub Category
 // =====================================
 
 export async function createJobSubCategoryService(
   jobSubCategoryData: Partial<IJobSubCategoryMaster>,
 ) {
   try {
-    // Category ID validation
+    // =====================================
+    // CATEGORY ID
+    // =====================================
+
     if (!jobSubCategoryData.categoryId) {
-      throw new Error("Category ID is required");
+      throw new Error(
+        "Category ID is required",
+      );
     }
 
     if (
-      !mongoose.Types.ObjectId.isValid(jobSubCategoryData.categoryId.toString())
+      !mongoose.Types.ObjectId.isValid(
+        jobSubCategoryData.categoryId.toString(),
+      )
     ) {
-      throw new Error("Invalid category ID");
+      throw new Error(
+        "Invalid category ID",
+      );
     }
 
-    // Check category exists
-    const category = await JobCategoryMaster.findOne({
-      _id: jobSubCategoryData.categoryId,
-      isActive: true,
-      isDisplay: true,
-    });
+    // =====================================
+    // CHECK CATEGORY
+    // =====================================
+
+    const category =
+      await JobCategoryMaster.findOne({
+        _id: jobSubCategoryData.categoryId,
+        isActive: true,
+        isDisplay: true,
+      });
 
     if (!category) {
-      throw new Error("Job category not found");
+      throw new Error(
+        "Job category not found",
+      );
     }
 
-    // Name validation
-    if (!jobSubCategoryData.name?.trim()) {
-      throw new Error("Job sub category name is required");
+    // =====================================
+    // NAME
+    // =====================================
+
+    if (
+      !jobSubCategoryData.name?.trim()
+    ) {
+      throw new Error(
+        "Job sub category name is required",
+      );
     }
 
-    if (jobSubCategoryData.name.trim().length < 2) {
+    if (
+      jobSubCategoryData.name.trim()
+        .length < 2
+    ) {
       throw new Error(
         "Job sub category name must contain at least 2 characters",
       );
     }
 
-    // Description validation
-    if (!jobSubCategoryData.description?.trim()) {
-      throw new Error("Job sub category description is required");
+    // =====================================
+    // DESCRIPTION
+    // =====================================
+
+    if (
+      !jobSubCategoryData.description?.trim()
+    ) {
+      throw new Error(
+        "Job sub category description is required",
+      );
     }
 
-    if (jobSubCategoryData.description.trim().length < 2) {
+    if (
+      jobSubCategoryData.description.trim()
+        .length < 2
+    ) {
       throw new Error(
         "Job sub category description must contain at least 2 characters",
       );
     }
 
-    // Icon validation
-    if (!jobSubCategoryData.icon?.trim()) {
-      throw new Error("Job sub category icon is required");
+    // =====================================
+    // ICON
+    // =====================================
+
+    if (
+      !jobSubCategoryData.icon?.trim()
+    ) {
+      throw new Error(
+        "Job sub category icon is required",
+      );
     }
 
-    // Created by validation
-    if (!jobSubCategoryData.createdBy?.trim()) {
-      throw new Error("Created by is required");
+    // =====================================
+    // CREATED BY
+    // =====================================
+
+    if (
+      !jobSubCategoryData.createdBy?.trim()
+    ) {
+      throw new Error(
+        "Created by is required",
+      );
     }
 
-    // Duplicate check inside same category
-    const existingSubCategory = await JobSubCategoryMaster.findOne({
-      categoryId: jobSubCategoryData.categoryId,
-      name: jobSubCategoryData.name.trim(),
-      isActive: true,
-      isDisplay: true,
-    });
+    // =====================================
+    // DUPLICATE NAME
+    // SAME CATEGORY
+    // =====================================
+
+    const existingSubCategory =
+      await JobSubCategoryMaster.findOne({
+        categoryId:
+          jobSubCategoryData.categoryId,
+
+        name:
+          jobSubCategoryData.name.trim(),
+
+        isActive: true,
+        isDisplay: true,
+      });
 
     if (existingSubCategory) {
       throw new Error(
@@ -80,34 +140,49 @@ export async function createJobSubCategoryService(
       );
     }
 
-    const jobSubCategory = new JobSubCategoryMaster({
-      ...jobSubCategoryData,
+    // =====================================
+    // CREATE
+    // =====================================
 
-      name: jobSubCategoryData.name.trim(),
+    const jobSubCategory =
+      new JobSubCategoryMaster({
+        categoryId:
+          jobSubCategoryData.categoryId,
 
-      description: jobSubCategoryData.description.trim(),
+        name:
+          jobSubCategoryData.name.trim(),
 
-      icon: jobSubCategoryData.icon.trim(),
+        description:
+          jobSubCategoryData.description.trim(),
 
-      isActive: true,
-      isDisplay: true,
+        icon:
+          jobSubCategoryData.icon.trim(),
 
-      createdBy: jobSubCategoryData.createdBy.trim(),
+        isActive: true,
+        isDisplay: true,
 
-      updatedBy: null,
-      deleteAt: null,
-      deleteBy: null,
-    });
+        createdBy:
+          jobSubCategoryData.createdBy.trim(),
+
+        updatedBy: null,
+
+        deleteAt: null,
+        deleteBy: null,
+      });
 
     return await jobSubCategory.save();
   } catch (error) {
-    console.error("Error creating job sub category:", error);
+    console.error(
+      "Error creating job sub category:",
+      error,
+    );
+
     throw error;
   }
 }
 
 // =====================================
-// Get All Active
+// Get Job Sub Categories
 // =====================================
 
 export async function getJobSubCategoriesService() {
@@ -115,18 +190,26 @@ export async function getJobSubCategoriesService() {
     return await JobSubCategoryMaster.find({
       isActive: true,
       isDisplay: true,
+    }).sort({
+      createdAt: -1,
     });
   } catch (error) {
-    console.error("Error getting job sub categories:", error);
+    console.error(
+      "Error getting job sub categories:",
+      error,
+    );
+
     throw error;
   }
 }
 
 // =====================================
-// Get By ID
+// Get Job Sub Category By ID
 // =====================================
 
-export async function getJobSubCategoryByIdService(id: string) {
+export async function getJobSubCategoryByIdService(
+  id: string,
+) {
   try {
     return await JobSubCategoryMaster.findOne({
       _id: id,
@@ -134,14 +217,17 @@ export async function getJobSubCategoryByIdService(id: string) {
       isDisplay: true,
     });
   } catch (error) {
-    console.error(`Error getting job sub category with id ${id}:`, error);
+    console.error(
+      `Error getting job sub category with id ${id}: `,
+      error,
+    );
 
     throw error;
   }
 }
 
 // =====================================
-// Update
+// Update Job Sub Category
 // =====================================
 
 export async function updateJobSubCategoryService(
@@ -149,9 +235,16 @@ export async function updateJobSubCategoryService(
   updateData: Partial<IJobSubCategoryMaster>,
 ) {
   try {
-    // Category validation
+    // ==========================================
+    // CATEGORY VALIDATION
+    // ==========================================
+
     if (updateData.categoryId !== undefined) {
-      if (!mongoose.Types.ObjectId.isValid(updateData.categoryId.toString())) {
+      if (
+        !mongoose.Types.ObjectId.isValid(
+          updateData.categoryId.toString(),
+        )
+      ) {
         throw new Error("Invalid category ID");
       }
 
@@ -166,23 +259,37 @@ export async function updateJobSubCategoryService(
       }
     }
 
-    // Name validation
-    if (updateData.name !== undefined && !updateData.name.trim()) {
+    // ==========================================
+    // NAME VALIDATION
+    // ==========================================
+
+    if (
+      updateData.name !== undefined &&
+      !updateData.name.trim()
+    ) {
       throw new Error("Job sub category name is required");
     }
 
-    if (updateData.name !== undefined && updateData.name.trim().length < 2) {
+    if (
+      updateData.name !== undefined &&
+      updateData.name.trim().length < 2
+    ) {
       throw new Error(
         "Job sub category name must contain at least 2 characters",
       );
     }
 
-    // Description validation
+    // ==========================================
+    // DESCRIPTION VALIDATION
+    // ==========================================
+
     if (
       updateData.description !== undefined &&
       !updateData.description.trim()
     ) {
-      throw new Error("Job sub category description is required");
+      throw new Error(
+        "Job sub category description is required",
+      );
     }
 
     if (
@@ -194,35 +301,60 @@ export async function updateJobSubCategoryService(
       );
     }
 
-    // Icon validation
-    if (updateData.icon !== undefined && !updateData.icon.trim()) {
+    // ==========================================
+    // ICON VALIDATION
+    // ==========================================
+
+    if (
+      updateData.icon !== undefined &&
+      !updateData.icon.trim()
+    ) {
       throw new Error("Job sub category icon is required");
     }
 
-    // Updated by validation
+    // ==========================================
+    // UPDATED BY VALIDATION
+    // ==========================================
+
     if (!updateData.updatedBy?.trim()) {
       throw new Error("Updated by is required");
     }
 
-    // Duplicate check
-    if (updateData.name !== undefined || updateData.categoryId !== undefined) {
-      const currentData = await JobSubCategoryMaster.findById(id);
+    // ==========================================
+    // CHECK CURRENT DATA
+    // ==========================================
+
+    if (
+      updateData.name !== undefined ||
+      updateData.categoryId !== undefined
+    ) {
+      const currentData =
+        await JobSubCategoryMaster.findById(id);
 
       if (!currentData) {
         return null;
       }
 
-      const categoryId = updateData.categoryId ?? currentData.categoryId;
+      const categoryId =
+        updateData.categoryId ?? currentData.categoryId;
 
-      const name = updateData.name?.trim() ?? currentData.name;
+      const name =
+        updateData.name?.trim() ?? currentData.name;
 
-      const existingSubCategory = await JobSubCategoryMaster.findOne({
-        _id: { $ne: id },
-        categoryId,
-        name,
-        isActive: true,
-        isDisplay: true,
-      });
+      // ==========================================
+      // DUPLICATE CHECK
+      // ==========================================
+
+      const existingSubCategory =
+        await JobSubCategoryMaster.findOne({
+          _id: {
+            $ne: id,
+          },
+          categoryId,
+          name,
+          isActive: true,
+          isDisplay: true,
+        });
 
       if (existingSubCategory) {
         throw new Error(
@@ -231,21 +363,43 @@ export async function updateJobSubCategoryService(
       }
     }
 
-    const data: Partial<IJobSubCategoryMaster> = {
-      ...updateData,
-    };
+    // ==========================================
+    // BUILD UPDATE PAYLOAD
+    // ==========================================
 
-    if (data.name !== undefined) {
-      data.name = data.name.trim();
+    const updatePayload: Partial<IJobSubCategoryMaster> = {};
+
+    if (updateData.categoryId !== undefined) {
+      updatePayload.categoryId =
+        updateData.categoryId;
     }
 
-    if (data.description !== undefined) {
-      data.description = data.description.trim();
+    if (updateData.name !== undefined) {
+      updatePayload.name =
+        updateData.name.trim();
     }
 
-    if (data.icon !== undefined) {
-      data.icon = data.icon.trim();
+    if (updateData.description !== undefined) {
+      updatePayload.description =
+        updateData.description.trim();
     }
+
+    if (updateData.updatedBy !== undefined) {
+      updatePayload.updatedBy =
+        updateData.updatedBy.trim();
+    }
+
+    if (
+      updateData.icon !== undefined &&
+      updateData.icon.trim()
+    ) {
+      updatePayload.icon =
+        updateData.icon.trim();
+    }
+
+    // ==========================================
+    // UPDATE
+    // ==========================================
 
     return await JobSubCategoryMaster.findOneAndUpdate(
       {
@@ -253,20 +407,24 @@ export async function updateJobSubCategoryService(
         isActive: true,
         isDisplay: true,
       },
-      data,
+      updatePayload,
       {
         new: true,
         runValidators: true,
       },
     );
   } catch (error) {
-    console.error(`Error updating job sub category with id ${id}:`, error);
+    console.error(
+      `Error updating job sub category with id ${id}:`,
+      error,
+    );
+
     throw error;
   }
 }
 
 // =====================================
-// Soft Delete
+// Delete Job Sub Category
 // =====================================
 
 export async function deleteJobSubCategoryService(
@@ -274,40 +432,65 @@ export async function deleteJobSubCategoryService(
   deleteBy: string,
 ) {
   try {
+    // =====================================
+    // DELETE BY
+    // =====================================
+
     if (!deleteBy?.trim()) {
-      throw new Error("Delete by is required");
+      throw new Error(
+        "Delete by is required",
+      );
     }
+
+    // =====================================
+    // SOFT DELETE
+    // =====================================
 
     return await JobSubCategoryMaster.findOneAndUpdate(
       {
         _id: id,
         isActive: true,
       },
+
       {
         isActive: false,
         isDisplay: false,
+
         deleteAt: new Date(),
-        deleteBy: deleteBy.trim(),
+
+        deleteBy:
+          deleteBy.trim(),
       },
+
       {
         new: true,
       },
     );
   } catch (error) {
-    console.error(`Error deleting job sub category with id ${id}:`, error);
+    console.error(
+      `Error deleting job sub category with id ${id}: `,
+      error,
+    );
+
     throw error;
   }
 }
 
 // =====================================
-// Get All For Admin
+// Get All Job Sub Categories For Admin
 // =====================================
 
 export async function getAllJobSubCategoryForAdminService() {
   try {
-    return await JobSubCategoryMaster.find();
+    return await JobSubCategoryMaster.find()
+      .sort({
+        createdAt: -1,
+      });
   } catch (error) {
-    console.error("Error getting all job sub categories:", error);
+    console.error(
+      "Error getting job sub categories for admin:",
+      error,
+    );
 
     throw error;
   }

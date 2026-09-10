@@ -155,35 +155,6 @@ const Login: React.FC = () => {
               />
             </Field>
 
-            {/* Login As
-
-            {/* <Field label="Login As" required>
-              <select
-                value={loginAs}
-                onChange={(e) => {
-                  setLoginAs(
-                    e.target.value as
-                      | "applicant"
-                      | "recruiter"
-                      | "",
-                  );
-                  setError("");
-                }}
-                disabled={loading}
-              >
-                <option value="">
-                  Select Role
-                </option>
-
-                <option value="applicant">
-                  Applicant
-                </option>
-
-                <option value="recruiter">
-                  Recruiter
-                </option>
-              </select>
-            </Field> */}
           </div>
 
           {/* Login Button */}

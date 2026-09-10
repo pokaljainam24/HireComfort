@@ -1,25 +1,58 @@
 import axios from "axios";
 
-import type { CmsSection, CmsSectionForm } from "@/types/cms";
+import type {
+  CmsSection,
+  CmsSectionForm,
+} from "@/types/cms";
 
-const API_URL = "http://localhost:5000/api/cms";
+const API_URL =
+  "http://localhost:5000/api/cms";
+
+// =====================================
+// AUTH HEADER
+// =====================================
+
+const getAuthHeaders = () => {
+  const token = sessionStorage.getItem("admin_panel_auth_token");
+
+  if (!token) {
+    throw new Error("Authentication token not found");
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
 
 // =====================================
 // Get CMS
 // =====================================
 
-export const getCms = async (): Promise<CmsSection[]> => {
-  const response = await axios.get(API_URL);
+export const getCms =
+  async (): Promise<CmsSection[]> => {
+    const response = await axios.get(
+      API_URL,
+      {
+        headers: getAuthHeaders(),
+      },
+    );
 
-  return response.data.cms;
-};
+    return response.data.cms;
+  };
 
 // =====================================
 // Get CMS By ID
 // =====================================
 
-export const getCmsById = async (id: string): Promise<CmsSection> => {
-  const response = await axios.get(`${API_URL}/${id}`);
+export const getCmsById = async (
+  id: string,
+): Promise<CmsSection> => {
+  const response = await axios.get(
+    `${API_URL}/${id}`,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
 
   return response.data.cms;
 };
@@ -28,8 +61,16 @@ export const getCmsById = async (id: string): Promise<CmsSection> => {
 // Create CMS
 // =====================================
 
-export const createCms = async (form: CmsSectionForm): Promise<CmsSection> => {
-  const response = await axios.post(API_URL, form);
+export const createCms = async (
+  form: CmsSectionForm,
+): Promise<CmsSection> => {
+  const response = await axios.post(
+    API_URL,
+    form,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
 
   return response.data.cms;
 };
@@ -42,7 +83,13 @@ export const updateCms = async (
   id: string,
   form: CmsSectionForm,
 ): Promise<CmsSection> => {
-  const response = await axios.patch(`${API_URL}/${id}`, form);
+  const response = await axios.patch(
+    `${API_URL}/${id}`,
+    form,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
 
   return response.data.cms;
 };
@@ -51,8 +98,15 @@ export const updateCms = async (
 // Delete CMS
 // =====================================
 
-export const deleteCms = async (id: string): Promise<CmsSection> => {
-  const response = await axios.delete(`${API_URL}/${id}`);
+export const deleteCms = async (
+  id: string,
+): Promise<CmsSection> => {
+  const response = await axios.delete(
+    `${API_URL}/${id}`,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
 
   return response.data.cms;
 };

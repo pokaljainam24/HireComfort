@@ -7,6 +7,7 @@ import {
   getAdmin,
   updateAdmin,
   deleteAdmin,
+  changeAdminPassword,
 } from "../controllers/AdminController/adminController.js";
 
 import { authMiddleware } from "../middleware/authMiddleware.js";
@@ -33,10 +34,21 @@ router.get("/", authMiddleware, getAdmins);
 // GET /api/admin/:id
 router.get("/:id", authMiddleware, getAdmin);
 
-// PUT /api/admin/:id
+// PATCH /api/admin/:id
 router.patch("/:id", authMiddleware, updateAdmin);
 
 // DELETE /api/admin/:id
 router.delete("/:id", authMiddleware, deleteAdmin);
+
+// ==========================================
+// CHANGE PASSWORD
+// ==========================================
+
+// PUT /api/admin/change-password
+router.put(
+  "/change-password",
+  authMiddleware,
+  changeAdminPassword,
+);
 
 export default router;

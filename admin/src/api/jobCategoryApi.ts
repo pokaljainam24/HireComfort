@@ -1,36 +1,33 @@
 import axios from "axios";
 
+import type { JobCategory } from "@/types/jobCategory";
+
 const API_URL = "http://localhost:5000/api/job-categories";
 
 // =====================================
-// TYPE
+// AUTH HEADER
 // =====================================
 
-export interface JobCategory {
-  _id: string;
-  name: string;
-  description: string;
-  icon: string;
+const getAuthHeaders = () => {
+  const token = sessionStorage.getItem("admin_panel_auth_token");
 
-  isActive: boolean;
-  isDisplay: boolean;
+  if (!token) {
+    throw new Error("Authentication token not found");
+  }
 
-  createdAt: string;
-  createdBy: string;
-
-  updatedAt: string;
-  updatedBy: string | null;
-
-  deleteAt: string | null;
-  deleteBy: string | null;
-}
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
 
 // =====================================
 // GET ALL
 // =====================================
 
 export const getJobCategories = async (): Promise<JobCategory[]> => {
-  const response = await axios.get(API_URL);
+  const response = await axios.get(API_URL, {
+    headers: getAuthHeaders(),
+  });
 
   return response.data.jobCategories;
 };
@@ -39,8 +36,12 @@ export const getJobCategories = async (): Promise<JobCategory[]> => {
 // GET BY ID
 // =====================================
 
-export const getJobCategoryById = async (id: string): Promise<JobCategory> => {
-  const response = await axios.get(`${API_URL}/${id}`);
+export const getJobCategoryById = async (
+  id: string,
+): Promise<JobCategory> => {
+  const response = await axios.get(`${API_URL}/${id}`, {
+    headers: getAuthHeaders(),
+  });
 
   return response.data.jobCategory;
 };
@@ -60,7 +61,9 @@ export const createJobCategory = async (
   formData.append("description", description);
   formData.append("icon", icon);
 
-  const response = await axios.post(API_URL, formData);
+  const response = await axios.post(API_URL, formData, {
+    headers: getAuthHeaders(),
+  });
 
   return response.data.jobCategory;
 };
@@ -84,7 +87,13 @@ export const updateJobCategory = async (
     formData.append("icon", icon);
   }
 
-  const response = await axios.patch(`${API_URL}/${id}`, formData);
+  const response = await axios.patch(
+    `${API_URL}/${id}`,
+    formData,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
 
   return response.data.jobCategory;
 };
@@ -93,8 +102,15 @@ export const updateJobCategory = async (
 // DELETE
 // =====================================
 
-export const deleteJobCategory = async (id: string): Promise<JobCategory> => {
-  const response = await axios.delete(`${API_URL}/${id}`);
+export const deleteJobCategory = async (
+  id: string,
+): Promise<JobCategory> => {
+  const response = await axios.delete(
+    `${API_URL}/${id}`,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
 
   return response.data.jobCategory;
 };

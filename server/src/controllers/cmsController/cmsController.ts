@@ -14,9 +14,16 @@ import {
 
 export const createCms = async (req: Request, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
     const cms = await createCmsService({
       ...req.body,
-      createdBy: "admin",
+      createdBy: req.user.username,
     });
 
     return res.status(201).json({
@@ -100,9 +107,16 @@ export const updateCms = async (req: Request, res: Response) => {
       });
     }
 
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
     const cms = await updateCmsService(id, {
       ...req.body,
-      updatedBy: "admin",
+      updatedBy: req.user.username,
     });
 
     if (!cms) {
@@ -138,7 +152,16 @@ export const deleteCms = async (req: Request, res: Response) => {
       });
     }
 
-    const cms = await deleteCmsService(id, "admin");
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const deleteBy = req.user.username;
+
+    const cms = await deleteCmsService(id, deleteBy);
 
     if (!cms) {
       return res.status(404).json({

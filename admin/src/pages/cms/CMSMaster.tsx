@@ -290,7 +290,7 @@ const CMSMaster: React.FC = () => {
   ];
 
   // =====================================
-  // VIEW FIELDS
+  //  
   // =====================================
 
   const getViewFields = (row: CmsSection): ViewField[] => [

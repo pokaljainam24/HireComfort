@@ -10,6 +10,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // @ts-expect-error CSS files are handled by the bundler at runtime.
 import "./index.css";
 
+
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>

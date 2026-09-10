@@ -6,6 +6,9 @@ import DataTable, {
   ColumnDef,
 } from "@/components/common/DataTable";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import ViewModal, {
+  ViewField,
+} from "@/components/common/ViewModal";
 import { Icon } from "@/components/common/Icon";
 
 import {
@@ -17,18 +20,40 @@ import {
 
 import { getJobCategories } from "@/api/jobCategoryApi";
 
-import { JobSubCategory } from "@/types/jobSubCategory";
-import { JobCategory } from "@/types/jobCategory";
+import {
+  showSuccess,
+  showError,
+} from "@/utils/swal";
+
+import type { JobSubCategory } from "@/types/jobSubCategory";
+import type { JobCategory } from "@/types/jobCategory";
+
+// =====================================
+// TYPES
+// =====================================
+
+interface JobSubCategoryForm {
+  categoryId: string;
+  name: string;
+  description: string;
+  icon: File | null;
+}
+
+// =====================================
+// API BASE URL
+// =====================================
+
+const API_BASE_URL = "http://localhost:5000";
 
 // =====================================
 // EMPTY FORM
 // =====================================
 
-const empty = {
+const emptyForm: JobSubCategoryForm = {
   categoryId: "",
   name: "",
   description: "",
-  icon: null as File | null,
+  icon: null,
 };
 
 // =====================================
@@ -40,11 +65,16 @@ const JobSubCategoryMaster: React.FC = () => {
   // STATE
   // =====================================
 
-  const [rows, setRows] = useState<JobSubCategory[]>([]);
+  const [rows, setRows] =
+    useState<JobSubCategory[]>([]);
 
-  const [categories, setCategories] = useState<JobCategory[]>([]);
+  const [categories, setCategories] =
+    useState<JobCategory[]>([]);
 
-  const [form, setForm] = useState(empty);
+  const [form, setForm] =
+    useState<JobSubCategoryForm>(
+      emptyForm,
+    );
 
   const [editingId, setEditingId] =
     useState<string | null>(null);
@@ -55,14 +85,103 @@ const JobSubCategoryMaster: React.FC = () => {
   const [deleteTarget, setDeleteTarget] =
     useState<JobSubCategory | null>(null);
 
-  const [loading, setLoading] = useState(false);
+  const [viewTarget, setViewTarget] =
+    useState<JobSubCategory | null>(null);
 
-  const [iconPreview, setIconPreview] = useState("");
+  const [loading, setLoading] =
+    useState(false);
 
-  const [showForm, setShowForm] = useState(false);
+  const [iconPreview, setIconPreview] =
+    useState<string>("");
+
+  const [showForm, setShowForm] =
+    useState(false);
 
   // =====================================
-  // GET ALL DATA
+  // IMAGE URL HELPER
+  // =====================================
+
+  const getImageUrl = (
+    imagePath?: string | null,
+  ) => {
+    if (!imagePath) {
+      return "";
+    }
+
+    if (
+      imagePath.startsWith("http://") ||
+      imagePath.startsWith("https://")
+    ) {
+      return imagePath;
+    }
+
+    if (imagePath.startsWith("/")) {
+      return `${API_BASE_URL}${imagePath}`;
+    }
+
+    return `${API_BASE_URL}/${imagePath}`;
+  };
+
+  // =====================================
+  // GET CATEGORY ID
+  // =====================================
+
+  const getCategoryId = (
+    categoryId: any,
+  ): string => {
+    if (!categoryId) {
+      return "";
+    }
+
+    if (typeof categoryId === "string") {
+      return categoryId;
+    }
+
+    if (
+      typeof categoryId === "object" &&
+      categoryId._id
+    ) {
+      return String(categoryId._id);
+    }
+
+    return "";
+  };
+
+  // =====================================
+  // GET CATEGORY NAME
+  // =====================================
+
+  const getCategoryName = (
+    categoryId: any,
+  ): string => {
+    if (!categoryId) {
+      return "Unknown";
+    }
+
+    // If API returns populated object
+    if (
+      typeof categoryId === "object" &&
+      categoryId.name
+    ) {
+      return categoryId.name;
+    }
+
+    // If API returns ObjectId/string
+    const id = getCategoryId(
+      categoryId,
+    );
+
+    const category =
+      categories.find(
+        (category) =>
+          category._id === id,
+      );
+
+    return category?.name || "Unknown";
+  };
+
+  // =====================================
+  // LOAD DATA
   // =====================================
 
   const loadData = async () => {
@@ -77,12 +196,21 @@ const JobSubCategoryMaster: React.FC = () => {
         getJobCategories(),
       ]);
 
-      setRows(subCategories ?? []);
-      setCategories(jobCategories ?? []);
+      setRows(
+        subCategories ?? [],
+      );
+
+      setCategories(
+        jobCategories ?? [],
+      );
     } catch (error) {
       console.error(
         "Error loading job sub categories:",
         error,
+      );
+
+      showError(
+        "Failed to load job sub category data",
       );
     } finally {
       setLoading(false);
@@ -90,7 +218,7 @@ const JobSubCategoryMaster: React.FC = () => {
   };
 
   // =====================================
-  // LOAD DATA
+  // INITIAL LOAD
   // =====================================
 
   useEffect(() => {
@@ -102,13 +230,23 @@ const JobSubCategoryMaster: React.FC = () => {
   // =====================================
 
   const resetForm = () => {
-    setForm(empty);
+    setForm({
+      ...emptyForm,
+    });
 
     setEditingId(null);
 
     setErrors({});
 
     setIconPreview("");
+  };
+
+  // =====================================
+  // CLOSE FORM
+  // =====================================
+
+  const closeForm = () => {
+    resetForm();
 
     setShowForm(false);
   };
@@ -118,15 +256,14 @@ const JobSubCategoryMaster: React.FC = () => {
   // =====================================
 
   const handleAdd = () => {
-    setForm(empty);
-
-    setEditingId(null);
-
-    setErrors({});
-
-    setIconPreview("");
+    resetForm();
 
     setShowForm(true);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   // =====================================
@@ -134,14 +271,18 @@ const JobSubCategoryMaster: React.FC = () => {
   // =====================================
 
   const validate = () => {
-    const e: Record<string, string> = {};
+    const e: Record<
+      string,
+      string
+    > = {};
 
     // =====================================
-    // CATEGORY
+    // PARENT CATEGORY
     // =====================================
 
     if (!form.categoryId) {
-      e.categoryId = "Select a job category";
+      e.categoryId =
+        "Select a job category";
     }
 
     // =====================================
@@ -149,7 +290,8 @@ const JobSubCategoryMaster: React.FC = () => {
     // =====================================
 
     if (!form.name.trim()) {
-      e.name = "Sub category name is required";
+      e.name =
+        "Sub category name is required";
     } else if (
       form.name.trim().length < 2
     ) {
@@ -161,10 +303,14 @@ const JobSubCategoryMaster: React.FC = () => {
     // DESCRIPTION
     // =====================================
 
-    if (!form.description.trim()) {
-      e.description = "Description is required";
+    if (
+      !form.description.trim()
+    ) {
+      e.description =
+        "Description is required";
     } else if (
-      form.description.trim().length < 2
+      form.description.trim()
+        .length < 2
     ) {
       e.description =
         "Description must contain at least 2 characters";
@@ -174,13 +320,20 @@ const JobSubCategoryMaster: React.FC = () => {
     // ICON
     // =====================================
 
-    if (!editingId && !form.icon) {
-      e.icon = "Icon is required";
+    // Icon required only while creating
+    if (
+      !editingId &&
+      !form.icon
+    ) {
+      e.icon =
+        "Icon is required";
     }
 
     setErrors(e);
 
-    return Object.keys(e).length === 0;
+    return (
+      Object.keys(e).length === 0
+    );
   };
 
   // =====================================
@@ -190,29 +343,114 @@ const JobSubCategoryMaster: React.FC = () => {
   const handleIconChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const file = event.target.files?.[0];
+    const file =
+      event.target.files?.[0];
 
     if (!file) {
       return;
     }
 
-    setForm({
-      ...form,
+    // =====================================
+    // FILE TYPE VALIDATION
+    // =====================================
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      "image/svg+xml",
+    ];
+
+    if (
+      !allowedTypes.includes(
+        file.type,
+      )
+    ) {
+      setErrors((prev) => ({
+        ...prev,
+        icon:
+          "Only JPG, JPEG, PNG, WEBP and SVG images are allowed",
+      }));
+
+      event.target.value = "";
+
+      return;
+    }
+
+    // =====================================
+    // FILE SIZE VALIDATION
+    // =====================================
+
+    const maxSize =
+      2 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      setErrors((prev) => ({
+        ...prev,
+        icon:
+          "Icon size must be less than 2MB",
+      }));
+
+      event.target.value = "";
+
+      return;
+    }
+
+    // =====================================
+    // SET FILE
+    // =====================================
+
+    setForm((prev) => ({
+      ...prev,
       icon: file,
-    });
+    }));
+
+    // =====================================
+    // PREVIEW
+    // =====================================
+
+    const previewUrl =
+      URL.createObjectURL(file);
 
     setIconPreview(
-      URL.createObjectURL(file),
+      previewUrl,
     );
 
-    setErrors({
-      ...errors,
+    // =====================================
+    // CLEAR ERROR
+    // =====================================
+
+    setErrors((prev) => ({
+      ...prev,
       icon: "",
-    });
+    }));
   };
 
   // =====================================
-  // CREATE / UPDATE
+  // INPUT CHANGE
+  // =====================================
+
+  const handleChange = (
+    field:
+      | "categoryId"
+      | "name"
+      | "description",
+    value: string,
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
+
+  // =====================================
+  // SUBMIT
   // =====================================
 
   const handleSubmit = async (
@@ -221,7 +459,7 @@ const JobSubCategoryMaster: React.FC = () => {
     ev.preventDefault();
 
     // =====================================
-    // VALIDATION
+    // VALIDATE
     // =====================================
 
     if (!validate()) {
@@ -236,25 +474,34 @@ const JobSubCategoryMaster: React.FC = () => {
       // =====================================
 
       if (editingId) {
-        const updated =
+        const updatedSubCategory =
           await updateJobSubCategory(
             editingId,
             {
               categoryId:
                 form.categoryId,
-              name: form.name,
+              name:
+                form.name.trim(),
               description:
-                form.description,
-              icon: form.icon,
+                form.description.trim(),
+              icon:
+                form.icon,
             },
           );
 
-        setRows((rows) =>
-          rows.map((row) =>
-            row._id === editingId
-              ? updated
-              : row,
-          ),
+        setRows(
+          (currentRows) =>
+            currentRows.map(
+              (row) =>
+                row._id ===
+                  editingId
+                  ? updatedSubCategory
+                  : row,
+            ),
+        );
+
+        showSuccess(
+          "Job sub category updated successfully",
         );
       }
 
@@ -264,6 +511,11 @@ const JobSubCategoryMaster: React.FC = () => {
 
       else {
         if (!form.icon) {
+          setErrors({
+            icon:
+              "Icon is required",
+          });
+
           return;
         }
 
@@ -271,27 +523,39 @@ const JobSubCategoryMaster: React.FC = () => {
           await createJobSubCategory({
             categoryId:
               form.categoryId,
-            name: form.name,
+            name:
+              form.name.trim(),
             description:
-              form.description,
-            icon: form.icon,
+              form.description.trim(),
+            icon:
+              form.icon,
           });
 
-        setRows((rows) => [
-          newSubCategory,
-          ...rows,
-        ]);
+        setRows(
+          (currentRows) => [
+            newSubCategory,
+            ...currentRows,
+          ],
+        );
+
+        showSuccess(
+          "Job sub category added successfully",
+        );
       }
 
       // =====================================
-      // RESET AFTER SUCCESS
+      // CLOSE FORM
       // =====================================
 
-      resetForm();
+      closeForm();
     } catch (error) {
       console.error(
         "Error saving job sub category:",
         error,
+      );
+
+      showError(
+        "Something went wrong while saving job sub category",
       );
     } finally {
       setLoading(false);
@@ -305,18 +569,37 @@ const JobSubCategoryMaster: React.FC = () => {
   const handleEdit = (
     row: JobSubCategory,
   ) => {
+    if (!row._id) {
+      showError(
+        "Job sub category ID not found",
+      );
+
+      return;
+    }
+
+    const categoryId =
+      getCategoryId(
+        row.categoryId,
+      );
+
     setEditingId(row._id);
 
     setForm({
-      categoryId: row.categoryId,
-      name: row.name,
-      description: row.description,
+      categoryId,
+      name:
+        row.name || "",
+      description:
+        row.description || "",
       icon: null,
     });
 
+    // =====================================
+    // OLD ICON PREVIEW
+    // =====================================
+
     setIconPreview(
       row.icon
-        ? `http://localhost:5000${row.icon}`
+        ? getImageUrl(row.icon)
         : "",
     );
 
@@ -335,7 +618,7 @@ const JobSubCategoryMaster: React.FC = () => {
   // =====================================
 
   const handleDelete = async () => {
-    if (!deleteTarget) {
+    if (!deleteTarget?._id) {
       return;
     }
 
@@ -346,39 +629,32 @@ const JobSubCategoryMaster: React.FC = () => {
         deleteTarget._id,
       );
 
-      setRows((rows) =>
-        rows.filter(
-          (row) =>
-            row._id !==
-            deleteTarget._id,
-        ),
+      setRows(
+        (currentRows) =>
+          currentRows.filter(
+            (row) =>
+              row._id !==
+              deleteTarget._id,
+          ),
       );
 
       setDeleteTarget(null);
+
+      showSuccess(
+        "Job sub category deleted successfully",
+      );
     } catch (error) {
       console.error(
         "Error deleting job sub category:",
         error,
       );
+
+      showError(
+        "Something went wrong while deleting job sub category",
+      );
     } finally {
       setLoading(false);
     }
-  };
-
-  // =====================================
-  // CATEGORY NAME
-  // =====================================
-
-  const categoryName = (
-    categoryId: string,
-  ) => {
-    const category =
-      categories.find(
-        (category) =>
-          category._id === categoryId,
-      );
-
-    return category?.name || "Unknown";
   };
 
   // =====================================
@@ -387,6 +663,10 @@ const JobSubCategoryMaster: React.FC = () => {
 
   const columns: ColumnDef<JobSubCategory>[] =
     [
+      // =====================================
+      // SUB CATEGORY
+      // =====================================
+
       {
         header: "Sub Category",
 
@@ -394,19 +674,42 @@ const JobSubCategoryMaster: React.FC = () => {
           <div
             style={{
               display: "flex",
-              alignItems: "center",
+              alignItems:
+                "center",
               gap: 10,
             }}
           >
-            <div className="icon-preview">
+            {/* =====================================
+                ICON
+            ===================================== */}
+
+            <div
+              className="icon-preview"
+              style={{
+                width: 40,
+                height: 40,
+                display: "flex",
+                alignItems:
+                  "center",
+                justifyContent:
+                  "center",
+                borderRadius: 8,
+                overflow: "hidden",
+              }}
+            >
               {row.icon ? (
                 <img
-                  src={`http://localhost:5000${row.icon}`}
-                  alt={row.name}
+                  src={getImageUrl(
+                    row.icon,
+                  )}
+                  alt={
+                    row.name
+                  }
                   style={{
                     width: 35,
                     height: 35,
-                    objectFit: "contain",
+                    objectFit:
+                      "contain",
                   }}
                 />
               ) : (
@@ -417,31 +720,245 @@ const JobSubCategoryMaster: React.FC = () => {
               )}
             </div>
 
-            <b>{row.name}</b>
+            {/* =====================================
+                NAME
+            ===================================== */}
+
+            <b>
+              {row.name}
+            </b>
           </div>
         ),
       },
 
+      // =====================================
+      // PARENT CATEGORY
+      // =====================================
+
       {
-        header: "Parent Category",
+        header:
+          "Parent Category",
 
         render: (row) => (
           <span className="badge badge-blue">
-            {categoryName(
+            {getCategoryName(
               row.categoryId,
             )}
           </span>
         ),
       },
 
+      // =====================================
+      // DESCRIPTION
+      // =====================================
+
       {
-        header: "Description",
+        header:
+          "Description",
 
         render: (row) => (
           <span className="cell-muted">
-            {row.description}
+            {row.description ||
+              "-"}
           </span>
         ),
+      },
+    ];
+
+  // =====================================
+  // VIEW FIELDS
+  // =====================================
+
+  const getViewFields = (
+    row: JobSubCategory,
+  ): ViewField[] => [
+      // =====================================
+      // SUB CATEGORY NAME
+      // =====================================
+
+      {
+        label:
+          "Sub Category Name",
+
+        value:
+          row.name || "-",
+      },
+
+      // =====================================
+      // PARENT CATEGORY
+      // =====================================
+
+      {
+        label:
+          "Parent Category",
+
+        value:
+          getCategoryName(
+            row.categoryId,
+          ),
+      },
+
+      // =====================================
+      // DESCRIPTION
+      // =====================================
+
+      {
+        label:
+          "Description",
+
+        value:
+          row.description ||
+          "-",
+
+        fullWidth: true,
+      },
+
+      // =====================================
+      // ICON
+      // =====================================
+
+      {
+        label: "Icon",
+
+        value: row.icon ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems:
+                "center",
+            }}
+          >
+            <img
+              src={getImageUrl(
+                row.icon,
+              )}
+              alt={
+                row.name
+              }
+              style={{
+                width: 80,
+                height: 80,
+                objectFit:
+                  "contain",
+              }}
+            />
+          </div>
+        ) : (
+          "-"
+        ),
+      },
+
+      // =====================================
+      // ACTIVE
+      // =====================================
+
+      {
+        label: "Active",
+
+        value:
+          row.isActive
+            ? "Yes"
+            : "No",
+      },
+
+      // =====================================
+      // DISPLAY
+      // =====================================
+
+      {
+        label: "Display",
+
+        value:
+          row.isDisplay
+            ? "Yes"
+            : "No",
+      },
+
+      // =====================================
+      // CREATED BY
+      // =====================================
+
+      {
+        label:
+          "Created By",
+
+        value:
+          row.createdBy ||
+          "-",
+      },
+
+      // =====================================
+      // CREATED AT
+      // =====================================
+
+      {
+        label:
+          "Created At",
+
+        value:
+          row.createdAt
+            ? new Date(
+              row.createdAt,
+            ).toLocaleString()
+            : "-",
+      },
+
+      // =====================================
+      // UPDATED BY
+      // =====================================
+
+      {
+        label:
+          "Updated By",
+
+        value:
+          row.updatedBy ||
+          "-",
+      },
+
+      // =====================================
+      // UPDATED AT
+      // =====================================
+
+      {
+        label:
+          "Updated At",
+
+        value:
+          row.updatedAt
+            ? new Date(
+              row.updatedAt,
+            ).toLocaleString()
+            : "-",
+      },
+
+      // =====================================
+      // DELETE BY
+      // =====================================
+
+      {
+        label:
+          "Delete By",
+
+        value:
+          row.deleteBy ||
+          "-",
+      },
+
+      // =====================================
+      // DELETE AT
+      // =====================================
+
+      {
+        label:
+          "Delete At",
+
+        value:
+          row.deleteAt
+            ? new Date(
+              row.deleteAt,
+            ).toLocaleString()
+            : "-",
       },
     ];
 
@@ -451,72 +968,86 @@ const JobSubCategoryMaster: React.FC = () => {
 
   return (
     <>
+      {/* =====================================
+          PAGE HEADER
+      ===================================== */}
+
       <PageHeader
         title="Job Sub Category Master"
         section="Job Masters"
       />
 
       {/* =====================================
-          ALL JOB SUB CATEGORIES
+          FORM
       ===================================== */}
 
-      <div className="card-panel">
-        <div className="card-panel-head">
-          <div>
-            <h2>
-              All Job Sub Categories
-            </h2>
+      {showForm && (
+        <div className="card-panel">
+          {/* =====================================
+              FORM HEADER
+          ===================================== */}
 
-            <p>
-              {rows.length} sub categories
-              configured
-            </p>
-          </div>
+          <div
+            className="card-panel-head"
+            style={{
+              display: "flex",
+              alignItems:
+                "center",
+              justifyContent:
+                "space-between",
+              gap: 20,
+            }}
+          >
+            <div>
+              <h2>
+                {editingId
+                  ? "Edit Job Sub Category"
+                  : "Add Job Sub Category"}
+              </h2>
 
-          {!showForm && (
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleAdd}
-            >
-              <Icon
-                name="plus"
-                size={15}
-              />
+              <p>
+                Sub categories are
+                grouped under job
+                categories.
+              </p>
+            </div>
 
-              Add Job Sub Category
-            </button>
-          )}
+            {/* =====================================
+                CANCEL
+            ===================================== */}
 
-          {showForm && editingId && (
             <button
               type="button"
               className="btn btn-ghost btn-sm"
-              onClick={resetForm}
-              disabled={loading}
+              onClick={
+                closeForm
+              }
+              disabled={
+                loading
+              }
             >
               <Icon
                 name="x"
                 size={14}
               />
 
-              Cancel edit
+              Cancel
             </button>
-          )}
-        </div>
+          </div>
 
-        {/* =====================================
-            ADD / EDIT FORM
-        ===================================== */}
+          {/* =====================================
+              FORM BODY
+          ===================================== */}
 
-        {showForm && (
           <div className="card-panel-body">
             <form
-              onSubmit={handleSubmit}
+              onSubmit={
+                handleSubmit
+              }
             >
               <div className="form-grid">
                 {/* =====================================
-                    CATEGORY
+                    PARENT CATEGORY
                 ===================================== */}
 
                 <Field
@@ -530,26 +1061,27 @@ const JobSubCategoryMaster: React.FC = () => {
                     value={
                       form.categoryId
                     }
-                    onChange={(e) => {
-                      setForm({
-                        ...form,
-                        categoryId:
-                          e.target.value,
-                      });
-
-                      setErrors({
-                        ...errors,
-                        categoryId: "",
-                      });
-                    }}
-                    disabled={loading}
+                    onChange={(
+                      e,
+                    ) =>
+                      handleChange(
+                        "categoryId",
+                        e.target
+                          .value,
+                      )
+                    }
+                    disabled={
+                      loading
+                    }
                   >
                     <option value="">
                       Select category
                     </option>
 
                     {categories.map(
-                      (category) => (
+                      (
+                        category,
+                      ) => (
                         <option
                           key={
                             category._id
@@ -568,30 +1100,34 @@ const JobSubCategoryMaster: React.FC = () => {
                 </Field>
 
                 {/* =====================================
-                    NAME
+                    SUB CATEGORY NAME
                 ===================================== */}
 
                 <Field
                   label="Sub Category Name"
                   required
-                  error={errors.name}
+                  error={
+                    errors.name
+                  }
                 >
                   <input
-                    value={form.name}
-                    onChange={(e) => {
-                      setForm({
-                        ...form,
-                        name: e.target
+                    type="text"
+                    value={
+                      form.name
+                    }
+                    onChange={(
+                      e,
+                    ) =>
+                      handleChange(
+                        "name",
+                        e.target
                           .value,
-                      });
-
-                      setErrors({
-                        ...errors,
-                        name: "",
-                      });
-                    }}
+                      )
+                    }
                     placeholder="e.g. Frontend Developer"
-                    disabled={loading}
+                    disabled={
+                      loading
+                    }
                   />
                 </Field>
 
@@ -601,35 +1137,79 @@ const JobSubCategoryMaster: React.FC = () => {
 
                 <Field
                   label="Icon"
-                  required={!editingId}
-                  error={errors.icon}
+                  required={
+                    !editingId
+                  }
+                  error={
+                    errors.icon
+                  }
                 >
                   <input
                     type="file"
-                    accept="image/*"
+                    accept=".jpg,.jpeg,.png,.webp,.svg,image/jpeg,image/png,image/webp,image/svg+xml"
                     onChange={
                       handleIconChange
                     }
-                    disabled={loading}
+                    disabled={
+                      loading
+                    }
                   />
+
+                  {/* =====================================
+                      ICON PREVIEW
+                  ===================================== */}
 
                   {iconPreview && (
                     <div
                       style={{
                         marginTop: 10,
+                        width: 70,
+                        height: 70,
+                        display:
+                          "flex",
+                        alignItems:
+                          "center",
+                        justifyContent:
+                          "center",
+                        border:
+                          "1px solid #ddd",
+                        borderRadius: 8,
+                        padding: 5,
                       }}
                     >
                       <img
-                        src={iconPreview}
+                        src={
+                          iconPreview
+                        }
                         alt="Icon preview"
                         style={{
-                          width: 50,
-                          height: 50,
+                          width: 55,
+                          height: 55,
                           objectFit:
                             "contain",
                         }}
                       />
                     </div>
+                  )}
+
+                  {/* =====================================
+                      EDIT NOTE
+                  ===================================== */}
+
+                  {editingId && (
+                    <small
+                      style={{
+                        display:
+                          "block",
+                        marginTop: 6,
+                        color:
+                          "#777",
+                      }}
+                    >
+                      Leave empty to
+                      keep the existing
+                      icon.
+                    </small>
                   )}
                 </Field>
 
@@ -649,20 +1229,20 @@ const JobSubCategoryMaster: React.FC = () => {
                     value={
                       form.description
                     }
-                    onChange={(e) => {
-                      setForm({
-                        ...form,
-                        description:
-                          e.target.value,
-                      });
-
-                      setErrors({
-                        ...errors,
-                        description: "",
-                      });
-                    }}
+                    onChange={(
+                      e,
+                    ) =>
+                      handleChange(
+                        "description",
+                        e.target
+                          .value,
+                      )
+                    }
                     placeholder="Short description of this job sub category"
-                    disabled={loading}
+                    disabled={
+                      loading
+                    }
+                    rows={4}
                   />
                 </Field>
               </div>
@@ -672,19 +1252,33 @@ const JobSubCategoryMaster: React.FC = () => {
               ===================================== */}
 
               <div className="form-actions">
+                {/* =====================================
+                    RESET
+                ===================================== */}
+
                 <button
                   type="button"
                   className="btn btn-outline"
-                  onClick={resetForm}
-                  disabled={loading}
+                  onClick={
+                    resetForm
+                  }
+                  disabled={
+                    loading
+                  }
                 >
                   Reset
                 </button>
 
+                {/* =====================================
+                    SUBMIT
+                ===================================== */}
+
                 <button
                   type="submit"
                   className="btn btn-primary"
-                  disabled={loading}
+                  disabled={
+                    loading
+                  }
                 >
                   <Icon
                     name={
@@ -704,44 +1298,145 @@ const JobSubCategoryMaster: React.FC = () => {
               </div>
             </form>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* =====================================
+          DATA TABLE
+      ===================================== */}
+
+      <div className="card-panel">
+        {/* =====================================
+            TABLE HEADER
+        ===================================== */}
+
+        <div className="card-panel-header">
+          {/* =====================================
+              ADD BUTTON
+          ===================================== */}
+
+          {!showForm && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={
+                handleAdd
+              }
+            >
+              <Icon
+                name="plus"
+                size={15}
+              />
+
+              Add Job Sub Category
+            </button>
+          )}
+        </div>
 
         {/* =====================================
-            DATA TABLE
+            TABLE
         ===================================== */}
 
         <DataTable
           columns={columns}
           rows={rows}
-          rowKey={(row) => row._id}
-          searchPlaceholder="Search sub category..."
-          onSearch={(row, query) =>
-            row.name
-              .toLowerCase()
-              .includes(query) ||
-            row.description
-              .toLowerCase()
-              .includes(query)
+          rowKey={(row) =>
+            row._id
           }
-          onEdit={handleEdit}
-          onDelete={(row) =>
-            setDeleteTarget(row)
+          searchPlaceholder="Search sub category..."
+          onSearch={(
+            row,
+            query,
+          ) => {
+            const search =
+              query.toLowerCase();
+
+            const subCategoryName =
+              row.name
+                ?.toLowerCase() ||
+              "";
+
+            const description =
+              row.description
+                ?.toLowerCase() ||
+              "";
+
+            const parentCategory =
+              getCategoryName(
+                row.categoryId,
+              ).toLowerCase();
+
+            return (
+              subCategoryName.includes(
+                search,
+              ) ||
+              description.includes(
+                search,
+              ) ||
+              parentCategory.includes(
+                search,
+              )
+            );
+          }}
+          onView={(row) =>
+            setViewTarget(
+              row,
+            )
+          }
+          onEdit={
+            handleEdit
+          }
+          onDelete={(
+            row,
+          ) =>
+            setDeleteTarget(
+              row,
+            )
           }
         />
       </div>
+
+      {/* =====================================
+          VIEW MODAL
+      ===================================== */}
+
+      <ViewModal
+        open={
+          !!viewTarget
+        }
+        title="Job Sub Category Details"
+        fields={
+          viewTarget
+            ? getViewFields(
+              viewTarget,
+            )
+            : []
+        }
+        onClose={() =>
+          setViewTarget(
+            null,
+          )
+        }
+      />
 
       {/* =====================================
           DELETE MODAL
       ===================================== */}
 
       <ConfirmModal
-        open={!!deleteTarget}
-        title="Delete job sub category?"
-        message={`"${deleteTarget?.name}" will be permanently removed.`}
-        onCancel={() =>
-          setDeleteTarget(null)
+        open={
+          !!deleteTarget
         }
-        onConfirm={handleDelete}
+        title="Delete Job Sub Category?"
+        message={`"${deleteTarget?.name}" job sub category will be deleted.`}
+        onCancel={() =>
+          setDeleteTarget(
+            null,
+          )
+        }
+        onConfirm={
+          handleDelete
+        }
       />
     </>
   );

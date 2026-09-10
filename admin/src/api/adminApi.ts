@@ -34,3 +34,34 @@ export const loginAdmin = async (
 
   return data;
 };
+
+// =====================================================
+// CHANGE ADMIN PASSWORD
+// =====================================================
+
+export const changeAdminPassword = async (
+  currentPassword: string,
+  newPassword: string,
+): Promise<{ message: string }> => {
+  const token = sessionStorage.getItem("admin_panel_auth_token");
+
+  const response = await fetch(`${API_URL}/change-password`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      currentPassword,
+      newPassword,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to change password");
+  }
+
+  return data;
+};

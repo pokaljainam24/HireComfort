@@ -14,20 +14,27 @@ import {
 
 export const createFaq = async (req: Request, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
     const faq = await createFaqService({
       ...req.body,
-      createdBy: "admin",
+      createdBy: req.user.username,
     });
 
     return res.status(201).json({
       message: "FAQ created successfully",
       faq,
     });
-  } catch (error) {
-    console.error("Error creating FAQ:", error);
+  } catch (error: any) {
+    console.error("Create FAQ Controller Error:", error);
 
     return res.status(500).json({
-      message: "Error creating FAQ",
+      message: error.message || "Failed to create FAQ",
     });
   }
 };
@@ -43,11 +50,11 @@ export const getFaqs = async (req: Request, res: Response) => {
     return res.status(200).json({
       faqs,
     });
-  } catch (error) {
-    console.error("Error getting FAQs:", error);
+  } catch (error: any) {
+    console.error("Get FAQs Controller Error:", error);
 
     return res.status(500).json({
-      message: "Error getting FAQs",
+      message: error.message || "Failed to get FAQs",
     });
   }
 };
@@ -58,15 +65,15 @@ export const getFaqs = async (req: Request, res: Response) => {
 
 export const getFaq = async (req: Request, res: Response) => {
   try {
-    const faqId = req.params.id;
+    const { id } = req.params;
 
-    if (typeof faqId !== "string") {
+    if (typeof id !== "string") {
       return res.status(400).json({
         message: "Invalid FAQ ID",
       });
     }
 
-    const faq = await getFaqByIdService(faqId);
+    const faq = await getFaqByIdService(id);
 
     if (!faq) {
       return res.status(404).json({
@@ -77,11 +84,11 @@ export const getFaq = async (req: Request, res: Response) => {
     return res.status(200).json({
       faq,
     });
-  } catch (error) {
-    console.error("Error getting FAQ:", error);
+  } catch (error: any) {
+    console.error("Get FAQ By ID Controller Error:", error);
 
     return res.status(500).json({
-      message: "Error getting FAQ",
+      message: error.message || "Failed to get FAQ",
     });
   }
 };
@@ -92,17 +99,24 @@ export const getFaq = async (req: Request, res: Response) => {
 
 export const updateFaq = async (req: Request, res: Response) => {
   try {
-    const faqId = req.params.id;
+    const { id } = req.params;
 
-    if (typeof faqId !== "string") {
+    if (typeof id !== "string") {
       return res.status(400).json({
         message: "Invalid FAQ ID",
       });
     }
 
-    const faq = await updateFaqService(faqId, {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const faq = await updateFaqService(id, {
       ...req.body,
-      updatedBy: "admin",
+      updatedBy: req.user.username,
     });
 
     if (!faq) {
@@ -115,11 +129,11 @@ export const updateFaq = async (req: Request, res: Response) => {
       message: "FAQ updated successfully",
       faq,
     });
-  } catch (error) {
-    console.error("Error updating FAQ:", error);
+  } catch (error: any) {
+    console.error("Update FAQ Controller Error:", error);
 
     return res.status(500).json({
-      message: "Error updating FAQ",
+      message: error.message || "Failed to update FAQ",
     });
   }
 };
@@ -130,17 +144,24 @@ export const updateFaq = async (req: Request, res: Response) => {
 
 export const deleteFaq = async (req: Request, res: Response) => {
   try {
-    const faqId = req.params.id;
+    const { id } = req.params;
 
-    if (typeof faqId !== "string") {
+    if (typeof id !== "string") {
       return res.status(400).json({
         message: "Invalid FAQ ID",
       });
     }
 
-    const deleteBy = "admin";
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
 
-    const faq = await deleteFaqService(faqId, deleteBy);
+    const deleteBy = req.user.username;
+
+    const faq = await deleteFaqService(id, deleteBy);
 
     if (!faq) {
       return res.status(404).json({
@@ -152,11 +173,11 @@ export const deleteFaq = async (req: Request, res: Response) => {
       message: "FAQ deleted successfully",
       faq,
     });
-  } catch (error) {
-    console.error("Error deleting FAQ:", error);
+  } catch (error: any) {
+    console.error("Delete FAQ Controller Error:", error);
 
     return res.status(500).json({
-      message: "Error deleting FAQ",
+      message: error.message || "Failed to delete FAQ",
     });
   }
 };

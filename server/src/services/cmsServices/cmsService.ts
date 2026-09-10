@@ -141,7 +141,7 @@ export async function deleteCmsService(id: string, deleteBy: string) {
         isActive: false,
         isDisplay: false,
         deleteAt: new Date(),
-        deleteBy,
+        deleteBy: deleteBy.trim(),
       },
       {
         new: true,

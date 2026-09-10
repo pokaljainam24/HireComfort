@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import {
   createAdminService,
   loginAdminService,
+  changeAdminPasswordService,
   getAdminService,
   getAdminByIdService,
   updateAdminService,
@@ -13,7 +14,10 @@ import {
 // CREATE ADMIN
 // =====================================================
 
-export const createAdmin = async (req: Request, res: Response) => {
+export const createAdmin = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const admin = await createAdminService({
       ...req.body,
@@ -25,7 +29,10 @@ export const createAdmin = async (req: Request, res: Response) => {
       admin,
     });
   } catch (error) {
-    console.error("Error creating admin:", error);
+    console.error(
+      "Error creating admin:",
+      error,
+    );
 
     return res.status(500).json({
       message: "Error creating admin",
@@ -37,11 +44,17 @@ export const createAdmin = async (req: Request, res: Response) => {
 // LOGIN ADMIN
 // =====================================================
 
-export const loginAdmin = async (req: Request, res: Response) => {
+export const loginAdmin = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const { username, password } = req.body;
 
-    const result = await loginAdminService(username, password);
+    const result = await loginAdminService(
+      username,
+      password,
+    );
 
     return res.status(200).json({
       message: "Login successful",
@@ -49,7 +62,10 @@ export const loginAdmin = async (req: Request, res: Response) => {
       user: result.user,
     });
   } catch (error) {
-    console.error("Error admin login:", error);
+    console.error(
+      "Error admin login:",
+      error,
+    );
 
     return res.status(401).json({
       message: "Invalid username or password",
@@ -58,10 +74,71 @@ export const loginAdmin = async (req: Request, res: Response) => {
 };
 
 // =====================================================
+// CHANGE ADMIN PASSWORD
+// =====================================================
+
+export const changeAdminPassword = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    // ==============================
+    // Get Admin ID From JWT
+    // ==============================
+
+    const adminId = req.user?.id;
+
+    if (!adminId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+
+    // ==============================
+    // Get Passwords
+    // ==============================
+
+    const {
+      currentPassword,
+      newPassword,
+    } = req.body;
+
+    // ==============================
+    // Change Password
+    // ==============================
+
+    await changeAdminPasswordService(
+      adminId,
+      currentPassword,
+      newPassword,
+    );
+
+    return res.status(200).json({
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    console.error(
+      "Error changing admin password:",
+      error,
+    );
+
+    return res.status(400).json({
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to change password",
+    });
+  }
+};
+
+// =====================================================
 // GET ADMINS
 // =====================================================
 
-export const getAdmins = async (req: Request, res: Response) => {
+export const getAdmins = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const admins = await getAdminService();
 
@@ -69,7 +146,10 @@ export const getAdmins = async (req: Request, res: Response) => {
       admins,
     });
   } catch (error) {
-    console.error("Error getting admins:", error);
+    console.error(
+      "Error getting admins:",
+      error,
+    );
 
     return res.status(500).json({
       message: "Error getting admins",
@@ -81,7 +161,10 @@ export const getAdmins = async (req: Request, res: Response) => {
 // GET ADMIN BY ID
 // =====================================================
 
-export const getAdmin = async (req: Request, res: Response) => {
+export const getAdmin = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const adminId = req.params.id;
 
@@ -91,7 +174,8 @@ export const getAdmin = async (req: Request, res: Response) => {
       });
     }
 
-    const admin = await getAdminByIdService(adminId);
+    const admin =
+      await getAdminByIdService(adminId);
 
     if (!admin) {
       return res.status(404).json({
@@ -103,7 +187,10 @@ export const getAdmin = async (req: Request, res: Response) => {
       admin,
     });
   } catch (error) {
-    console.error("Error getting admin:", error);
+    console.error(
+      "Error getting admin:",
+      error,
+    );
 
     return res.status(500).json({
       message: "Error getting admin",
@@ -115,7 +202,10 @@ export const getAdmin = async (req: Request, res: Response) => {
 // UPDATE ADMIN
 // =====================================================
 
-export const updateAdmin = async (req: Request, res: Response) => {
+export const updateAdmin = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const adminId = req.params.id;
 
@@ -125,10 +215,11 @@ export const updateAdmin = async (req: Request, res: Response) => {
       });
     }
 
-    const admin = await updateAdminService(adminId, {
-      ...req.body,
-      updatedBy: "admin",
-    });
+    const admin =
+      await updateAdminService(adminId, {
+        ...req.body,
+        updatedBy: "admin",
+      });
 
     if (!admin) {
       return res.status(404).json({
@@ -141,7 +232,10 @@ export const updateAdmin = async (req: Request, res: Response) => {
       admin,
     });
   } catch (error) {
-    console.error("Error updating admin:", error);
+    console.error(
+      "Error updating admin:",
+      error,
+    );
 
     return res.status(500).json({
       message: "Error updating admin",
@@ -153,7 +247,10 @@ export const updateAdmin = async (req: Request, res: Response) => {
 // DELETE ADMIN
 // =====================================================
 
-export const deleteAdmin = async (req: Request, res: Response) => {
+export const deleteAdmin = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const adminId = req.params.id;
 
@@ -165,7 +262,11 @@ export const deleteAdmin = async (req: Request, res: Response) => {
 
     const deleteBy = "admin";
 
-    const admin = await deleteAdminService(adminId, deleteBy);
+    const admin =
+      await deleteAdminService(
+        adminId,
+        deleteBy,
+      );
 
     if (!admin) {
       return res.status(404).json({
@@ -178,7 +279,10 @@ export const deleteAdmin = async (req: Request, res: Response) => {
       admin,
     });
   } catch (error) {
-    console.error("Error deleting admin:", error);
+    console.error(
+      "Error deleting admin:",
+      error,
+    );
 
     return res.status(500).json({
       message: "Error deleting admin",

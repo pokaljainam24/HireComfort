@@ -8,16 +8,57 @@ import {
   deleteFaq,
 } from "../../controllers/FaqController/faqController.js";
 
-const faqRoutes = express.Router();
+import { authMiddleware } from "../../middleware/authMiddleware.js";
 
-faqRoutes.post("/", createFaq);
+const faqRoutes =
+  express.Router();
 
-faqRoutes.get("/", getFaqs);
+// =====================================
+// CREATE
+// =====================================
 
-faqRoutes.get("/:id", getFaq);
+faqRoutes.post(
+  "/",
+  authMiddleware,
+  createFaq,
+);
 
-faqRoutes.patch("/:id", updateFaq);
+// =====================================
+// GET ALL
+// =====================================
 
-faqRoutes.delete("/:id", deleteFaq);
+faqRoutes.get(
+  "/",
+  getFaqs,
+);
+
+// =====================================
+// GET BY ID
+// =====================================
+
+faqRoutes.get(
+  "/:id",
+  getFaq,
+);
+
+// =====================================
+// UPDATE
+// =====================================
+
+faqRoutes.patch(
+  "/:id",
+  authMiddleware,
+  updateFaq,
+);
+
+// =====================================
+// DELETE
+// =====================================
+
+faqRoutes.delete(
+  "/:id",
+  authMiddleware,
+  deleteFaq,
+);
 
 export default faqRoutes;

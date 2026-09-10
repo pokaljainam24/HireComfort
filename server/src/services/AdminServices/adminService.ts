@@ -10,7 +10,9 @@ export type IAdminMaster = InstanceType<typeof AdminMaster>;
 // CREATE ADMIN SERVICE
 // =====================================================
 
-export async function createAdminService(adminData: Partial<IAdminMaster>) {
+export async function createAdminService(
+  adminData: Partial<IAdminMaster>,
+) {
   try {
     // ==============================
     // Username Validation
@@ -21,7 +23,9 @@ export async function createAdminService(adminData: Partial<IAdminMaster>) {
     }
 
     if (adminData.username.trim().length < 3) {
-      throw new Error("Username must contain at least 3 characters");
+      throw new Error(
+        "Username must contain at least 3 characters",
+      );
     }
 
     // ==============================
@@ -33,7 +37,9 @@ export async function createAdminService(adminData: Partial<IAdminMaster>) {
     }
 
     if (adminData.password.length < 6) {
-      throw new Error("Password must contain at least 6 characters");
+      throw new Error(
+        "Password must contain at least 6 characters",
+      );
     }
 
     // ==============================
@@ -61,7 +67,10 @@ export async function createAdminService(adminData: Partial<IAdminMaster>) {
     // Password Hash
     // ==============================
 
-    const hashedPassword = await bcrypt.hash(adminData.password, 10);
+    const hashedPassword = await bcrypt.hash(
+      adminData.password,
+      10,
+    );
 
     // ==============================
     // Create Admin
@@ -74,9 +83,15 @@ export async function createAdminService(adminData: Partial<IAdminMaster>) {
 
       password: hashedPassword,
 
-      isActive: adminData.isActive !== undefined ? adminData.isActive : true,
+      isActive:
+        adminData.isActive !== undefined
+          ? adminData.isActive
+          : true,
 
-      isDisplay: adminData.isDisplay !== undefined ? adminData.isDisplay : true,
+      isDisplay:
+        adminData.isDisplay !== undefined
+          ? adminData.isDisplay
+          : true,
 
       createdAt: new Date(),
       createdBy: adminData.createdBy.trim(),
@@ -101,6 +116,7 @@ export async function createAdminService(adminData: Partial<IAdminMaster>) {
     return result;
   } catch (error) {
     console.error("Error creating admin:", error);
+
     throw error;
   }
 }
@@ -109,7 +125,10 @@ export async function createAdminService(adminData: Partial<IAdminMaster>) {
 // LOGIN ADMIN SERVICE
 // =====================================================
 
-export async function loginAdminService(username: string, password: string) {
+export async function loginAdminService(
+  username: string,
+  password: string,
+) {
   try {
     // ==============================
     // Username Validation
@@ -139,17 +158,24 @@ export async function loginAdminService(username: string, password: string) {
     });
 
     if (!admin) {
-      throw new Error("Invalid username or password");
+      throw new Error(
+        "Invalid username or password",
+      );
     }
 
     // ==============================
     // Compare Password
     // ==============================
 
-    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      admin.password,
+    );
 
     if (!isPasswordValid) {
-      throw new Error("Invalid username or password");
+      throw new Error(
+        "Invalid username or password",
+      );
     }
 
     // ==============================
@@ -157,7 +183,9 @@ export async function loginAdminService(username: string, password: string) {
     // ==============================
 
     if (!process.env.JWT_SECRET) {
-      throw new Error("JWT secret is not configured");
+      throw new Error(
+        "JWT secret is not configured",
+      );
     }
 
     // ==============================
@@ -188,7 +216,150 @@ export async function loginAdminService(username: string, password: string) {
       },
     };
   } catch (error) {
-    console.error("Error admin login:", error);
+    console.error(
+      "Error admin login:",
+      error,
+    );
+
+    throw error;
+  }
+}
+
+// =====================================================
+// CHANGE ADMIN PASSWORD SERVICE
+// =====================================================
+
+export async function changeAdminPasswordService(
+  adminId: string,
+  currentPassword: string,
+  newPassword: string,
+) {
+  try {
+    // ==============================
+    // ID Validation
+    // ==============================
+
+    if (!mongoose.Types.ObjectId.isValid(adminId)) {
+      throw new Error("Invalid admin ID");
+    }
+
+    // ==============================
+    // Current Password Validation
+    // ==============================
+
+    if (!currentPassword?.trim()) {
+      throw new Error(
+        "Current password is required",
+      );
+    }
+
+    // ==============================
+    // New Password Validation
+    // ==============================
+
+    if (!newPassword?.trim()) {
+      throw new Error(
+        "New password is required",
+      );
+    }
+
+    if (newPassword.length < 6) {
+      throw new Error(
+        "New password must contain at least 6 characters",
+      );
+    }
+
+    // ==============================
+    // Find Admin
+    // ==============================
+
+    const admin = await AdminMaster.findOne({
+      _id: adminId,
+      isActive: true,
+      isDisplay: true,
+      deleteAt: null,
+    });
+
+    if (!admin) {
+      throw new Error("Admin not found");
+    }
+
+    // ==============================
+    // Verify Current Password
+    // ==============================
+
+    const isCurrentPasswordValid =
+      await bcrypt.compare(
+        currentPassword,
+        admin.password,
+      );
+
+    if (!isCurrentPasswordValid) {
+      throw new Error(
+        "Current password is incorrect",
+      );
+    }
+
+    // ==============================
+    // Check Same Password
+    // ==============================
+
+    const isSamePassword =
+      await bcrypt.compare(
+        newPassword,
+        admin.password,
+      );
+
+    if (isSamePassword) {
+      throw new Error(
+        "New password must be different from current password",
+      );
+    }
+
+    // ==============================
+    // Hash New Password
+    // ==============================
+
+    const hashedPassword =
+      await bcrypt.hash(newPassword, 10);
+
+    // ==============================
+    // Update Password
+    // ==============================
+
+    await AdminMaster.findOneAndUpdate(
+      {
+        _id: adminId,
+        isActive: true,
+        isDisplay: true,
+        deleteAt: null,
+      },
+      {
+        password: hashedPassword,
+
+        updatedAt: new Date(),
+
+        updatedBy: "admin",
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    // ==============================
+    // Response
+    // ==============================
+
+    return {
+      message: "Password changed successfully",
+    };
+  } catch (error) {
+    console.error(
+      `Error changing password for admin ${adminId}:`,
+      error,
+    );
+
     throw error;
   }
 }
@@ -205,7 +376,11 @@ export async function getAdminService() {
       deleteAt: null,
     }).select("-password");
   } catch (error) {
-    console.error("Error getting admins:", error);
+    console.error(
+      "Error getting admins:",
+      error,
+    );
+
     throw error;
   }
 }
@@ -214,7 +389,9 @@ export async function getAdminService() {
 // GET ADMIN BY ID SERVICE
 // =====================================================
 
-export async function getAdminByIdService(id: string) {
+export async function getAdminByIdService(
+  id: string,
+) {
   try {
     // ==============================
     // ID Validation
@@ -231,7 +408,10 @@ export async function getAdminByIdService(id: string) {
       deleteAt: null,
     }).select("-password");
   } catch (error) {
-    console.error(`Error getting admin with id ${id}:`, error);
+    console.error(
+      `Error getting admin with id ${id}:`,
+      error,
+    );
 
     throw error;
   }
@@ -260,24 +440,32 @@ export async function updateAdminService(
 
     if (updateData.username !== undefined) {
       if (!updateData.username.trim()) {
-        throw new Error("Username is required");
+        throw new Error(
+          "Username is required",
+        );
       }
 
       if (updateData.username.trim().length < 3) {
-        throw new Error("Username must contain at least 3 characters");
+        throw new Error(
+          "Username must contain at least 3 characters",
+        );
       }
 
-      const existingAdmin = await AdminMaster.findOne({
-        username: updateData.username.trim(),
-        _id: { $ne: id },
-        deleteAt: null,
-      });
+      const existingAdmin =
+        await AdminMaster.findOne({
+          username: updateData.username.trim(),
+          _id: { $ne: id },
+          deleteAt: null,
+        });
 
       if (existingAdmin) {
-        throw new Error("Username already exists");
+        throw new Error(
+          "Username already exists",
+        );
       }
 
-      updateData.username = updateData.username.trim();
+      updateData.username =
+        updateData.username.trim();
     }
 
     // ==============================
@@ -286,14 +474,22 @@ export async function updateAdminService(
 
     if (updateData.password !== undefined) {
       if (!updateData.password.trim()) {
-        throw new Error("Password cannot be empty");
+        throw new Error(
+          "Password cannot be empty",
+        );
       }
 
       if (updateData.password.length < 6) {
-        throw new Error("Password must contain at least 6 characters");
+        throw new Error(
+          "Password must contain at least 6 characters",
+        );
       }
 
-      updateData.password = await bcrypt.hash(updateData.password, 10);
+      updateData.password =
+        await bcrypt.hash(
+          updateData.password,
+          10,
+        );
     }
 
     // ==============================
@@ -309,6 +505,7 @@ export async function updateAdminService(
       },
       {
         ...updateData,
+
         updatedAt: new Date(),
       },
       {
@@ -317,7 +514,10 @@ export async function updateAdminService(
       },
     ).select("-password");
   } catch (error) {
-    console.error(`Error updating admin with id ${id}:`, error);
+    console.error(
+      `Error updating admin with id ${id}:`,
+      error,
+    );
 
     throw error;
   }
@@ -327,7 +527,10 @@ export async function updateAdminService(
 // DELETE ADMIN SERVICE
 // =====================================================
 
-export async function deleteAdminService(id: string, deleteBy: string) {
+export async function deleteAdminService(
+  id: string,
+  deleteBy: string,
+) {
   try {
     // ==============================
     // ID Validation
@@ -342,7 +545,9 @@ export async function deleteAdminService(id: string, deleteBy: string) {
     // ==============================
 
     if (!deleteBy?.trim()) {
-      throw new Error("Delete by is required");
+      throw new Error(
+        "Delete by is required",
+      );
     }
 
     // ==============================
@@ -371,7 +576,10 @@ export async function deleteAdminService(id: string, deleteBy: string) {
       },
     ).select("-password");
   } catch (error) {
-    console.error(`Error deleting admin with id ${id}:`, error);
+    console.error(
+      `Error deleting admin with id ${id}:`,
+      error,
+    );
 
     throw error;
   }
@@ -383,11 +591,16 @@ export async function deleteAdminService(id: string, deleteBy: string) {
 
 export async function getAllAdminForAdminService() {
   try {
-    return await AdminMaster.find().select("-password").sort({
-      createdAt: -1,
-    });
+    return await AdminMaster.find()
+      .select("-password")
+      .sort({
+        createdAt: -1,
+      });
   } catch (error) {
-    console.error("Error getting admins for admin:", error);
+    console.error(
+      "Error getting admins for admin:",
+      error,
+    );
 
     throw error;
   }

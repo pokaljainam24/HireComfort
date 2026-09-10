@@ -3,29 +3,25 @@ import JobCategoryMaster from "../../models/JobCategoryModel/jobCategoryModel.js
 export type IJobCategoryMaster = InstanceType<typeof JobCategoryMaster>;
 
 // =====================================
-// CREATE JOB CATEGORY
+// Create Job Category
 // =====================================
 
 export async function createJobCategoryService(
   jobCategoryData: Partial<IJobCategoryMaster>,
 ) {
   try {
-    // ==============================
-    // Job Category Name Validation
-    // ==============================
-
+    // Name
     if (!jobCategoryData.name?.trim()) {
       throw new Error("Job category name is required");
     }
 
     if (jobCategoryData.name.trim().length < 2) {
-      throw new Error("Job category name must contain at least 2 characters");
+      throw new Error(
+        "Job category name must contain at least 2 characters",
+      );
     }
 
-    // ==============================
-    // Description Validation
-    // ==============================
-
+    // Description
     if (!jobCategoryData.description?.trim()) {
       throw new Error("Job category description is required");
     }
@@ -36,18 +32,12 @@ export async function createJobCategoryService(
       );
     }
 
-    // ==============================
-    // Icon Validation
-    // ==============================
-
+    // Icon
     if (!jobCategoryData.icon?.trim()) {
       throw new Error("Job category icon is required");
     }
 
-    // ==============================
-    // Duplicate Category Validation
-    // ==============================
-
+    // Duplicate Name
     const existingCategory = await JobCategoryMaster.findOne({
       name: jobCategoryData.name.trim(),
       isActive: true,
@@ -58,38 +48,25 @@ export async function createJobCategoryService(
       throw new Error("Job category with this name already exists");
     }
 
-    // ==============================
-    // Created By Validation
-    // ==============================
-
+    // Created By
     if (!jobCategoryData.createdBy?.trim()) {
       throw new Error("Created by is required");
     }
 
-    // ==============================
-    // Create Job Category
-    // ==============================
-
     const jobCategory = new JobCategoryMaster({
-      ...jobCategoryData,
-
-      // Store normalized values
       name: jobCategoryData.name.trim(),
 
       description: jobCategoryData.description.trim(),
 
       icon: jobCategoryData.icon.trim(),
 
-      // Status
       isActive: true,
       isDisplay: true,
 
-      // Audit
       createdBy: jobCategoryData.createdBy.trim(),
 
       updatedBy: null,
 
-      // Soft Delete
       deleteAt: null,
       deleteBy: null,
     });
@@ -103,7 +80,7 @@ export async function createJobCategoryService(
 }
 
 // =====================================
-// GET ALL JOB CATEGORIES
+// Get Job Categories
 // =====================================
 
 export async function getJobCategoryService() {
@@ -111,7 +88,7 @@ export async function getJobCategoryService() {
     return await JobCategoryMaster.find({
       isActive: true,
       isDisplay: true,
-    });
+    }).sort({ createdAt: -1 });
   } catch (error) {
     console.error("Error getting job categories:", error);
 
@@ -120,7 +97,7 @@ export async function getJobCategoryService() {
 }
 
 // =====================================
-// GET JOB CATEGORY BY ID
+// Get Job Category By ID
 // =====================================
 
 export async function getJobCategoryByIdService(id: string) {
@@ -131,14 +108,14 @@ export async function getJobCategoryByIdService(id: string) {
       isDisplay: true,
     });
   } catch (error) {
-    console.error(`Error getting job category with id ${id}:`, error);
+    console.error(`Error getting job category with id ${id}: `, error);
 
     throw error;
   }
 }
 
 // =====================================
-// UPDATE JOB CATEGORY
+// Update Job Category
 // =====================================
 
 export async function updateJobCategoryService(
@@ -146,96 +123,59 @@ export async function updateJobCategoryService(
   updateData: Partial<IJobCategoryMaster>,
 ) {
   try {
-    // ==============================
-    // Name Validation
-    // ==============================
-
-    if (updateData.name !== undefined && !updateData.name.trim()) {
+    // Name
+    if (!updateData.name?.trim()) {
       throw new Error("Job category name is required");
     }
 
-    if (updateData.name !== undefined && updateData.name.trim().length < 2) {
-      throw new Error("Job category name must contain at least 2 characters");
+    if (updateData.name.trim().length < 2) {
+      throw new Error(
+        "Job category name must contain at least 2 characters",
+      );
     }
 
-    // ==============================
-    // Description Validation
-    // ==============================
-
-    if (
-      updateData.description !== undefined &&
-      !updateData.description.trim()
-    ) {
+    // Description
+    if (!updateData.description?.trim()) {
       throw new Error("Job category description is required");
     }
 
-    if (
-      updateData.description !== undefined &&
-      updateData.description.trim().length < 2
-    ) {
+    if (updateData.description.trim().length < 2) {
       throw new Error(
         "Job category description must contain at least 2 characters",
       );
     }
 
-    // ==============================
-    // Icon Validation
-    // ==============================
-
-    if (updateData.icon !== undefined && !updateData.icon.trim()) {
-      throw new Error("Job category icon is required");
-    }
-
-    // ==============================
-    // Updated By Validation
-    // ==============================
-
+    // Updated By
     if (!updateData.updatedBy?.trim()) {
       throw new Error("Updated by is required");
     }
 
-    // ==============================
-    // Duplicate Name Validation
-    // ==============================
+    // Duplicate Name
+    const existingCategory = await JobCategoryMaster.findOne({
+      _id: { $ne: id },
 
-    if (updateData.name !== undefined) {
-      const existingCategory = await JobCategoryMaster.findOne({
-        _id: { $ne: id },
+      name: updateData.name.trim(),
 
-        name: updateData.name.trim(),
+      isActive: true,
+      isDisplay: true,
+    });
 
-        isActive: true,
-        isDisplay: true,
-      });
-
-      if (existingCategory) {
-        throw new Error("Job category with this name already exists");
-      }
+    if (existingCategory) {
+      throw new Error("Job category with this name already exists");
     }
 
-    // ==============================
-    // Normalize Values
-    // ==============================
+    const updatePayload: Partial<IJobCategoryMaster> = {
+      name: updateData.name.trim(),
 
-    const data: Partial<IJobCategoryMaster> = {
-      ...updateData,
+      description: updateData.description.trim(),
+
+      updatedBy: updateData.updatedBy.trim(),
     };
 
-    if (data.name !== undefined) {
-      data.name = data.name.trim();
+    // Icon only update if new icon is provided
+    if (updateData.icon?.trim()) {
+      updatePayload.icon = updateData.icon.trim();
     }
-
-    if (data.description !== undefined) {
-      data.description = data.description.trim();
-    }
-
-    if (data.icon !== undefined) {
-      data.icon = data.icon.trim();
-    }
-
-    // ==============================
-    // Update Job Category
-    // ==============================
 
     return await JobCategoryMaster.findOneAndUpdate(
       {
@@ -244,7 +184,7 @@ export async function updateJobCategoryService(
         isDisplay: true,
       },
 
-      data,
+      updatePayload,
 
       {
         new: true,
@@ -252,29 +192,24 @@ export async function updateJobCategoryService(
       },
     );
   } catch (error) {
-    console.error(`Error updating job category with id ${id}:`, error);
+    console.error(`Error updating job category with id ${id}: `, error);
 
     throw error;
   }
 }
 
 // =====================================
-// DELETE JOB CATEGORY
+// Delete Job Category
 // =====================================
 
-export async function deleteJobCategoryService(id: string, deleteBy: string) {
+export async function deleteJobCategoryService(
+  id: string,
+  deleteBy: string,
+) {
   try {
-    // ==============================
-    // Delete By Validation
-    // ==============================
-
     if (!deleteBy?.trim()) {
       throw new Error("Delete by is required");
     }
-
-    // ==============================
-    // Soft Delete
-    // ==============================
 
     return await JobCategoryMaster.findOneAndUpdate(
       {
@@ -287,6 +222,7 @@ export async function deleteJobCategoryService(id: string, deleteBy: string) {
         isDisplay: false,
 
         deleteAt: new Date(),
+
         deleteBy: deleteBy.trim(),
       },
 
@@ -295,19 +231,21 @@ export async function deleteJobCategoryService(id: string, deleteBy: string) {
       },
     );
   } catch (error) {
-    console.error(`Error deleting job category with id ${id}:`, error);
+    console.error(`Error deleting job category with id ${id}: `, error);
 
     throw error;
   }
 }
 
 // =====================================
-// GET ALL JOB CATEGORIES FOR ADMIN
+// Get All Job Categories For Admin
 // =====================================
 
 export async function getAllJobCategoryForAdminService() {
   try {
-    return await JobCategoryMaster.find();
+    return await JobCategoryMaster.find().sort({
+      createdAt: -1,
+    });
   } catch (error) {
     console.error("Error getting job categories for admin:", error);
 

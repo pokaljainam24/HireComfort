@@ -8,22 +8,60 @@ import {
   deleteJobSubCategory,
 } from "../../controllers/JobSubCategoryController/jobSubCategoryController.js";
 
+import { authMiddleware } from "../../middleware/authMiddleware.js";
+
 import uploadJobSubCategoryIcon from "../../middleware/uploadIcon.js";
 
 const router = Router();
 
-router.post("/", uploadJobSubCategoryIcon.single("icon"), createJobSubCategory);
+// =====================================
+// CREATE
+// =====================================
 
-router.get("/", getJobSubCategories);
+router.post(
+  "/",
+  authMiddleware,
+  uploadJobSubCategoryIcon.single("icon"),
+  createJobSubCategory,
+);
 
-router.get("/:id", getJobSubCategory);
+// =====================================
+// GET ALL
+// =====================================
+
+router.get(
+  "/",
+  getJobSubCategories,
+);
+
+// =====================================
+// GET BY ID
+// =====================================
+
+router.get(
+  "/:id",
+  getJobSubCategory,
+);
+
+// =====================================
+// UPDATE
+// =====================================
 
 router.patch(
   "/:id",
+  authMiddleware,
   uploadJobSubCategoryIcon.single("icon"),
   updateJobSubCategory,
 );
 
-router.delete("/:id", deleteJobSubCategory);
+// =====================================
+// DELETE
+// =====================================
+
+router.delete(
+  "/:id",
+  authMiddleware,
+  deleteJobSubCategory,
+);
 
 export default router;

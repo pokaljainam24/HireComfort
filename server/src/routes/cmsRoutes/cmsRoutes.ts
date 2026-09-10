@@ -8,16 +8,18 @@ import {
   deleteCms,
 } from "../../controllers/cmsController/cmsController.js";
 
+import { authMiddleware } from "../../middleware/authMiddleware.js";
+
 const router = Router();
 
-router.post("/", createCms);
+router.post("/", authMiddleware, createCms);
 
 router.get("/", getCms);
 
 router.get("/:id", getCmsById);
 
-router.patch("/:id", updateCms);
+router.patch("/:id", authMiddleware, updateCms);
 
-router.delete("/:id", deleteCms);
+router.delete("/:id", authMiddleware, deleteCms);
 
 export default router;

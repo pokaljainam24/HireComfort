@@ -22,6 +22,7 @@ import employmentTypesMaster from "./pages/EmploymentTypes/EmploymentTypes.js";
 import industryTypesMaster from "./pages/Industry/IndustryTypes.js";
 import EmploymentTypes from "./pages/EmploymentTypes/EmploymentTypes.js";
 import IndustryTypes from "./pages/Industry/IndustryTypes.js";
+import ChangePassword from "./pages/changePassword/ChangePassword.js";
 
 const App: React.FC = () => (
   <Routes>
@@ -51,6 +52,11 @@ const App: React.FC = () => (
       <Route path="/qualification-master" element={<QualificationMaster />} />
       <Route path="/employment-types" element={<EmploymentTypes />} />
       <Route path="/industry" element={<IndustryTypes />} />
+
+      <Route
+        path="/change-password"
+        element={<ChangePassword />}
+      />
     </Route>
   </Routes>
 );
