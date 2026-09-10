@@ -12,8 +12,8 @@ export function usePageTitle(): string {
 
   // Routes reached by drilling into a list (edit/detail pages) aren't in
   // the sidebar itself, so resolve their titles here.
-  if (pathname.startsWith("/recruiter/post-job/")) return "Edit Job";
-  if (pathname.startsWith("/recruiter/applications/")) return "Application Detail";
+  if (pathname.startsWith("/recruiter-panel/post-job/")) return "Edit Job";
+  if (pathname.startsWith("/recruiter-panel/applications/")) return "Application Detail";
 
   return "Dashboard";
 }

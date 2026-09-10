@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, mobileOpen, onCloseMobile 
                 <NavLink
                   key={item.path}
                   to={item.path}
-                  end={item.path === "/"}
+                  end={item.path === "/recruiter-panel" || item.path === "/"}
                   onClick={onCloseMobile}
                   data-tooltip={item.label}
                   className={({ isActive }) =>

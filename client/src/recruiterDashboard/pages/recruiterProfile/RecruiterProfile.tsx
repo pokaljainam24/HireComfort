@@ -4,7 +4,17 @@ import PageHeader from "../../components/common/PageHeader.tsx";
 import Field from "../../components/common/Field.tsx";
 import type { RecruiterProfileType } from "../../types/recruiterProfile.ts";
 
-const empty: RecruiterProfileType = { fullName: "", email: "", phone: "", designation: "" };
+const empty: RecruiterProfileType = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  mobileNumber: "",
+  address: "",
+  userName: "",
+  department: "",
+  remark: "",
+  designation: ""
+};
 
 const RecruiterProfile: React.FC = () => {
   const [form, setForm] = useState<RecruiterProfileType>(empty);
@@ -13,20 +23,75 @@ const RecruiterProfile: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
   const [saved, setSaved] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
-    recruiterProfileApi
-      .get()
-      .then((profile) => setForm({ ...empty, ...profile }))
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    if (user._id) {
+      recruiterProfileApi
+        .get(user._id)
+        .then((profile) => {
+          setForm({ ...empty, ...profile });
+        })
+        .catch(() => { })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!form.fullName.trim()) e.fullName = "Full name is required";
-    if (!form.email.trim()) e.email = "Email is required";
-    if (!form.phone.trim()) e.phone = "Phone number is required";
+
+    const nameRegex = /^[A-Za-z\s]+$/;
+    if (!form.firstName.trim()) {
+      e.firstName = "First name is required";
+    } else if (!nameRegex.test(form.firstName.trim())) {
+      e.firstName = "First name can only contain letters and spaces";
+    }
+
+    if (!form.lastName.trim()) {
+      e.lastName = "Last name is required";
+    } else if (!nameRegex.test(form.lastName.trim())) {
+      e.lastName = "Last name can only contain letters and spaces";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!form.email.trim()) {
+      e.email = "Email is required";
+    } else if (!emailRegex.test(form.email.trim())) {
+      e.email = "Please enter a valid email address";
+    }
+
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!form.mobileNumber.trim()) {
+      e.mobileNumber = "Mobile number is required";
+    } else if (!phoneRegex.test(form.mobileNumber.trim().replace(/\s/g, ""))) {
+      e.mobileNumber = "Enter a valid 10 digit mobile number";
+    }
+
+    const usernameRegex = /^[a-zA-Z0-9_.]+$/;
+    if (!form.userName.trim()) {
+      e.userName = "Username is required";
+    } else if (form.userName.trim().length < 3) {
+      e.userName = "Username must be at least 3 characters long";
+    } else if (!usernameRegex.test(form.userName.trim())) {
+      e.userName = "Username can only contain letters, numbers, underscores, and dots";
+    }
+
+    if (form.password && form.password.length < 6) {
+      e.password = "Password must be at least 6 characters long";
+    }
+
+    if (!form.designation.trim()) {
+      e.designation = "Designation is required";
+    } else if (form.designation.trim().length < 2) {
+      e.designation = "Designation must be at least 2 characters long";
+    }
+
+    if (!form.department.trim()) {
+      e.department = "Department is required";
+    }
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -37,8 +102,10 @@ const RecruiterProfile: React.FC = () => {
     setSaving(true);
     setFormError("");
     setSaved(false);
+
+
     try {
-      const updated = await recruiterProfileApi.update(form);
+      const updated = await recruiterProfileApi.update(user._id, form);
       setForm({ ...empty, ...updated });
       setSaved(true);
     } catch (err: any) {
@@ -71,18 +138,18 @@ const RecruiterProfile: React.FC = () => {
                 </p>
               )}
               <div className="form-grid">
-                <Field label="Full Name" required error={errors.fullName}>
+                <Field label="First Name" required error={errors.firstName}>
                   <input
-                    value={form.fullName}
-                    onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                    placeholder="e.g. Priya Sharma"
+                    value={form.firstName}
+                    onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+                    placeholder="e.g. Priya"
                   />
                 </Field>
-                <Field label="Designation">
+                <Field label="Last Name" required error={errors.lastName}>
                   <input
-                    value={form.designation}
-                    onChange={(e) => setForm({ ...form, designation: e.target.value })}
-                    placeholder="e.g. HR Manager"
+                    value={form.lastName}
+                    onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                    placeholder="e.g. Sharma"
                   />
                 </Field>
                 <Field label="Email" required error={errors.email}>
@@ -93,11 +160,47 @@ const RecruiterProfile: React.FC = () => {
                     placeholder="you@company.com"
                   />
                 </Field>
-                <Field label="Phone" required error={errors.phone}>
+                <Field label="Mobile Number" required error={errors.mobileNumber}>
                   <input
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    value={form.mobileNumber}
+                    onChange={(e) => setForm({ ...form, mobileNumber: e.target.value })}
                     placeholder="+91 9xxxxxxxxx"
+                  />
+                </Field>
+                <Field label="Username" required error={errors.userName}>
+                  <input
+                    value={form.userName}
+                    onChange={(e) => setForm({ ...form, userName: e.target.value })}
+                    placeholder="e.g. priya.hr"
+                  />
+                </Field>
+                <Field label="Designation" required error={errors.designation}>
+                  <input
+                    value={form.designation}
+                    onChange={(e) => setForm({ ...form, designation: e.target.value })}
+                    placeholder="e.g. HR Manager"
+                  />
+                </Field>
+                <Field label="Department" required error={errors.department}>
+                  <input
+                    value={form.department}
+                    onChange={(e) => setForm({ ...form, department: e.target.value })}
+                    placeholder="e.g. Human Resources"
+                  />
+                </Field>
+                <Field label="Address" span2>
+                  <input
+                    value={form.address}
+                    onChange={(e) => setForm({ ...form, address: e.target.value })}
+                    placeholder="Your address"
+                  />
+                </Field>
+                <Field label="Remark" span2>
+                  <textarea
+                    rows={3}
+                    value={form.remark}
+                    onChange={(e) => setForm({ ...form, remark: e.target.value })}
+                    placeholder="Any additional remarks..."
                   />
                 </Field>
               </div>
@@ -115,3 +218,4 @@ const RecruiterProfile: React.FC = () => {
 };
 
 export default RecruiterProfile;
+

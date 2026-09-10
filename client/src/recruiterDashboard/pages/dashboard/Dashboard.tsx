@@ -10,10 +10,10 @@ import { Icon } from "../../components/common/Icon.tsx";
 // backend endpoints are ready.)
 // =====================================
 const stats = [
-  { label: "Jobs Posted", value: 0, icon: "briefcase", color: "#0d6efd", to: "/recruiter/manage-jobs" },
-  { label: "Open Jobs", value: 0, icon: "grid", color: "#198754", to: "/recruiter/manage-jobs" },
-  { label: "Total Applications", value: 0, icon: "inbox", color: "#fd7e14", to: "/recruiter/applications" },
-  { label: "Shortlisted", value: 0, icon: "eye", color: "#6610f2", to: "/recruiter/applications" },
+  { label: "Jobs Posted", value: 0, icon: "briefcase", color: "#0d6efd", to: "/recruiter-panel/manage-jobs" },
+  { label: "Open Jobs", value: 0, icon: "grid", color: "#198754", to: "/recruiter-panel/manage-jobs" },
+  { label: "Total Applications", value: 0, icon: "inbox", color: "#fd7e14", to: "/recruiter-panel/applications" },
+  { label: "Shortlisted", value: 0, icon: "eye", color: "#6610f2", to: "/recruiter-panel/applications" },
 ];
 
 const Dashboard: React.FC = () => {
@@ -41,7 +41,7 @@ const Dashboard: React.FC = () => {
             <h2>Welcome back</h2>
             <p>Manage your company profile, post jobs and review applications.</p>
           </div>
-          <Link to="/recruiter/post-job" className="btn btn-primary btn-sm">
+          <Link to="/recruiter-panel/post-job" className="btn btn-primary btn-sm">
             <Icon name="plus" size={14} /> Post a Job
           </Link>
         </div>

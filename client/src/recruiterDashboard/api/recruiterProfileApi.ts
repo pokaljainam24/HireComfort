@@ -1,13 +1,15 @@
-import type { RecruiterProfileType } from "../types/recruiterProfile.ts";
+import type { RecruiterProfileType, RecruiterResponse } from "../types/recruiterProfile.ts";
 import http from "./http";
 
+
+
 export const recruiterProfileApi = {
-  get: async (): Promise<RecruiterProfileType> => {
-    const { data } = await http.get<RecruiterProfileType>("/recruiter/profile");
-    return data;
+  get: async (id: string): Promise<RecruiterProfileType> => {
+    const { data: { recruiter } } = await http.get<RecruiterResponse>("/recruiters/" + id);
+    return recruiter;
   },
-  update: async (payload: Partial<RecruiterProfileType>): Promise<RecruiterProfileType> => {
-    const { data } = await http.put<RecruiterProfileType>("/recruiter/profile", payload);
-    return data;
+  update: async (id: string, payload: Partial<RecruiterProfileType>): Promise<RecruiterProfileType> => {
+    const { data: { recruiter } } = await http.patch<RecruiterResponse>("/recruiters/" + id, payload);
+    return recruiter;
   },
 };

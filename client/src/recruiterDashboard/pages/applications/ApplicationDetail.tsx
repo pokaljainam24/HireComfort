@@ -6,7 +6,7 @@ import PageHeader from "../../components/common/PageHeader.tsx";
 import { Icon } from "../../components/common/Icon.tsx";
 import Field from "../../components/common/Field.tsx";
 
-const statuses: ApplicationStatus[] = ["applied", "shortlisted", "interview", "hired", "rejected"];
+const statuses: ApplicationStatus[] = ["Applied", "Shortlisted", "Interview", "Hired", "Rejected"];
 
 const ApplicationDetail: React.FC = () => {
   const { id } = useParams();
@@ -47,7 +47,7 @@ const ApplicationDetail: React.FC = () => {
         title="Application Detail"
         section="Applications"
         action={
-          <button className="btn btn-outline btn-sm" onClick={() => navigate("/recruiter/applications")}>
+          <button className="btn btn-outline btn-sm" onClick={() => navigate("/recruiter-panel/applications")}>
             <Icon name="chevronLeft" size={14} /> Back to Applications
           </button>
         }

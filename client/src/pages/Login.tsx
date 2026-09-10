@@ -92,8 +92,6 @@ function Login() {
         loginAs,
       });
 
-      console.log("LOGIN RESPONSE:", data);
-
       // =====================================
       // Validate Login Response
       // =====================================

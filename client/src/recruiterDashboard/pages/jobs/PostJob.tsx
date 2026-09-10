@@ -6,11 +6,11 @@ import type { JobSubCategory } from "../../types/jobSubCategory.ts";
 import type { Country } from "../../types/country.ts";
 import type { StateItem } from "../../types/state.ts";
 import type { City } from "../../types/city.ts";
-import { jobCategoryApi } from "../../api/jobCategoryApi.ts";
-import { jobSubCategoryApi } from "../../api/jobSubCategoryApi.ts";
-import { countryApi } from "../../api/countryApi.ts";
-import { stateApi } from "../../api/stateApi.ts";
-import { cityApi } from "../../api/cityApi.ts";
+import { getJobCategories } from "../../api/jobCategoryApi.ts";
+import { getJobSubCategories } from "../../api/jobSubCategoryApi.ts";
+import { getCountries } from "../../api/countryApi.ts";
+import { getStates } from "../../api/stateApi.ts";
+import { getCities } from "../../api/cityApi.ts";
 import { jobApi } from "../../api/jobApi.ts";
 import PageHeader from "../../components/common/PageHeader.tsx";
 import Field from "../../components/common/Field.tsx";
@@ -18,24 +18,25 @@ import { Icon } from "../../components/common/Icon.tsx";
 
 type FormState = Omit<Job, "_id" | "skills"> & { skills: string };
 
-const jobTypes: JobType[] = ["Full-time", "Part-time", "Contract", "Internship", "Remote"];
+const jobTypes: JobType[] = ["Full Time", "Part Time", "Contract", "Internship", "Freelance"];
 
 const empty: FormState = {
   title: "",
   categoryId: "",
   subCategoryId: "",
-  jobType: "Full-time",
+  jobType: "Full Time",
   countryId: "",
   stateId: "",
   cityId: "",
-  minExperience: 0,
-  maxExperience: 0,
-  minSalary: 0,
-  maxSalary: 0,
+  salaryRange: 0,
   skills: "",
   description: "",
   deadline: "",
   status: "open",
+  recruiterId: "",
+  exp: 0,
+  nop: 0,
+  qualification: ""
 };
 
 const PostJob: React.FC = () => {
@@ -54,15 +55,17 @@ const PostJob: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
   const [saved, setSaved] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
     Promise.all([
-      jobCategoryApi.getAll().catch(() => []),
-      jobSubCategoryApi.getAll().catch(() => []),
-      countryApi.getAll().catch(() => []),
-      stateApi.getAll().catch(() => []),
-      cityApi.getAll().catch(() => []),
+      getJobCategories().catch(() => []),
+      getJobSubCategories().catch(() => []),
+      getCountries().catch(() => []),
+      getStates().catch(() => []),
+      getCities().catch(() => []),
     ]).then(([cat, sub, c, s, ci]) => {
+      console.log(sub)
       setCategories(cat);
       setSubCategories(sub);
       setCountries(c);
@@ -75,21 +78,82 @@ const PostJob: React.FC = () => {
     if (!id) return;
     jobApi
       .getOne(id)
-      .then((job) => setForm({ ...job, skills: job.skills?.join(", ") || "" }))
+      .then((job: any) => {
+        const catId = typeof job.categoryId === "object" ? job.categoryId?._id : job.categoryId;
+        const subCatId = typeof job.subCategoryId === "object" ? job.subCategoryId?._id : job.subCategoryId;
+        const formattedDeadline = job.deadline
+          ? job.deadline.split("T")[0]
+          : job.lastAppliedDate
+            ? job.lastAppliedDate.split("T")[0]
+            : "";
+
+        setForm({
+          ...empty,
+          ...job,
+          categoryId: catId || "",
+          subCategoryId: subCatId || "",
+          countryId: job.country !== undefined && job.country !== null ? String(job.country) : job.countryId || "",
+          stateId: job.state !== undefined && job.state !== null ? String(job.state) : job.stateId || "",
+          cityId: job.city !== undefined && job.city !== null ? String(job.city) : job.cityId || "",
+          deadline: formattedDeadline,
+          skills: Array.isArray(job.skills) ? job.skills.join(", ") : job.skills || ""
+        });
+      })
       .catch(() => setFormError("Could not load this job."))
       .finally(() => setLoading(false));
   }, [id]);
 
   const filteredSubCategories = subCategories.filter((s) => s.categoryId === form.categoryId);
-  const filteredStates = states.filter((s) => s.countryId === form.countryId);
-  const filteredCities = cities.filter((c) => c.stateId === form.stateId);
+  const filteredStates = states.filter((s) => s.country_id == form.countryId);
+  const filteredCities = cities.filter((c) => c.state_id == form.stateId);
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!form.title.trim()) e.title = "Job title is required";
-    if (!form.categoryId) e.categoryId = "Select a job category";
-    if (!form.description.trim()) e.description = "Job description is required";
-    if (!form.deadline) e.deadline = "Application deadline is required";
+    if (!form.title.trim()) {
+      e.title = "Job title is required";
+    } else if (form.title.trim().length < 5) {
+      e.title = "Job title must be at least 5 characters long";
+    }
+
+    if (!form.categoryId) {
+      e.categoryId = "Select a job category";
+    }
+
+    if (!form.countryId) e.countryId = "Country is required";
+    if (!form.stateId) e.stateId = "State is required";
+    if (!form.cityId) e.cityId = "City is required";
+
+    if (!form.description.trim()) {
+      e.description = "Job description is required";
+    } else if (form.description.trim().length < 20) {
+      e.description = "Job description must be at least 20 characters long for clarity";
+    }
+
+    if (!form.deadline) {
+      e.deadline = "Application deadline is required";
+    } else {
+      const selectedDate = new Date(form.deadline);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Ignore time for comparison
+      if (isNaN(selectedDate.getTime())) {
+        e.deadline = "Please enter a valid date";
+      } else if (selectedDate < today) {
+        e.deadline = "Application deadline cannot be in the past";
+      }
+    }
+
+    if (form.salaryRange < 0) {
+      e.salary = "Salary cannot be negative";
+    }
+
+    if (form.nop <= 0) {
+      e.nop = "Number of positions must be greater than 0";
+    }
+
+    if (!form.qualification) {
+      e.qualification = "Qualification is required";
+    }
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -103,6 +167,15 @@ const PostJob: React.FC = () => {
     const payload: Partial<Job> = {
       ...form,
       skills: form.skills.split(",").map((s) => s.trim()).filter(Boolean),
+      recruiterId: user._id,
+      exp: Number(form.exp),
+      nop: Number(form.nop),
+      salaryRange: Number(form.salaryRange),
+      city: Number(form.cityId),
+      state: Number(form.stateId),
+      country: Number(form.countryId),
+      lastAppliedDate: form.deadline,
+      interviewType: "Offline"
     };
     try {
       if (isEdit && id) {
@@ -111,7 +184,7 @@ const PostJob: React.FC = () => {
         await jobApi.create(payload);
       }
       setSaved(true);
-      setTimeout(() => navigate("/recruiter/manage-jobs"), 600);
+      setTimeout(() => navigate("/recruiter-panel/manage-jobs"), 600);
     } catch (err: any) {
       setFormError(err?.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
@@ -192,71 +265,83 @@ const PostJob: React.FC = () => {
                     <option value="closed">Closed</option>
                   </select>
                 </Field>
-                <Field label="Country">
+                <Field label="Country" required error={errors.countryId}>
                   <select
                     value={form.countryId}
                     onChange={(e) => setForm({ ...form, countryId: e.target.value, stateId: "", cityId: "" })}
                   >
                     <option value="">Select country</option>
                     {countries.map((c) => (
-                      <option key={c._id} value={c._id}>{c.name}</option>
+                      <option key={c._id} value={c.id}>{c.name}</option>
                     ))}
                   </select>
                 </Field>
-                <Field label="State">
+                <Field
+                  label="State"
+                  required
+                  error={errors.stateId}
+                  hint={!form.countryId ? "Please select a country first" : ""}
+                >
                   <select
                     value={form.stateId}
                     onChange={(e) => setForm({ ...form, stateId: e.target.value, cityId: "" })}
                     disabled={!form.countryId}
+                    style={!form.countryId ? { opacity: 0.6, cursor: "not-allowed", backgroundColor: "#f3f4f6" } : {}}
                   >
                     <option value="">Select state</option>
                     {filteredStates.map((s) => (
-                      <option key={s._id} value={s._id}>{s.name}</option>
+                      <option key={s._id} value={s.id}>{s.name}</option>
                     ))}
                   </select>
                 </Field>
-                <Field label="City">
+                <Field
+                  label="City"
+                  required
+                  error={errors.cityId}
+                  hint={!form.countryId ? "Please select a state first" : !form.stateId ? "Please select a state first" : ""}
+                >
                   <select
                     value={form.cityId}
                     onChange={(e) => setForm({ ...form, cityId: e.target.value })}
                     disabled={!form.stateId}
+                    style={!form.stateId ? { opacity: 0.6, cursor: "not-allowed", backgroundColor: "#f3f4f6" } : {}}
                   >
                     <option value="">Select city</option>
                     {filteredCities.map((c) => (
-                      <option key={c._id} value={c._id}>{c.name}</option>
+                      <option key={c._id} value={c.id}>{c.name}</option>
                     ))}
                   </select>
+                </Field>
+                <Field label="Number of Positions" required error={errors.nop}>
+                  <input
+                    type="number"
+                    min={1}
+                    value={form.nop}
+                    onChange={(e) => setForm({ ...form, nop: Number(e.target.value) })}
+                  />
+                </Field>
+                <Field label="Qualification" required error={errors.qualification}>
+                  <input
+                    type="text"
+                    value={form.qualification}
+                    onChange={(e) => setForm({ ...form, qualification: e.target.value })}
+                    placeholder="e.g., Bachelor's Degree in Computer Science"
+                  />
                 </Field>
                 <Field label="Min Experience (yrs)">
                   <input
                     type="number"
                     min={0}
-                    value={form.minExperience}
-                    onChange={(e) => setForm({ ...form, minExperience: Number(e.target.value) })}
+                    value={form.exp}
+                    onChange={(e) => setForm({ ...form, exp: Number(e.target.value) })}
                   />
                 </Field>
-                <Field label="Max Experience (yrs)">
+                <Field label="Approximate Salary (per annum)" error={errors.salary}>
                   <input
                     type="number"
                     min={0}
-                    value={form.maxExperience}
-                    onChange={(e) => setForm({ ...form, maxExperience: Number(e.target.value) })}
-                  />
-                </Field>
-                <Field label="Min Salary (per annum)">
-                  <input
-                    type="number"
-                    min={0}
-                    value={form.minSalary}
-                    onChange={(e) => setForm({ ...form, minSalary: Number(e.target.value) })}
-                  />
-                </Field>
-                <Field label="Max Salary (per annum)">
-                  <input
-                    type="number"
-                    min={0}
-                    value={form.maxSalary}
-                    onChange={(e) => setForm({ ...form, maxSalary: Number(e.target.value) })}
+                    value={form.salaryRange}
+                    onChange={(e) => setForm({ ...form, salaryRange: Number(e.target.value) })}
                   />
                 </Field>
                 <Field label="Application Deadline" required error={errors.deadline}>
@@ -283,7 +368,7 @@ const PostJob: React.FC = () => {
                 </Field>
               </div>
               <div className="form-actions">
-                <button type="button" className="btn btn-outline" onClick={() => navigate("/recruiter/manage-jobs")}>
+                <button type="button" className="btn btn-outline" onClick={() => navigate("/recruiter-panel/manage-jobs")}>
                   Cancel
                 </button>
                 <button type="submit" className="btn btn-primary" disabled={saving}>

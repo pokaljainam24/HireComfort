@@ -23,7 +23,7 @@ const Applications: React.FC = () => {
   useEffect(() => {
     applicationApi
       .getAll()
-      .then(setRows)
+      .then((data) => setRows(data))
       .catch((err) => setError(err?.response?.data?.message || "Failed to load applications"))
       .finally(() => setLoading(false));
   }, []);
@@ -36,7 +36,7 @@ const Applications: React.FC = () => {
       header: "Applied On",
       render: (r) => (r.appliedAt ? new Date(r.appliedAt).toLocaleDateString() : "—"),
     },
-    { header: "Status", render: (r) => <span className={statusBadge[r.status]}>{r.status}</span> },
+    { header: "Status", render: (r) => <span className={statusBadge[r.status] || "badge badge-blue"}>{r.status}</span> },
   ];
 
   return (
@@ -65,7 +65,7 @@ const Applications: React.FC = () => {
               r.jobTitle.toLowerCase().includes(q) ||
               r.candidateEmail.toLowerCase().includes(q)
             }
-            onEdit={(r) => navigate(`/recruiter/applications/${r._id}`)}
+            onEdit={(r) => navigate(`/recruiter-panel/applications/${r._id}`)}
             editIcon="eye"
             editLabel="View"
           />

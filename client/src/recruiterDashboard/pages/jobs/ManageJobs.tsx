@@ -40,7 +40,7 @@ const ManageJobs: React.FC = () => {
         title="Manage Jobs"
         section="Jobs"
         action={
-          <Link to="/recruiter/post-job" className="btn btn-primary btn-sm">
+          <Link to="/recruiter-panel/post-job" className="btn btn-primary btn-sm">
             <Icon name="plus" size={14} /> Post a Job
           </Link>
         }
@@ -64,7 +64,7 @@ const ManageJobs: React.FC = () => {
             rowKey={(r) => r._id}
             searchPlaceholder="Search jobs..."
             onSearch={(r, q) => r.title.toLowerCase().includes(q) || r.jobType.toLowerCase().includes(q)}
-            onEdit={(r) => navigate(`/recruiter/post-job/${r._id}`)}
+            onEdit={(r) => navigate(`/recruiter-panel/post-job/${r._id}`)}
             onDelete={(r) => setDeleteTarget(r)}
           />
         )}

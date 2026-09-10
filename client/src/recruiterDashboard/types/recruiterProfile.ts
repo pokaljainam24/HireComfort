@@ -1,7 +1,17 @@
 export interface RecruiterProfileType {
   _id?: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  phone: string;
+  mobileNumber: string;
+  address: string;
+  userName: string;
+  password?: string;
+  department: string;
+  remark: string;
   designation: string;
 }
+
+export type RecruiterResponse = {
+  recruiter: RecruiterProfileType;
+};

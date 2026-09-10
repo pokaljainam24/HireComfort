@@ -3,26 +3,35 @@ import type { Country } from "../../types/country.ts";
 import type { StateItem } from "../../types/state.ts";
 import type { City } from "../../types/city.ts";
 import { companyProfileApi } from "../../api/companyProfileApi.ts";
-import { countryApi } from "../../api/countryApi.ts";
-import { stateApi } from "../../api/stateApi.ts";
-import { cityApi } from "../../api/cityApi.ts";
+import { getCountries } from "../../api/countryApi.ts";
+import { getStates } from "../../api/stateApi.ts";
+import { getCities } from "../../api/cityApi.ts";
 import PageHeader from "../../components/common/PageHeader.tsx";
 import Field from "../../components/common/Field.tsx";
 import type { CompanyProfileType } from "../../types/companyProfile.ts";
 
 const empty: CompanyProfileType = {
   companyName: "",
+  companyEmail: "",
+  contactNumber: "",
+  numberOfEmployee: "1-10",
+  companyType: "Private Limited",
   website: "",
-  industry: "",
-  companySize: "",
+  gstNumber: "",
+  companyLogo: "",
+  aboutCompany: "",
+  address: "",
   countryId: "",
   stateId: "",
   cityId: "",
-  address: "",
-  about: "",
+  instagram: "",
+  twitter: "",
+  linkedin: "",
+  facebook: "",
 };
 
 const CompanyProfile: React.FC = () => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [form, setForm] = useState<CompanyProfileType>(empty);
   const [countries, setCountries] = useState<Country[]>([]);
   const [states, setStates] = useState<StateItem[]>([]);
@@ -35,26 +44,45 @@ const CompanyProfile: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      companyProfileApi.get().catch(() => null),
-      countryApi.getAll().catch(() => []),
-      stateApi.getAll().catch(() => []),
-      cityApi.getAll().catch(() => []),
-    ]).then(([profile, c, s, ci]) => {
-      if (profile) setForm({ ...empty, ...profile });
-      setCountries(c);
-      setStates(s);
-      setCities(ci);
+      companyProfileApi.get(user._id).catch(() => null),
+      getCountries().catch(() => []),
+      getStates().catch(() => []),
+      getCities().catch(() => []),
+    ]).then(([profile, countries, states, cities]) => {
+      if (profile) setForm((prev) => ({ ...prev, ...profile }));
+      setCountries(countries);
+      setStates(states);
+      setCities(cities);
       setLoading(false);
     });
   }, []);
 
-  const filteredStates = states.filter((s) => s.countryId === form.countryId);
-  const filteredCities = cities.filter((c) => c.stateId === form.stateId);
+  const filteredStates = states.filter((s) => s.country_id == form.countryId);
+  const filteredCities = cities.filter((c) => c.state_id == form.stateId);
 
   const validate = () => {
     const e: Record<string, string> = {};
     if (!form.companyName.trim()) e.companyName = "Company name is required";
-    if (!form.industry.trim()) e.industry = "Industry is required";
+    if (!form.companyEmail?.trim()) e.companyEmail = "Company email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.companyEmail.trim())) e.companyEmail = "Enter a valid email address";
+
+    if (!form.contactNumber?.trim()) e.contactNumber = "Contact number is required";
+    else if (!/^[6-9]\d{9}$/.test(form.contactNumber.trim())) e.contactNumber = "Enter a valid 10-digit mobile number";
+
+    if (!form.companyType?.trim()) e.companyType = "Company type is required";
+    if (!form.numberOfEmployee?.trim()) e.numberOfEmployee = "Number of employees is required";
+    if (!form.gstNumber?.trim()) e.gstNumber = "GST number is required";
+    else if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(form.gstNumber.trim().toUpperCase())) {
+      e.gstNumber = "Enter a valid 15-character GSTIN (e.g. 22AAAAA0000A1Z5)";
+    }
+
+    if (!form.address?.trim()) e.address = "Company address is required";
+    if (!form.aboutCompany?.trim()) e.aboutCompany = "About company is required";
+
+    if (!form.countryId) e.countryId = "Country is required";
+    if (!form.stateId) e.stateId = "State is required";
+    if (!form.cityId) e.cityId = "City is required";
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -66,11 +94,19 @@ const CompanyProfile: React.FC = () => {
     setFormError("");
     setSaved(false);
     try {
-      const updated = await companyProfileApi.update(form);
-      setForm({ ...empty, ...updated });
+      const updated = await companyProfileApi.save(user._id, form._id, form);
+      if (updated) {
+        setForm((prev) => ({
+          ...prev,
+          ...updated,
+          countryId: updated.country !== undefined && updated.country !== null ? String(updated.country) : updated.countryId || prev.countryId,
+          stateId: updated.state !== undefined && updated.state !== null ? String(updated.state) : updated.stateId || prev.stateId,
+          cityId: updated.city !== undefined && updated.city !== null ? String(updated.city) : updated.cityId || prev.cityId,
+        }));
+      }
       setSaved(true);
     } catch (err: any) {
-      setFormError(err?.response?.data?.message || "Something went wrong. Please try again.");
+      setFormError(err?.response?.data?.message || err?.response?.data?.error || err?.message || "Something went wrong. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -95,7 +131,7 @@ const CompanyProfile: React.FC = () => {
               {formError && <p className="err" style={{ marginBottom: 12 }}>{formError}</p>}
               {saved && (
                 <p style={{ color: "var(--bs-success, #198754)", fontSize: 13, marginBottom: 12 }}>
-                  Company profile saved.
+                  Company profile saved successfully.
                 </p>
               )}
               <div className="form-grid">
@@ -106,26 +142,41 @@ const CompanyProfile: React.FC = () => {
                     placeholder="e.g. Acme Technologies Pvt Ltd"
                   />
                 </Field>
-                <Field label="Website">
+                <Field label="Company Email" required error={errors.companyEmail}>
                   <input
-                    value={form.website}
-                    onChange={(e) => setForm({ ...form, website: e.target.value })}
-                    placeholder="https://example.com"
+                    type="email"
+                    value={form.companyEmail}
+                    onChange={(e) => setForm({ ...form, companyEmail: e.target.value })}
+                    placeholder="contact@company.com"
                   />
                 </Field>
-                <Field label="Industry" required error={errors.industry}>
+                <Field label="Contact Number" required error={errors.contactNumber}>
                   <input
-                    value={form.industry}
-                    onChange={(e) => setForm({ ...form, industry: e.target.value })}
-                    placeholder="e.g. IT Services"
+                    type="tel"
+                    value={form.contactNumber}
+                    onChange={(e) => setForm({ ...form, contactNumber: e.target.value })}
+                    placeholder="10-digit mobile number"
                   />
                 </Field>
-                <Field label="Company Size">
+                <Field label="Company Type" required error={errors.companyType}>
                   <select
-                    value={form.companySize}
-                    onChange={(e) => setForm({ ...form, companySize: e.target.value })}
+                    value={form.companyType}
+                    onChange={(e) => setForm({ ...form, companyType: e.target.value })}
                   >
-                    <option value="">Select size</option>
+                    <option value="Private Limited">Private Limited</option>
+                    <option value="Public Limited">Public Limited</option>
+                    <option value="Sole Proprietorship">Sole Proprietorship</option>
+                    <option value="Partnership">Partnership</option>
+                    <option value="LLP">LLP</option>
+                    <option value="NGO / Non-Profit">NGO / Non-Profit</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </Field>
+                <Field label="Number of Employees" required error={errors.numberOfEmployee}>
+                  <select
+                    value={form.numberOfEmployee}
+                    onChange={(e) => setForm({ ...form, numberOfEmployee: e.target.value })}
+                  >
                     <option value="1-10">1-10 employees</option>
                     <option value="11-50">11-50 employees</option>
                     <option value="51-200">51-200 employees</option>
@@ -133,54 +184,115 @@ const CompanyProfile: React.FC = () => {
                     <option value="500+">500+ employees</option>
                   </select>
                 </Field>
-                <Field label="Country">
+                <Field label="GST Number" required error={errors.gstNumber}>
+                  <input
+                    value={form.gstNumber}
+                    onChange={(e) => setForm({ ...form, gstNumber: e.target.value.toUpperCase() })}
+                    placeholder="e.g. 22AAAAA0000A1Z5"
+                  />
+                </Field>
+                <Field label="Website">
+                  <input
+                    value={form.website}
+                    onChange={(e) => setForm({ ...form, website: e.target.value })}
+                    placeholder="https://example.com"
+                  />
+                </Field>
+                <Field label="Company Logo URL">
+                  <input
+                    value={form.companyLogo}
+                    onChange={(e) => setForm({ ...form, companyLogo: e.target.value })}
+                    placeholder="https://example.com/logo.png"
+                  />
+                </Field>
+                <Field label="Country" required error={errors.countryId}>
                   <select
                     value={form.countryId}
                     onChange={(e) => setForm({ ...form, countryId: e.target.value, stateId: "", cityId: "" })}
                   >
                     <option value="">Select country</option>
                     {countries.map((c) => (
-                      <option key={c._id} value={c._id}>{c.name}</option>
+                      <option key={c._id} value={c.id}>{c.name}</option>
                     ))}
                   </select>
                 </Field>
-                <Field label="State">
+                <Field
+                  label="State"
+                  required
+                  error={errors.stateId}
+                  hint={!form.countryId ? "Please select a country first" : ""}
+                >
                   <select
                     value={form.stateId}
                     onChange={(e) => setForm({ ...form, stateId: e.target.value, cityId: "" })}
                     disabled={!form.countryId}
+                    style={!form.countryId ? { opacity: 0.6, cursor: "not-allowed", backgroundColor: "#f3f4f6" } : {}}
                   >
                     <option value="">Select state</option>
                     {filteredStates.map((s) => (
-                      <option key={s._id} value={s._id}>{s.name}</option>
+                      <option key={s._id} value={s.id}>{s.name}</option>
                     ))}
                   </select>
                 </Field>
-                <Field label="City">
+                <Field
+                  label="City"
+                  required
+                  error={errors.cityId}
+                  hint={!form.countryId ? "Please select a state first" : !form.stateId ? "Please select a state first" : ""}
+                >
                   <select
                     value={form.cityId}
                     onChange={(e) => setForm({ ...form, cityId: e.target.value })}
                     disabled={!form.stateId}
+                    style={!form.stateId ? { opacity: 0.6, cursor: "not-allowed", backgroundColor: "#f3f4f6" } : {}}
                   >
                     <option value="">Select city</option>
                     {filteredCities.map((c) => (
-                      <option key={c._id} value={c._id}>{c.name}</option>
+                      <option key={c._id} value={c.id}>{c.name}</option>
                     ))}
                   </select>
                 </Field>
-                <Field label="Address" span2>
+                <Field label="Address" span2 required error={errors.address}>
                   <input
                     value={form.address}
                     onChange={(e) => setForm({ ...form, address: e.target.value })}
                     placeholder="Office address"
                   />
                 </Field>
-                <Field label="About the Company" span2 hint="Shown to candidates on job listings">
+                <Field label="About the Company" span2 required error={errors.aboutCompany} hint="Shown to candidates on job listings">
                   <textarea
                     rows={4}
-                    value={form.about}
-                    onChange={(e) => setForm({ ...form, about: e.target.value })}
+                    value={form.aboutCompany}
+                    onChange={(e) => setForm({ ...form, aboutCompany: e.target.value })}
                     placeholder="Tell candidates about your company..."
+                  />
+                </Field>
+                <Field label="Instagram URL">
+                  <input
+                    value={form.instagram}
+                    onChange={(e) => setForm({ ...form, instagram: e.target.value })}
+                    placeholder="https://instagram.com/company"
+                  />
+                </Field>
+                <Field label="Twitter URL">
+                  <input
+                    value={form.twitter}
+                    onChange={(e) => setForm({ ...form, twitter: e.target.value })}
+                    placeholder="https://twitter.com/company"
+                  />
+                </Field>
+                <Field label="LinkedIn URL">
+                  <input
+                    value={form.linkedin}
+                    onChange={(e) => setForm({ ...form, linkedin: e.target.value })}
+                    placeholder="https://linkedin.com/company/acme"
+                  />
+                </Field>
+                <Field label="Facebook URL">
+                  <input
+                    value={form.facebook}
+                    onChange={(e) => setForm({ ...form, facebook: e.target.value })}
+                    placeholder="https://facebook.com/company"
                   />
                 </Field>
               </div>

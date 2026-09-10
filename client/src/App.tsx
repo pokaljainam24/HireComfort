@@ -1,5 +1,5 @@
 // imports from packages
-import { Route, Routes } from "react-router";
+import { Route, Routes, useLocation } from "react-router";
 
 // import components
 import Home from "./pages/Home";
@@ -25,13 +25,16 @@ import BlogDetails from "./pages/BlogDetails";
 import Signup from "./pages/Signup";
 import Faq from "./pages/Faq.tsx";
 import VisitorTracker from "./components/VisitorCount.tsx";
-import RecruiterApp from "./recruiter/RecruiterApp.tsx";
+import RecruiterApp from "./recruiterDashboard/RecruiterApp.tsx";
 
 function App() {
+  const location = useLocation();
+  const isRecruiterRoute = location.pathname.startsWith("/recruiter-panel");
+
   return (
     <>
-      <Navbar />
-      <VisitorTracker />
+      {!isRecruiterRoute && <Navbar />}
+      {!isRecruiterRoute && <VisitorTracker />}
       <Routes>
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -55,7 +58,7 @@ function App() {
 
         <Route path="/recruiter-panel/*" element={<RecruiterApp />} />
       </Routes>
-      <Footer />
+      {!isRecruiterRoute && <Footer />}
     </>
   );
 }

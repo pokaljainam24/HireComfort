@@ -5,3 +5,10 @@ export interface JobSubCategory {
   description: string;
   icon: string;
 }
+
+export interface JobSubCategoryForm {
+  categoryId: string;
+  name: string;
+  description: string;
+  icon: File | null;
+}

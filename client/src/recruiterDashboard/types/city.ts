@@ -1,5 +1,6 @@
 export interface City {
   _id: string;
-  stateId: string;
+  id: string
+  state_id: string;
   name: string;
 }

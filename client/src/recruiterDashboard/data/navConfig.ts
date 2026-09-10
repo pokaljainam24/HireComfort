@@ -12,28 +12,28 @@ export interface NavGroup {
 export const navConfig: NavGroup[] = [
   {
     label: "Overview",
-    items: [{ label: "Dashboard", path: "/recruiter", icon: "grid" }],
+    items: [{ label: "Dashboard", path: "/recruiter-panel", icon: "grid" }],
   },
   {
     label: "Profile",
     items: [
-      { label: "Company Profile", path: "/recruiter/company-profile", icon: "building" },
-      { label: "Recruiter Profile", path: "/recruiter/recruiter-profile", icon: "user" },
+      { label: "Company Profile", path: "/recruiter-panel/company-profile", icon: "building" },
+      { label: "Recruiter Profile", path: "/recruiter-panel/recruiter-profile", icon: "user" },
     ],
   },
   {
     label: "Jobs",
     items: [
-      { label: "Post a Job", path: "/recruiter/post-job", icon: "plus" },
-      { label: "Manage Jobs", path: "/recruiter/manage-jobs", icon: "briefcase" },
+      { label: "Post a Job", path: "/recruiter-panel/post-job", icon: "plus" },
+      { label: "Manage Jobs", path: "/recruiter-panel/manage-jobs", icon: "briefcase" },
     ],
   },
   {
     label: "Applications",
-    items: [{ label: "Applications", path: "/recruiter/applications", icon: "inbox" }],
+    items: [{ label: "Applications", path: "/recruiter-panel/applications", icon: "inbox" }],
   },
   {
     label: "Account",
-    items: [{ label: "Change Password", path: "/recruiter/change-password", icon: "key" }],
+    items: [{ label: "Change Password", path: "/recruiter-panel/change-password", icon: "key" }],
   },
 ];
