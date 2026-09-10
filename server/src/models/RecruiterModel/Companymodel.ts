@@ -12,9 +12,9 @@ export interface ICompanyMaster {
   gstNumber: string;
   companyLogo: string;
   aboutCompany: string;
-  city: string;
-  state: string;
-  country: string;
+  city: number;
+  state: number;
+  country: number;
   instagram: string;
   twitter: string;
   linkedin: string;
@@ -103,21 +103,18 @@ const companyMasterSchema = new Schema<ICompanyMaster>(
     },
 
     city: {
-      type: String,
+      type: Number,
       required: true,
-      trim: true,
     },
 
     state: {
-      type: String,
+      type: Number,
       required: true,
-      trim: true,
     },
 
     country: {
-      type: String,
+      type: Number,
       required: true,
-      trim: true,
     },
 
     instagram: {

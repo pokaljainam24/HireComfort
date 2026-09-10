@@ -75,24 +75,6 @@ export const createJobApplicationService = async (
     }
 
     // =====================================
-    // Status Validation
-    // =====================================
-    if (!data.status?.trim()) {
-      throw new Error("Status is required");
-    }
-
-    const allowedStatus = [
-      "Active",
-      "Inactive",
-    ];
-
-    if (!allowedStatus.includes(data.status.trim())) {
-      throw new Error(
-        "Status must be either Active or Inactive",
-      );
-    }
-
-    // =====================================
     // Application Status Validation
     // =====================================
     if (!data.applicationStatus?.trim()) {
@@ -225,10 +207,8 @@ export const createJobApplicationService = async (
 
         notes: data.notes.trim(),
 
-        status: data.status.trim(),
-
         applicationStatus:
-          data.applicationStatus.trim(),
+          data.applicationStatus,
 
         noticeperiod: data.noticeperiod.trim(),
 

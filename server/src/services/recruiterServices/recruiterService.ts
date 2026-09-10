@@ -67,13 +67,6 @@ export async function createRecruiterService(
     }
 
     // =====================================
-    // Address Validation
-    // =====================================
-    if (!recruiterData.address?.trim()) {
-      throw new Error("Address is required");
-    }
-
-    // =====================================
     // Username Validation
     // =====================================
     if (!recruiterData.userName?.trim()) {

@@ -6,12 +6,16 @@ import {
   getJobMaster,
   updateJobMaster,
   deleteJobMaster,
+  createJobMasterByRecruiterId
 } from "../../controllers/Recruiter/JobMasterController.js";
 
 const router = express.Router();
 
 // Create Job
-router.post("/", createJobMaster);
+// router.post("/", createJobMaster);
+
+router.post("/recruiter", createJobMasterByRecruiterId);
+
 
 // Get All Jobs
 router.get("/", getJobMasters);

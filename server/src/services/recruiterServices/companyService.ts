@@ -1,5 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import CompanyMaster from "../../models/RecruiterModel/Companymodel.js";
+import City from "../../models/CityModel/CityModel.js";
+import State from "../../models/StateModel/StateModel.js";
 
 export type ICompanyMaster = InstanceType<typeof CompanyMaster>;
 
@@ -112,15 +114,15 @@ export async function createCompanyService(
     // ==============================
     // Location Validation
     // ==============================
-    if (!companyData.city?.trim()) {
+    if (!companyData.city) {
       throw new Error("City is required");
     }
 
-    if (!companyData.state?.trim()) {
+    if (!companyData.state) {
       throw new Error("State is required");
     }
 
-    if (!companyData.country?.trim()) {
+    if (!companyData.country) {
       throw new Error("Country is required");
     }
 
@@ -160,9 +162,9 @@ export async function createCompanyService(
       companyType: companyData.companyType.trim(),
       gstNumber: companyData.gstNumber.trim().toUpperCase(),
       aboutCompany: companyData.aboutCompany.trim(),
-      city: companyData.city.trim(),
-      state: companyData.state.trim(),
-      country: companyData.country.trim(),
+      city: companyData.city,
+      state: companyData.state,
+      country: companyData.country,
     });
 
     return await company.save();
@@ -193,6 +195,77 @@ export async function getCompanyByIdService(id: string) {
     }).populate("recruiterId");
   } catch (error) {
     console.error(`Error getting company with id ${id}:`, error);
+    throw error;
+  }
+}
+
+export async function getCompanyByRecruiterIdService(recruiterId: string) {
+  try {
+    const company = await CompanyMaster.aggregate([
+      {
+        $match: {
+          recruiterId: new Types.ObjectId(recruiterId),
+          isActive: true,
+          isDisplay: true,
+        },
+      },
+
+      {
+        $lookup: {
+          from: "country",
+          localField: "country",
+          foreignField: "id",
+          as: "countryDetails",
+        },
+      },
+
+      {
+        $lookup: {
+          from: "state",
+          localField: "state",
+          foreignField: "id",
+          as: "stateDetails",
+        },
+      },
+
+      {
+        $lookup: {
+          from: "city",
+          localField: "city",
+          foreignField: "id",
+          as: "cityDetails",
+        },
+      },
+
+      {
+        $unwind: {
+          path: "$countryDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $unwind: {
+          path: "$stateDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $unwind: {
+          path: "$cityDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+    ]);
+    // const company = await CompanyMaster.findOne({
+    //   recruiterId: recruiterId,
+    //   isActive: true,
+    //   isDisplay: true,
+    // }).populate("recruiterId");
+    return company[0] ?? null;
+  } catch (error) {
+    console.error(`Error getting company with recruiter id ${recruiterId}:`, error);
     throw error;
   }
 }

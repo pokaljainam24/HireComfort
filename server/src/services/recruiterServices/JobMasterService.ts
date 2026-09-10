@@ -29,6 +29,19 @@ export const createJobMasterService = async (data: Partial<IJobMaster>) => {
     }
 
     // =====================================
+    // Location Validation
+    // =====================================
+    if (data.city === undefined || data.city === null) {
+      throw new Error("Job city is required");
+    }
+    if (data.state === undefined || data.state === null) {
+      throw new Error("Job state is required");
+    }
+    if (data.country === undefined || data.country === null) {
+      throw new Error("Job country is required");
+    }
+
+    // =====================================
     // Description Validation
     // =====================================
     if (!data.description?.trim()) {
@@ -65,7 +78,7 @@ export const createJobMasterService = async (data: Partial<IJobMaster>) => {
     // =====================================
     // Experience Validation
     // =====================================
-    if (!data.exp?.trim()) {
+    if (!data.exp) {
       throw new Error("Experience is required");
     }
 
@@ -107,12 +120,6 @@ export const createJobMasterService = async (data: Partial<IJobMaster>) => {
       throw new Error("Number of positions must be greater than 0");
     }
 
-    // =====================================
-    // Location Validation
-    // =====================================
-    if (!data.location?.trim()) {
-      throw new Error("Job location is required");
-    }
 
     // =====================================
     // Salary Validation
@@ -185,17 +192,25 @@ export const createJobMasterService = async (data: Partial<IJobMaster>) => {
 
       companyId: new mongoose.Types.ObjectId(data.companyId.toString()),
 
+      categoryId: data.categoryId ? new mongoose.Types.ObjectId(data.categoryId.toString()) : undefined,
+
+      subCategoryId: data.subCategoryId ? new mongoose.Types.ObjectId(data.subCategoryId.toString()) : undefined,
+
       title: data.title.trim(),
+
+      city: data.city,
+
+      state: data.state,
+
+      country: data.country,
 
       description: data.description.trim(),
 
       skills,
 
-      exp: data.exp.trim(),
+      exp: data.exp,
 
       jobType: data.jobType.trim(),
-
-      location: data.location.trim(),
 
       interviewType: data.interviewType.trim(),
 

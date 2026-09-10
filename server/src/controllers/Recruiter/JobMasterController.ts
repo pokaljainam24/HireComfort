@@ -7,6 +7,7 @@ import {
   updateJobMasterService,
   deleteJobMasterService,
 } from "../../services/recruiterServices/JobMasterService.js";
+import { getCompanyByRecruiterIdService } from "../../services/recruiterServices/companyService.js";
 
 // Create Job
 export const createJobMaster = async (req: Request, res: Response) => {
@@ -30,6 +31,29 @@ export const createJobMaster = async (req: Request, res: Response) => {
   }
 };
 
+export const createJobMasterByRecruiterId = async (req: Request, res: Response) => {
+  try {
+    const recruiterId = req.body.recruiterId;
+    console.log(recruiterId)
+    const company = await getCompanyByRecruiterIdService(recruiterId as string);
+    // console.log(recruiterId)
+    // TODO: The company data in response is null. 
+    const payload = { ...req.body, companyId: company._id, createdBy: recruiterId }
+    const jobMaster = await createJobMasterService(payload);
+
+    return res.status(201).json({
+      message: "Job created successfully",
+      jobMaster,
+    });
+  } catch (error: any) {
+    console.error("Error creating job:", error);
+
+    return res.status(500).json({
+      message: "Error creating job",
+      error: error.message,
+    });
+  }
+};
 // Get All Jobs
 export const getJobMasters = async (req: Request, res: Response) => {
   try {

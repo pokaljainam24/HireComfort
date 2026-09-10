@@ -6,6 +6,7 @@ import {
   getJobApplication,
   updateJobApplication,
   deleteJobApplication,
+  updateJobApplicationStatus
 } from "../../controllers/Recruiter/JobapplicationMasterController.js";
 
 const router = Router();
@@ -24,6 +25,8 @@ router.patch("/:id", updateJobApplication);
 
 // Delete Job Application
 router.delete("/:id", deleteJobApplication);
+
+// router.patch("/:id/status", updateJobApplicationStatus)
 
 export default router;
 

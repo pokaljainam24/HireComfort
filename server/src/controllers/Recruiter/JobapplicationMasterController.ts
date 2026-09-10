@@ -37,7 +37,6 @@ export const createJobApplication = async (
   }
 };
 
-
 // Get All Job Applications
 export const getJobApplications = async (
   req: Request,
@@ -148,6 +147,52 @@ export const updateJobApplication = async (
     });
   }
 };
+export const updateJobApplicationStatus = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const jobApplicationId = req.params.id;
+
+    if (typeof jobApplicationId !== "string") {
+      return res.status(400).json({
+        message: "Invalid job application ID",
+      });
+    }
+
+    const status = req.body.status;
+
+    const updatedStatus =
+      await updateJobApplicationService(
+        jobApplicationId,
+        {
+          applicationStatus: status,
+          updatedBy: "admin",
+        }
+      );
+
+    if (!updatedStatus) {
+      return res.status(404).json({
+        message: "Job application not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Job application updated successfully",
+      updatedStatus,
+    });
+  } catch (error) {
+    console.error(
+      "Error updating job application:",
+      error
+    );
+
+    return res.status(500).json({
+      message: "Error updating job application",
+    });
+  }
+};
+
 
 
 // Delete Job Application

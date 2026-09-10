@@ -5,14 +5,17 @@ export interface IJobApplicationMaster extends Document {
   applicantId: mongoose.Types.ObjectId;
   rating: number;
   notes: string;
-  status: string;
   recruiterId: mongoose.Types.ObjectId;
   applicationDate: Date;
   expectedsalary: number;
   noticeperiod: string;
   resume: string;
   companyId: mongoose.Types.ObjectId;
-  applicationStatus: string;
+  applicationStatus: | "Applied"
+  | "Shortlisted"
+  | "Interview"
+  | "Hired"
+  | "Rejected";
   appliedAt: Date;
 
   // Status
@@ -54,11 +57,6 @@ const jobApplicationMasterSchema = new Schema<IJobApplicationMaster>(
       default: "",
     },
 
-    status: {
-      type: String,
-      default: "Pending",
-    },
-
     recruiterId: {
       type: Schema.Types.ObjectId,
       ref: "Recruiter",
@@ -93,6 +91,7 @@ const jobApplicationMasterSchema = new Schema<IJobApplicationMaster>(
 
     applicationStatus: {
       type: String,
+      enum: ["Applied", "Shortlisted", "Interview", "Hired", "Rejected"],
       default: "Applied",
     },
 

@@ -6,6 +6,7 @@ import {
   getCompanyByIdService,
   updateCompanyService,
   deleteCompanyService,
+  getCompanyByRecruiterIdService,
 } from "../../services/recruiterServices/companyService.js";
 
 export const createCompany = async (req: Request, res: Response) => {
@@ -62,6 +63,36 @@ export const getCompany = async (req: Request, res: Response) => {
     }
 
     const company = await getCompanyByIdService(companyId);
+
+    if (!company) {
+      return res.status(404).json({
+        message: "Company not found",
+      });
+    }
+
+    return res.status(200).json({
+      company,
+    });
+  } catch (error) {
+    console.error("Error getting company:", error);
+
+    return res.status(500).json({
+      message: "Error getting company",
+    });
+  }
+};
+
+export const getCompanyByRecruiterId = async (req: Request, res: Response) => {
+  try {
+    const recruiterId = req.params.id;
+
+    if (typeof recruiterId !== "string") {
+      return res.status(400).json({
+        message: "Invalid company ID",
+      });
+    }
+
+    const company = await getCompanyByRecruiterIdService(recruiterId);
 
     if (!company) {
       return res.status(404).json({

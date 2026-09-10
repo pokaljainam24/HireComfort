@@ -49,7 +49,6 @@ const recruiterSchema = new Schema<IRecruiter>(
     },
     address: {
       type: String,
-      required: true,
     },
     userName: {
       type: String,

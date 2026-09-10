@@ -2,13 +2,17 @@ import mongoose, { Schema } from "mongoose";
 
 export interface IJobMaster {
   companyId: mongoose.Types.ObjectId;
+  categoryId?: mongoose.Types.ObjectId;
+  subCategoryId?: mongoose.Types.ObjectId;
   description: string;
   title: string;
   skills: string[];
   exp: string;
   jobType: string;
   nop: number;
-  location: string;
+  city: number;
+  state: number;
+  country: number;
   salaryRange: number;
   interviewType: string;
   lastAppliedDate: Date;
@@ -36,6 +40,18 @@ const jobMasterSchema = new Schema<IJobMaster>(
       type: Schema.Types.ObjectId,
       ref: "CompanyMaster",
       required: true,
+    },
+
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: "JobCategory",
+      required: false,
+    },
+
+    subCategoryId: {
+      type: Schema.Types.ObjectId,
+      ref: "JobSubCategory",
+      required: false,
     },
 
     description: {
@@ -71,8 +87,18 @@ const jobMasterSchema = new Schema<IJobMaster>(
       min: 1,
     },
 
-    location: {
-      type: String,
+    city: {
+      type: Number,
+      required: true,
+    },
+
+    state: {
+      type: Number,
+      required: true,
+    },
+
+    country: {
+      type: Number,
       required: true,
     },
 
