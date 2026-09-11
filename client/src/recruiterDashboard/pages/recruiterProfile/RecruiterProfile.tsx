@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { recruiterProfileApi } from "../../api/recruiterProfileApi.ts";
-import PageHeader from "../../components/common/PageHeader.tsx";
 import Field from "../../components/common/Field.tsx";
 import type { RecruiterProfileType } from "../../types/recruiterProfile.ts";
 
@@ -116,8 +115,6 @@ const RecruiterProfile: React.FC = () => {
 
   return (
     <>
-      <PageHeader title="Recruiter Profile" section="Profile" />
-
       <div className="card-panel">
         <div className="card-panel-head">
           <div>

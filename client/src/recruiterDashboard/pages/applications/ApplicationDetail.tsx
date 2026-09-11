@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import type { Application, ApplicationStatus } from "../../types/application.ts";
 import { applicationApi } from "../../api/applicationApi.ts";
-import PageHeader from "../../components/common/PageHeader.tsx";
 import { Icon } from "../../components/common/Icon.tsx";
 import Field from "../../components/common/Field.tsx";
 
@@ -43,16 +42,6 @@ const ApplicationDetail: React.FC = () => {
 
   return (
     <>
-      <PageHeader
-        title="Application Detail"
-        section="Applications"
-        action={
-          <button className="btn btn-outline btn-sm" onClick={() => navigate("/recruiter-panel/applications")}>
-            <Icon name="chevronLeft" size={14} /> Back to Applications
-          </button>
-        }
-      />
-
       {loading ? (
         <div className="card-panel">
           <div className="empty-state">Loading application...</div>
@@ -69,6 +58,9 @@ const ApplicationDetail: React.FC = () => {
                 <h2>{application.candidateName}</h2>
                 <p>Applied for {application.jobTitle}</p>
               </div>
+              <button className="btn btn-outline btn-sm" onClick={() => navigate("/recruiter-panel/applications")}>
+                <Icon name="chevronLeft" size={14} /> Back to Applications
+              </button>
             </div>
             <div className="card-panel-body">
               {error && <p className="err" style={{ marginBottom: 12 }}>{error}</p>}

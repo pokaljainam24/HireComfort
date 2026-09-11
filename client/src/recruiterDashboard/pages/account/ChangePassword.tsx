@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { recruiterProfileApi } from "../../api/recruiterProfileApi.ts";
-import PageHeader from "../../components/common/PageHeader.tsx";
 import Field from "../../components/common/Field.tsx";
 
 const ChangePassword: React.FC = () => {
@@ -53,8 +52,6 @@ const ChangePassword: React.FC = () => {
 
   return (
     <>
-      <PageHeader title="Change Password" section="Account" />
-
       <div className="card-panel">
         <div className="card-panel-head">
           <div>

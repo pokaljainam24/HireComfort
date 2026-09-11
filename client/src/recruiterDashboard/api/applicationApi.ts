@@ -39,12 +39,12 @@ export const applicationApi = {
   },
   getOne: async (id: string): Promise<Application> => {
     const { data } = await http.get<ApplicationResponse>(`/job_application_master/${id}`);
-    const raw = data.jobApplications || data;
+    const raw = data.jobApplication || data.jobApplications || data;
     return formatApplication(raw);
   },
   updateStatus: async (id: string, status: ApplicationStatus): Promise<Application> => {
     const { data } = await http.patch<ApplicationResponse>(`/job_application_master/${id}`, { applicationStatus: status });
-    const raw = data.jobApplications || data;
+    const raw = data.jobApplication || data.jobApplications || data;
     return formatApplication(raw);
   },
 };

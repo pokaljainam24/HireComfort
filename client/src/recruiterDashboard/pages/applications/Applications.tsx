@@ -4,14 +4,13 @@ import type { Application, ApplicationStatus } from "../../types/application.ts"
 import { applicationApi } from "../../api/applicationApi.ts";
 import type { ColumnDef } from "../../components/common/DataTable.tsx";
 import DataTable from "../../components/common/DataTable.tsx";
-import PageHeader from "../../components/common/PageHeader.tsx";
 
 const statusBadge: Record<ApplicationStatus, string> = {
-  applied: "badge badge-blue",
-  shortlisted: "badge badge-orange",
-  interview: "badge badge-orange",
-  hired: "badge badge-green",
-  rejected: "badge badge-red",
+  Applied: "badge badge-blue",
+  Shortlisted: "badge badge-orange",
+  Interview: "badge badge-orange",
+  Hired: "badge badge-green",
+  Rejected: "badge badge-red",
 };
 
 const Applications: React.FC = () => {
@@ -41,8 +40,6 @@ const Applications: React.FC = () => {
 
   return (
     <>
-      <PageHeader title="Applications" section="Applications" />
-
       <div className="card-panel">
         <div className="card-panel-head">
           <div>

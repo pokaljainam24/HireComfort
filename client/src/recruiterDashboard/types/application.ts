@@ -15,5 +15,6 @@ export interface Application {
 
 
 export interface ApplicationResponse {
-  jobApplications: Application[]
+  jobApplications?: Application[];
+  jobApplication?: Application;
 }

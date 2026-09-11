@@ -87,7 +87,7 @@
 }
 
 .recruiter-app .page-content {
-  padding: 24px 28px 40px;
+  padding: calc(var(--header-h) + 24px) 28px 40px;
   flex: 1;
   width: 100%;
 }
@@ -102,7 +102,7 @@
   }
 
   .recruiter-app .page-content {
-    padding: 16px;
+    padding: calc(var(--header-h) + 16px) 16px 24px;
   }
 }
 

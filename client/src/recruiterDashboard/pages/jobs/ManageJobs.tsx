@@ -4,7 +4,6 @@ import type { Job } from "../../types/job.ts";
 import { useCrudResource } from "../../api/useCrudResource.ts";
 import { jobApi } from "../../api/jobApi.ts";
 import type { ColumnDef } from "../../components/common/DataTable.tsx";
-import PageHeader from "../../components/common/PageHeader.tsx";
 import { Icon } from "../../components/common/Icon.tsx";
 import DataTable from "../../components/common/DataTable.tsx";
 import ConfirmModal from "../../components/common/ConfirmModal.tsx";
@@ -36,22 +35,15 @@ const ManageJobs: React.FC = () => {
 
   return (
     <>
-      <PageHeader
-        title="Manage Jobs"
-        section="Jobs"
-        action={
-          <Link to="/recruiter-panel/post-job" className="btn btn-primary btn-sm">
-            <Icon name="plus" size={14} /> Post a Job
-          </Link>
-        }
-      />
-
       <div className="card-panel">
         <div className="card-panel-head">
           <div>
             <h2>Your Job Postings</h2>
             <p>{rows.length} job{rows.length !== 1 ? "s" : ""} posted</p>
           </div>
+          <Link to="/recruiter-panel/post-job" className="btn btn-primary btn-sm">
+            <Icon name="plus" size={14} /> Post a Job
+          </Link>
         </div>
         {loading ? (
           <div className="empty-state">Loading jobs...</div>

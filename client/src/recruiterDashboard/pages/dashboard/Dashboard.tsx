@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
-import PageHeader from "../../components/common/PageHeader.tsx";
 import { Icon } from "../../components/common/Icon.tsx";
 import { dashboardApi } from "../../api/dashboardApi.ts";
 import type { AnalyticsData } from "../../types/dashboardAnalytics.ts";
@@ -48,8 +47,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <PageHeader title="Dashboard" section="Overview" />
-
       <div className="stat-grid">
         {stats.map((s) => (
           <Link key={s.label} to={s.to} className="stat-card">

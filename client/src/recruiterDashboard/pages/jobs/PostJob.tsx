@@ -13,7 +13,6 @@ import { getCountries } from "../../api/countryApi.ts";
 import { getStates } from "../../api/stateApi.ts";
 import { getCities } from "../../api/cityApi.ts";
 import { jobApi } from "../../api/jobApi.ts";
-import PageHeader from "../../components/common/PageHeader.tsx";
 import Field from "../../components/common/Field.tsx";
 import { Icon } from "../../components/common/Icon.tsx";
 
@@ -196,8 +195,6 @@ const PostJob: React.FC = () => {
 
   return (
     <>
-      <PageHeader title={isEdit ? "Edit Job" : "Post a Job"} section="Jobs" />
-
       <div className="card-panel">
         <div className="card-panel-head">
           <div>
