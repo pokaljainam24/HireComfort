@@ -1,5 +1,6 @@
 import React from "react";
-import { Icon } from "../common/Icon";
+import { useAuth } from "../../context/AuthContext.tsx";
+import { Icon } from "../common/Icon.tsx";
 
 interface HeaderProps {
   title: string;
@@ -7,17 +8,9 @@ interface HeaderProps {
   onToggleMobile: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({
-  title,
-  onToggleSidebar,
-  onToggleMobile,
-}) => {
-  // Get logged-in user from localStorage
-  const storedUser = localStorage.getItem("admin_panel_auth_user");
-
-  const adminUser = storedUser ? JSON.parse(storedUser) : null;
-
-  const username = adminUser?.username || "Admin";
+const Header: React.FC<HeaderProps> = ({ title, onToggleSidebar, onToggleMobile }) => {
+  const { user } = useAuth();
+  const initial = user?.fullName?.trim()?.[0]?.toUpperCase() || "A";
 
   return (
     <header className="app-header">
@@ -29,7 +22,6 @@ const Header: React.FC<HeaderProps> = ({
         >
           <Icon name="menu" />
         </button>
-
         <button
           className="icon-btn only-mobile"
           onClick={onToggleMobile}
@@ -37,7 +29,6 @@ const Header: React.FC<HeaderProps> = ({
         >
           <Icon name="menu" />
         </button>
-
         <span className="page-title">{title}</span>
       </div>
 
@@ -45,14 +36,11 @@ const Header: React.FC<HeaderProps> = ({
         <button className="icon-btn" aria-label="Notifications">
           <Icon name="bell" />
         </button>
-
         <div className="admin-chip">
-          {/* Dynamic first letter */}
-          <div className="admin-avatar">{username.charAt(0).toUpperCase()}</div>
-
-          <div>
-            {/* Dynamic username */}
-            <div className="admin-chip-name">{username}</div>
+          <div className="admin-avatar">{initial}</div>
+          <div className="admin-chip-info">
+            <div className="admin-chip-name">{user?.fullName || "Applicant"}</div>
+            <div className="admin-chip-role">Applicant</div>
           </div>
         </div>
       </div>

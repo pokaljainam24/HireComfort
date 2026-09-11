@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await authApi.login(email, password);
       setToken(res.token);
-      setUser(res.recruiter);
+      setUser(res.applicant);
       return { ok: true };
     } catch (err: any) {
       const message = err?.response?.data?.message || "Login failed. Please try again.";

@@ -5,7 +5,7 @@ import PageHeader from "../../components/common/PageHeader";
 import Field from "../../components/common/Field";
 import { Icon } from "../../components/common/Icon";
 
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
 import { applicantProfileApi } from "../../api/applicantProfileApi.ts";
 
 
@@ -524,23 +524,23 @@ const ChangePassword: React.FC = () => {
             // =====================================
 
             sessionStorage.removeItem(
-                "admin_panel_auth_user",
+                "applicant_panel_auth_user",
             );
 
             sessionStorage.removeItem(
-                "admin_panel_auth_token",
+                "applicant_panel_auth_token",
             );
 
             localStorage.removeItem(
-                "admin_panel_auth_user",
+                "applicant_panel_auth_user",
             );
 
             localStorage.removeItem(
-                "admin_panel_auth_token",
+                "applicant_panel_auth_token",
             );
 
             localStorage.removeItem(
-                "adminUser",
+                "applicantUser",
             );
 
             localStorage.removeItem(

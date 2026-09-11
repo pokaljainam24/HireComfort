@@ -1,6 +1,7 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Mongoose, Schema } from "mongoose";
 
 export interface IJobCategory extends Document {
+  
   name: string;
   description: string;
   icon: string;
@@ -25,7 +26,7 @@ const jobCategorySchema = new Schema<IJobCategory>(
     // =====================================
     // BASIC FIELDS
     // =====================================
-
+    
     name: {
       type: String,
       required: true,
