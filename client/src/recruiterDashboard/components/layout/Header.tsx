@@ -38,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ title, onToggleSidebar, onToggleMobile 
         </button>
         <div className="admin-chip">
           <div className="admin-avatar">{initial}</div>
-          <div>
+          <div className="admin-chip-info">
             <div className="admin-chip-name">{user?.fullName || "Recruiter"}</div>
             <div className="admin-chip-role">Recruiter</div>
           </div>

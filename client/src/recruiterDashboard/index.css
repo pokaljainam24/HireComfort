@@ -87,7 +87,7 @@
 }
 
 .recruiter-app .page-content {
-  padding: calc(var(--header-h) + 24px) 28px 40px;
+  padding: calc(var(--header-h) + 24px) 28px 80px;
   flex: 1;
   width: 100%;
 }
@@ -102,7 +102,7 @@
   }
 
   .recruiter-app .page-content {
-    padding: calc(var(--header-h) + 16px) 16px 24px;
+    padding: calc(var(--header-h) + 16px) 16px 70px;
   }
 }
 
@@ -343,10 +343,38 @@
 @media (max-width: 900px) {
   .recruiter-app .app-header {
     left: 0;
+    padding: 0 12px;
   }
 
   .recruiter-app .app-shell.collapsed .app-header {
     left: 0;
+  }
+
+  .recruiter-app .header-left {
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+    padding-left: 4px;
+  }
+
+  .recruiter-app .header-right {
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .recruiter-app .page-title {
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .recruiter-app .admin-chip-info {
+    display: none;
+  }
+
+  .recruiter-app .admin-chip {
+    padding: 3px;
   }
 }
 

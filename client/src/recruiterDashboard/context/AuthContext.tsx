@@ -29,16 +29,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     setOnUnauthorized(() => logout());
 
-    const token = getToken();
+    const token = getToken() || localStorage.getItem("token");
     if (!token) {
       setLoading(false);
       return;
     }
 
+    const storedUserRaw = localStorage.getItem("user");
+    if (storedUserRaw) {
+      try {
+        const parsed = JSON.parse(storedUserRaw);
+        setUser({
+          id: parsed._id || parsed.id || "",
+          fullName: (parsed.firstName ? `${parsed.firstName} ${parsed.lastName || ""}` : parsed.fullName || parsed.userName || "").trim(),
+          email: parsed.email || "",
+        });
+      } catch {
+        // ignore JSON parse error
+      }
+    }
+
     authApi
       .me()
-      .then((recruiter) => setUser(recruiter))
-      .catch(() => clearToken())
+      .then((recruiter) => {
+        if (recruiter) setUser(recruiter);
+      })
+      .catch(() => {
+        // Do not force log out on unhandled backend me route; preserve stored user/token
+      })
       .finally(() => setLoading(false));
   }, []);
 

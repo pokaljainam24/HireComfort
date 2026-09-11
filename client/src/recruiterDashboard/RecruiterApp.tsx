@@ -16,6 +16,8 @@ import ApplicationDetail from "./pages/applications/ApplicationDetail.tsx";
 import ChangePassword from "./pages/account/ChangePassword.tsx";
 import CompanyProfile from "./pages/company/CompanyProfile.tsx";
 
+import ProtectedRecruiterRoute from "./components/layout/ProtectedRecruiterRoute.tsx";
+
 // =====================================
 // Mounted at /recruiter/* from the main client App.tsx.
 // Paths below are relative to that mount point, e.g.
@@ -25,16 +27,18 @@ const RecruiterApp: React.FC = () => (
   <AuthProvider>
     <div className="recruiter-app">
       <Routes>
-        <Route element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="company-profile" element={<CompanyProfile />} />
-          <Route path="recruiter-profile" element={<RecruiterProfile />} />
-          <Route path="post-job" element={<PostJob />} />
-          <Route path="post-job/:id" element={<PostJob />} />
-          <Route path="manage-jobs" element={<ManageJobs />} />
-          <Route path="applications" element={<Applications />} />
-          <Route path="applications/:id" element={<ApplicationDetail />} />
-          <Route path="change-password" element={<ChangePassword />} />
+        <Route element={<ProtectedRecruiterRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="company-profile" element={<CompanyProfile />} />
+            <Route path="recruiter-profile" element={<RecruiterProfile />} />
+            <Route path="post-job" element={<PostJob />} />
+            <Route path="post-job/:id" element={<PostJob />} />
+            <Route path="manage-jobs" element={<ManageJobs />} />
+            <Route path="applications" element={<Applications />} />
+            <Route path="applications/:id" element={<ApplicationDetail />} />
+            <Route path="change-password" element={<ChangePassword />} />
+          </Route>
         </Route>
       </Routes>
     </div>
