@@ -252,22 +252,6 @@ const CompanyProfile: React.FC = () => {
                     ))}
                   </select>
                 </Field>
-                <Field label="Address" span2 required error={errors.address}>
-                  <textarea
-                    rows={3}
-                    value={form.address}
-                    onChange={(e) => setForm({ ...form, address: e.target.value })}
-                    placeholder="Office address"
-                  />
-                </Field>
-                <Field label="About the Company" span2 required error={errors.aboutCompany} hint="Shown to candidates on job listings">
-                  <textarea
-                    rows={4}
-                    value={form.aboutCompany}
-                    onChange={(e) => setForm({ ...form, aboutCompany: e.target.value })}
-                    placeholder="Tell candidates about your company..."
-                  />
-                </Field>
                 <Field label="Instagram URL">
                   <input
                     value={form.instagram}
@@ -294,6 +278,22 @@ const CompanyProfile: React.FC = () => {
                     value={form.facebook}
                     onChange={(e) => setForm({ ...form, facebook: e.target.value })}
                     placeholder="https://facebook.com/company"
+                  />
+                </Field>
+                <Field label="Address" required error={errors.address}>
+                  <textarea
+                    rows={5}
+                    value={form.address}
+                    onChange={(e) => setForm({ ...form, address: e.target.value })}
+                    placeholder="Office address"
+                  />
+                </Field>
+                <Field label="About the Company" required error={errors.aboutCompany} hint="Shown to candidates on job listings">
+                  <textarea
+                    rows={5}
+                    value={form.aboutCompany}
+                    onChange={(e) => setForm({ ...form, aboutCompany: e.target.value })}
+                    placeholder="Tell candidates about your company..."
                   />
                 </Field>
               </div>

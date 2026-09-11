@@ -6,11 +6,12 @@ interface FieldProps {
   error?: string;
   hint?: string;
   span2?: boolean;
+  span3?: boolean;
   children: React.ReactNode;
 }
 
-const Field: React.FC<FieldProps> = ({ label, required, error, hint, span2, children }) => (
-  <div className={"field" + (span2 ? " span-2" : "")}>
+const Field: React.FC<FieldProps> = ({ label, required, error, hint, span2, span3, children }) => (
+  <div className={"field" + (span3 ? " span-3" : span2 ? " span-2" : "")}>
     <label>
       {label} {required && <span className="req">*</span>}
     </label>

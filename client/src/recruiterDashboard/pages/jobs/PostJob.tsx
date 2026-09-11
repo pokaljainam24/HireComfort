@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { Editor } from "@tinymce/tinymce-react";
 import type { Job, JobType } from "../../types/job.ts";
 import type { JobCategory } from "../../types/jobCategory.ts";
 import type { JobSubCategory } from "../../types/jobSubCategory.ts";
@@ -123,9 +124,10 @@ const PostJob: React.FC = () => {
     if (!form.stateId) e.stateId = "State is required";
     if (!form.cityId) e.cityId = "City is required";
 
-    if (!form.description.trim()) {
+    const plainDescription = form.description.replace(/<[^>]*>/g, "").trim();
+    if (!plainDescription) {
       e.description = "Job description is required";
-    } else if (form.description.trim().length < 20) {
+    } else if (plainDescription.length < 20) {
       e.description = "Job description must be at least 20 characters long for clarity";
     }
 
@@ -358,12 +360,49 @@ const PostJob: React.FC = () => {
                     placeholder="React, Node.js, SQL"
                   />
                 </Field>
-                <Field label="Job Description" required error={errors.description} span2>
-                  <textarea
-                    rows={6}
+                <Field label="Job Description" required error={errors.description} span3>
+                  <Editor
+                    apiKey={
+                      (
+                        import.meta as ImportMeta & {
+                          env: {
+                            VITE_TINYMCE_API_KEY?: string;
+                          };
+                        }
+                      ).env.VITE_TINYMCE_API_KEY
+                    }
                     value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    placeholder="Responsibilities, requirements, perks..."
+                    onEditorChange={(content: string) =>
+                      setForm({ ...form, description: content })
+                    }
+                    init={{
+                      height: 350,
+                      menubar: false,
+                      plugins: [
+                        "advlist",
+                        "autolink",
+                        "lists",
+                        "link",
+                        "charmap",
+                        "searchreplace",
+                        "visualblocks",
+                        "code",
+                        "fullscreen",
+                        "insertdatetime",
+                        "table",
+                        "help",
+                        "wordcount",
+                      ],
+                      toolbar:
+                        "undo redo | blocks | " +
+                        "bold italic underline | " +
+                        "alignleft aligncenter alignright alignjustify | " +
+                        "bullist numlist outdent indent | " +
+                        "link table | " +
+                        "removeformat | code fullscreen",
+                      content_style:
+                        "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; }",
+                    }}
                   />
                 </Field>
               </div>

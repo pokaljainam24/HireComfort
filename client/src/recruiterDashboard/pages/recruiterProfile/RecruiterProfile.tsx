@@ -187,9 +187,9 @@ const RecruiterProfile: React.FC = () => {
                     placeholder="e.g. Human Resources"
                   />
                 </Field>
-                <Field label="Address" span2>
+                <Field label="Address">
                   <textarea
-                    rows={3}
+                    rows={5}
                     value={form.address}
                     onChange={(e) => setForm({ ...form, address: e.target.value })}
                     placeholder="Your address"
