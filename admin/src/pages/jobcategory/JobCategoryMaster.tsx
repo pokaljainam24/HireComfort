@@ -1162,7 +1162,7 @@ const JobCategoryMaster: React.FC = () => {
           !!deleteTarget
         }
         title="Delete Job Category?"
-        message={`"${deleteTarget?.name}" job category will be deleted.`}
+        subject={`"${deleteTarget?.name}" job category will be deleted.`}
         onCancel={() =>
           setDeleteTarget(null)
         }

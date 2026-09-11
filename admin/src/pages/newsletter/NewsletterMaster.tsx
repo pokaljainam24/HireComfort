@@ -402,7 +402,7 @@ const NewsletterMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Remove subscriber?"
-        message={`"${deleteTarget?.email}" will be removed from the list.`}
+        subject={`"${deleteTarget?.email}" will be removed from the list.`}
         onCancel={() =>
           setDeleteTarget(null)
         }

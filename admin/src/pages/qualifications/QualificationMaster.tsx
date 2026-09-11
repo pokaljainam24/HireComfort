@@ -457,7 +457,7 @@ const QualificationMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete Qualification?"
-        message={`"${deleteTarget?.qualificationTest}" will be permanently removed.`}
+        subject={`"${deleteTarget?.qualificationTest}" will be permanently removed.`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />

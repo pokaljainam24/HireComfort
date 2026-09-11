@@ -523,21 +523,18 @@ async function sendAdminNotificationEmail(
           <td
             style="
               padding:15px 18px;
-              background:#f5f7fa;
-              border-bottom:1px solid #d9dee5;
-              font-weight:bold;
-            "
-          >
-            Phone
-          </td>
-
-          <td
-            style="
-              padding:15px 18px;
               border-bottom:1px solid #d9dee5;
             "
           >
-            ${phone}
+            <span
+              style="
+                color:#1d3557;
+                text-decoration:none !important;
+                -webkit-text-decoration:none !important;
+              "
+            >
+              ${phone}
+            </span>
           </td>
 
         </tr>
@@ -550,21 +547,18 @@ async function sendAdminNotificationEmail(
           <td
             style="
               padding:15px 18px;
-              background:#f5f7fa;
-              border-bottom:1px solid #d9dee5;
-              font-weight:bold;
-            "
-          >
-            Email
-          </td>
-
-          <td
-            style="
-              padding:15px 18px;
               border-bottom:1px solid #d9dee5;
             "
           >
-            ${email}
+            <span
+              style="
+                color:#1d3557;
+                text-decoration:none !important;
+                -webkit-text-decoration:none !important;
+              "
+            >
+              ${email}
+            </span>
           </td>
 
         </tr>

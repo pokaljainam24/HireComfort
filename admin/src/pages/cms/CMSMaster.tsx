@@ -553,7 +553,7 @@ const CMSMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete CMS?"
-        message={`"${deleteTarget?.title}" CMS will be deleted.`}
+        subject={`"${deleteTarget?.title}" CMS will be deleted.`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />

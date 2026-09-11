@@ -553,7 +553,7 @@ const FaqMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete FAQ?"
-        message={`"${deleteTarget?.que}" FAQ will be deleted.`}
+        subject={`"${deleteTarget?.que}" FAQ will be deleted.`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />

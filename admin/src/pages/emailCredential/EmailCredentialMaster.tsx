@@ -108,7 +108,7 @@ const EmailCredentialMaster: React.FC = () => {
   // RESET / CLOSE FORM
   // =====================================
 
-  const resetForm = () => {
+  const closeForm = () => {
     setForm({
       ...empty,
     });
@@ -116,6 +116,12 @@ const EmailCredentialMaster: React.FC = () => {
     setEditingId(null);
     setErrors({});
     setShowForm(false);
+  };
+
+  const resetForm = () => {
+    setForm({
+      ...empty,
+    });
   };
 
   // =====================================
@@ -472,7 +478,7 @@ const EmailCredentialMaster: React.FC = () => {
             <button
               type="button"
               className="btn btn-ghost btn-sm"
-              onClick={resetForm}
+              onClick={closeForm}
               disabled={loading}
             >
               <Icon name="x" size={14} />
@@ -668,7 +674,7 @@ const EmailCredentialMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete Email Credential?"
-        message={`"${deleteTarget?.emailFrom}" email credential will be deleted.`}
+        subject={`"${deleteTarget?.emailFrom}" email credential will be deleted.`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />

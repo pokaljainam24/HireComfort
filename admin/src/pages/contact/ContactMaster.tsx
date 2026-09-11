@@ -123,7 +123,7 @@ const ContactMaster: React.FC = () => {
     },
 
     {
-      header: "Message",
+      header: "subject",
 
       render: (r) => (
         <span
@@ -136,7 +136,7 @@ const ContactMaster: React.FC = () => {
             maxWidth: 300,
           }}
         >
-          {r.message}
+          {r.subject}
         </span>
       ),
     },
@@ -198,7 +198,7 @@ const ContactMaster: React.FC = () => {
                 r.email.toLowerCase().includes(search) ||
                 r.company.toLowerCase().includes(search) ||
                 r.phone.toLowerCase().includes(search) ||
-                r.message.toLowerCase().includes(search)
+                r.subject.toLowerCase().includes(search)
               );
             }}
             onDelete={(r) => setDeleteTarget(r)}
@@ -277,7 +277,7 @@ const ContactMaster: React.FC = () => {
               </div>
 
               <div>
-                <b>Message:</b>
+                <b>subject:</b>
 
                 <div
                   className="cell-muted"
@@ -287,7 +287,7 @@ const ContactMaster: React.FC = () => {
                     lineHeight: 1.6,
                   }}
                 >
-                  {viewing.message}
+                  {viewing.subject}
                 </div>
               </div>
 
@@ -331,7 +331,7 @@ const ContactMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete query?"
-        message={`The query from "${
+        subject={`The query from "${
           deleteTarget?.name || ""
         }" will be permanently removed.`}
         onCancel={() => {

@@ -107,7 +107,7 @@ const EmailTemplateMaster: React.FC = () => {
   // RESET / CLOSE FORM
   // =====================================
 
-  const resetForm = () => {
+  const closeForm = () => {
     setForm({
       ...empty,
     });
@@ -117,6 +117,12 @@ const EmailTemplateMaster: React.FC = () => {
     setErrors({});
 
     setShowForm(false);
+  };
+
+  const resetForm = () => {
+    setForm({
+      ...empty,
+    });
   };
 
   // =====================================
@@ -392,7 +398,7 @@ const EmailTemplateMaster: React.FC = () => {
             <button
               type="button"
               className="btn btn-ghost btn-sm"
-              onClick={resetForm}
+              onClick={closeForm}
               disabled={loading}
             >
               <Icon name="x" size={14} />
@@ -593,7 +599,7 @@ const EmailTemplateMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete Email Template?"
-        message={`"${deleteTarget?.templateName}" will be permanently removed.`}
+        subject={`"${deleteTarget?.templateName}" will be permanently removed.`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />

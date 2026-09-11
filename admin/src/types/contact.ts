@@ -9,7 +9,7 @@ export interface Contact {
 
   phone: string;
 
-  message: string;
+  subject: string;
 
   isActive: boolean;
 
@@ -37,5 +37,5 @@ export interface ContactForm {
 
   phone: string;
 
-  message: string;
+  subject: string;
 }

@@ -29,15 +29,6 @@ export async function createEmploymentTypeService(
       );
     }
 
-    // =====================================
-    // Employment Type validation
-    // =====================================
-
-    if (!employmentTypeData.EmploymentType?.trim()) {
-      throw new Error(
-        "Employment type is required",
-      );
-    }
 
     // =====================================
     // Created By validation
@@ -105,9 +96,6 @@ export async function createEmploymentTypeService(
 
         EmploymentName:
           employmentTypeData.EmploymentName.trim(),
-
-        EmploymentType:
-          employmentTypeData.EmploymentType.trim(),
 
         isActive: true,
         isDisplay: true,
@@ -226,18 +214,6 @@ export async function updateEmploymentTypeService(
       );
     }
 
-    // =====================================
-    // Employment Type validation
-    // =====================================
-
-    if (
-      updateData.EmploymentType !== undefined &&
-      !updateData.EmploymentType.trim()
-    ) {
-      throw new Error(
-        "Employment type is required",
-      );
-    }
 
     // =====================================
     // Updated By validation

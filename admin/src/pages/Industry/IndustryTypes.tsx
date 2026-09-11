@@ -497,6 +497,7 @@ const IndustryMaster: React.FC = () => {
                     }}
                     placeholder="e.g. Information Technology"
                     disabled={loading}
+                    style={{ width: "50%" }}
                   />
                 </Field>
               </div>
@@ -540,22 +541,6 @@ const IndustryMaster: React.FC = () => {
           </div>
         )}
 
-        {/* =====================================
-            ALL INDUSTRIES
-        ===================================== */}
-
-        <div className="card-panel-head">
-          <div>
-            <h2>
-              All Industries
-            </h2>
-
-            <p>
-              {rows.length} industries
-              available
-            </p>
-          </div>
-        </div>
 
         {/* =====================================
             DATA TABLE
@@ -622,7 +607,7 @@ const IndustryMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete Industry?"
-        message={`"${deleteTarget?.IndustryName}" will be permanently removed.`}
+        subject={`"${deleteTarget?.IndustryName}" will be permanently removed.`}
         onCancel={() =>
           setDeleteTarget(null)
         }

@@ -3,38 +3,38 @@ import React, { useEffect, useState } from "react";
 import PageHeader from "@/components/common/PageHeader";
 import Field from "@/components/common/Field";
 import DataTable, {
-    ColumnDef,
+  ColumnDef,
 } from "@/components/common/DataTable";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import ViewModal, {
-    ViewField,
+  ViewField,
 } from "@/components/common/ViewModal";
 import { Icon } from "@/components/common/Icon";
 
-import {
-    EmploymentType,
-    EmploymentTypeForm,
+import type {
+  EmploymentType,
+  EmploymentTypeForm,
 } from "@/types/EmploymentTypes";
 
 import {
-    getEmploymentTypes,
-    createEmploymentType,
-    updateEmploymentType,
-    deleteEmploymentType,
+  getEmploymentTypes,
+  createEmploymentType,
+  updateEmploymentType,
+  deleteEmploymentType,
 } from "@/api/EmploymentTypesApi";
 
 import {
-    showSuccess,
-    showError,
+  showSuccess,
+  showError,
 } from "@/utils/swal";
 
 // =====================================
 // EMPTY FORM
 // =====================================
 
-const empty: EmploymentTypeForm = {
-    EmploymentName: "",
-    EmploymentType: "",
+const emptyForm: EmploymentTypeForm = {
+  EmploymentName: "",
+  EmploymentType: "",
 };
 
 // =====================================
@@ -42,710 +42,682 @@ const empty: EmploymentTypeForm = {
 // =====================================
 
 const Employment: React.FC = () => {
-    // =====================================
-    // STATE
-    // =====================================
+  // =====================================
+  // STATE
+  // =====================================
 
-    const [rows, setRows] =
-        useState<EmploymentType[]>([]);
+  const [rows, setRows] = useState<EmploymentType[]>([]);
 
-    const [form, setForm] =
-        useState<EmploymentTypeForm>(empty);
+  const [form, setForm] =
+    useState<EmploymentTypeForm>({
+      ...emptyForm,
+    });
 
-    const [editingId, setEditingId] =
-        useState<number | null>(null);
+  const [editingId, setEditingId] =
+    useState<number | null>(null);
 
-    const [errors, setErrors] =
-        useState<Record<string, string>>({});
+  const [errors, setErrors] =
+    useState<Record<string, string>>({});
 
-    const [deleteTarget, setDeleteTarget] =
-        useState<EmploymentType | null>(null);
+  const [deleteTarget, setDeleteTarget] =
+    useState<EmploymentType | null>(null);
 
-    const [viewTarget, setViewTarget] =
-        useState<EmploymentType | null>(null);
+  const [viewTarget, setViewTarget] =
+    useState<EmploymentType | null>(null);
 
-    const [loading, setLoading] =
-        useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-    const [showForm, setShowForm] =
-        useState(false);
+  const [showForm, setShowForm] =
+    useState(false);
 
-    // =====================================
-    // LOAD DATA
-    // =====================================
+  // =====================================
+  // LOAD DATA
+  // =====================================
 
-    const loadData = async () => {
-        try {
-            setLoading(true);
+  const loadData = async () => {
+    try {
+      setLoading(true);
 
-            const employmentTypes =
-                await getEmploymentTypes();
+      const employmentTypes =
+        await getEmploymentTypes();
 
-            setRows(
-                employmentTypes ?? [],
-            );
-        } catch (error) {
-            console.error(
-                "Error loading employment types:",
-                error,
-            );
+      setRows(employmentTypes ?? []);
+    } catch (error) {
+      console.error(
+        "Error loading employment types:",
+        error,
+      );
 
-            showError(
-                "Something went wrong while loading employment types",
-            );
-        } finally {
-            setLoading(false);
-        }
-    };
+      showError(
+        "Failed to load employment type data",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // =====================================
-    // INITIAL LOAD
-    // =====================================
+  // =====================================
+  // INITIAL LOAD
+  // =====================================
 
-    useEffect(() => {
-        loadData();
-    }, []);
+  useEffect(() => {
+    loadData();
+  }, []);
 
-    // =====================================
-    // RESET
-    // =====================================
+  // =====================================
+  // RESET FORM
+  // =====================================
 
-    const resetForm = () => {
-        setForm(empty);
+  const resetForm = () => {
+    setForm({
+      ...emptyForm,
+    });
 
-        setEditingId(null);
+    setEditingId(null);
 
-        setErrors({});
+    setErrors({});
+  };
 
-        setShowForm(false);
-    };
+  // =====================================
+  // CLOSE FORM
+  // =====================================
 
-    // =====================================
-    // OPEN ADD FORM
-    // =====================================
+  const closeForm = () => {
+    resetForm();
 
-    const handleAdd = () => {
-        setForm(empty);
+    setShowForm(false);
+  };
 
-        setEditingId(null);
+  // =====================================
+  // OPEN ADD FORM
+  // =====================================
 
-        setErrors({});
+  const handleAdd = () => {
+    resetForm();
 
-        setShowForm(true);
-    };
+    setShowForm(true);
 
-    // =====================================
-    // VALIDATION
-    // =====================================
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
-    const validate = () => {
-        const e: Record<string, string> = {};
+  // =====================================
+  // VALIDATION
+  // =====================================
 
-        // =====================================
-        // EMPLOYMENT NAME
-        // =====================================
-
-        if (!form.EmploymentName.trim()) {
-            e.EmploymentName =
-                "Employment name is required";
-        } else if (
-            form.EmploymentName.trim().length < 2
-        ) {
-            e.EmploymentName =
-                "Employment name must contain at least 2 characters";
-        }
-
-        // =====================================
-        // EMPLOYMENT TYPE
-        // =====================================
-
-        if (!form.EmploymentType.trim()) {
-            e.EmploymentType =
-                "Employment type is required";
-        }
-
-        setErrors(e);
-
-        return (
-            Object.keys(e).length === 0
-        );
-    };
+  const validate = () => {
+    const e: Record<string, string> = {};
 
     // =====================================
-    // SUBMIT
+    // EMPLOYMENT NAME
     // =====================================
 
-    const handleSubmit = async (
-        ev: React.FormEvent,
-    ) => {
-        ev.preventDefault();
+    if (!form.EmploymentName.trim()) {
+      e.EmploymentName =
+        "Employment name is required";
+    } else if (
+      form.EmploymentName.trim().length < 2
+    ) {
+      e.EmploymentName =
+        "Employment name must contain at least 2 characters";
+    }
 
-        if (!validate()) {
-            return;
-        }
+    setErrors(e);
 
-        try {
-            setLoading(true);
+    return Object.keys(e).length === 0;
+  };
 
-            // =====================================
-            // UPDATE
-            // =====================================
+  // =====================================
+  // INPUT CHANGE
+  // =====================================
 
-            if (editingId !== null) {
-                const updated =
-                    await updateEmploymentType(
-                        editingId,
-                        form,
-                    );
+  const handleChange = (
+    field: keyof EmploymentTypeForm,
+    value: string,
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
 
-                setRows((rows) =>
-                    rows.map((row) =>
-                        row.EmploymentTypeId ===
-                        editingId
-                            ? updated
-                            : row,
-                    ),
-                );
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
 
-                showSuccess(
-                    "Employment type updated successfully",
-                );
-            }
+  // =====================================
+  // SUBMIT
+  // =====================================
 
-            // =====================================
-            // CREATE
-            // =====================================
+  const handleSubmit = async (
+    ev: React.FormEvent,
+  ) => {
+    ev.preventDefault();
 
-            else {
-                const created =
-                    await createEmploymentType(
-                        form,
-                    );
+    if (!validate()) {
+      return;
+    }
 
-                setRows((rows) => [
-                    created,
-                    ...rows,
-                ]);
+    try {
+      setLoading(true);
 
-                showSuccess(
-                    "Employment type added successfully",
-                );
-            }
+      // =====================================
+      // PAYLOAD
+      // =====================================
 
-            resetForm();
-        } catch (error) {
-            console.error(
-                "Error saving employment type:",
-                error,
-            );
+      const payload: EmploymentTypeForm = {
+        EmploymentName:
+          form.EmploymentName.trim(),
 
-            showError(
-                "Something went wrong while saving employment type",
-            );
-        } finally {
-            setLoading(false);
-        }
-    };
+        EmploymentType:
+          form.EmploymentType.trim(),
+      };
 
-    // =====================================
-    // EDIT
-    // =====================================
+      // =====================================
+      // UPDATE
+      // =====================================
 
-    const handleEdit = (
-        row: EmploymentType,
-    ) => {
-        setEditingId(
-            row.EmploymentTypeId,
+      if (editingId !== null) {
+        const updated =
+          await updateEmploymentType(
+            editingId,
+            payload,
+          );
+
+        setRows((rows) =>
+          rows.map((row) =>
+            row.EmploymentTypeId ===
+            editingId
+              ? updated
+              : row,
+          ),
         );
 
-        setForm({
-            EmploymentName:
-                row.EmploymentName,
+        showSuccess(
+          "Employment type updated successfully",
+        );
+      }
 
-            EmploymentType:
-                row.EmploymentType,
-        });
+      // =====================================
+      // CREATE
+      // =====================================
 
-        setErrors({});
+      else {
+        const created =
+          await createEmploymentType(
+            payload,
+          );
 
-        setShowForm(true);
+        setRows((rows) => [
+          created,
+          ...rows,
+        ]);
 
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
-    };
+        showSuccess(
+          "Employment type added successfully",
+        );
+      }
 
-    // =====================================
-    // DELETE
-    // =====================================
+      closeForm();
+    } catch (error) {
+      console.error(
+        "Error saving employment type:",
+        error,
+      );
 
-    const handleDelete = async () => {
-        if (!deleteTarget) {
-            return;
-        }
+      showError(
+        "Something went wrong while saving employment type",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        try {
-            setLoading(true);
+  // =====================================
+  // EDIT
+  // =====================================
 
-            await deleteEmploymentType(
-                deleteTarget.EmploymentTypeId,
-            );
+  const handleEdit = (
+    row: EmploymentType,
+  ) => {
+    setEditingId(
+      row.EmploymentTypeId,
+    );
 
-            setRows((rows) =>
-                rows.filter(
-                    (row) =>
-                        row.EmploymentTypeId !==
-                        deleteTarget.EmploymentTypeId,
-                ),
-            );
+    setForm({
+      EmploymentName:
+        row.EmploymentName || "",
 
-            // If deleted row is currently
-            // being edited
-            if (
-                editingId ===
-                deleteTarget.EmploymentTypeId
-            ) {
-                resetForm();
-            }
+      EmploymentType:
+        row.EmploymentType || "",
+    });
 
-            setDeleteTarget(null);
+    setErrors({});
 
-            showSuccess(
-                "Employment type deleted successfully",
-            );
-        } catch (error) {
-            console.error(
-                "Error deleting employment type:",
-                error,
-            );
+    setShowForm(true);
 
-            showError(
-                "Something went wrong while deleting employment type",
-            );
-        } finally {
-            setLoading(false);
-        }
-    };
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
-    // =====================================
-    // TABLE
-    // =====================================
+  // =====================================
+  // DELETE
+  // =====================================
 
-    const columns: ColumnDef<EmploymentType>[] = [
-        {
-            header: "Employment Name",
+  const handleDelete = async () => {
+    if (!deleteTarget) {
+      return;
+    }
 
-            render: (row) => (
-                <div>
-                    <b>
-                        {row.EmploymentName}
-                    </b>
-                </div>
-            ),
-        },
+    try {
+      setLoading(true);
 
-        {
-            header: "Employment Type",
+      await deleteEmploymentType(
+        deleteTarget.EmploymentTypeId,
+      );
 
-            render: (row) => (
-                <div className="cell-muted">
-                    {row.EmploymentType}
-                </div>
-            ),
-        },
-    ];
+      setRows((rows) =>
+        rows.filter(
+          (row) =>
+            row.EmploymentTypeId !==
+            deleteTarget.EmploymentTypeId,
+        ),
+      );
 
-    // =====================================
-    // VIEW FIELDS
-    // =====================================
+      // If deleted item is currently edited
+      if (
+        editingId ===
+        deleteTarget.EmploymentTypeId
+      ) {
+        closeForm();
+      }
 
-    const getViewFields = (
-        row: EmploymentType,
-    ): ViewField[] => [
-        {
-            label: "Employment Name",
-            value:
-                row.EmploymentName,
-            fullWidth: true,
-        },
+      setDeleteTarget(null);
 
-        {
-            label: "Employment Type",
-            value:
-                row.EmploymentType,
-            fullWidth: true,
-        },
+      showSuccess(
+        "Employment type deleted successfully",
+      );
+    } catch (error) {
+      console.error(
+        "Error deleting employment type:",
+        error,
+      );
 
-        {
-            label: "Active",
-            value: row.isActive
-                ? "Yes"
-                : "No",
-        },
+      showError(
+        "Something went wrong while deleting employment type",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        {
-            label: "Display",
-            value: row.isDisplay
-                ? "Yes"
-                : "No",
-        },
+  // =====================================
+  // TABLE COLUMNS
+  // =====================================
 
-        {
-            label: "Created By",
-            value:
-                row.createdBy || "-",
-        },
+  const columns: ColumnDef<EmploymentType>[] = [
+    {
+      header: "Employment Name",
 
-        {
-            label: "Created At",
-            value: row.createdAt
-                ? new Date(
-                    row.createdAt,
-                ).toLocaleString()
-                : "-",
-        },
+      render: (row) => (
+        <div>
+          <b>
+            {row.EmploymentName}
+          </b>
+        </div>
+      ),
+    },
+  ];
 
-        {
-            label: "Updated By",
-            value:
-                row.updatedBy || "-",
-        },
+  // =====================================
+  // VIEW FIELDS
+  // =====================================
 
-        {
-            label: "Updated At",
-            value: row.updatedAt
-                ? new Date(
-                    row.updatedAt,
-                ).toLocaleString()
-                : "-",
-        },
+  const getViewFields = (
+    row: EmploymentType,
+  ): ViewField[] => [
+    {
+      label: "Employment Name",
 
-        {
-            label: "Delete By",
-            value:
-                row.deleteBy || "-",
-        },
+      value:
+        row.EmploymentName || "-",
 
-        {
-            label: "Delete At",
-            value: row.deleteAt
-                ? new Date(
-                    row.deleteAt,
-                ).toLocaleString()
-                : "-",
-        },
-    ];
+      fullWidth: true,
+    },
 
-    // =====================================
-    // UI
-    // =====================================
+    {
+      label: "Employment Type",
 
-    return (
-        <>
-            <PageHeader
-                title="Employment Type"
-                section="Master"
-            />
+      value:
+        row.EmploymentType || "-",
 
-            {/* =====================================
-                MAIN EMPLOYMENT CARD
-            ===================================== */}
+      fullWidth: true,
+    },
 
-            <div className="card-panel">
+    {
+      label: "Active",
 
-                {/* =====================================
-                    CARD HEADER
-                ===================================== */}
+      value: row.isActive
+        ? "Yes"
+        : "No",
+    },
 
-                <div className="card-panel-head">
-                    <div>
-                        <h2>
-                            {editingId !== null
-                                ? "Edit Employment Type"
-                                : "Employment Type Management"}
-                        </h2>
+    {
+      label: "Display",
 
-                        <p>
-                            {loading
-                                ? "Loading employment types..."
-                                : `${rows.length} employment types available`}
-                        </p>
-                    </div>
+      value: row.isDisplay
+        ? "Yes"
+        : "No",
+    },
 
-                    <div>
-                        {!showForm && (
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={handleAdd}
-                            >
-                                <Icon
-                                    name="plus"
-                                    size={15}
-                                />
+    {
+      label: "Created By",
 
-                                Add Employment Type
-                            </button>
-                        )}
+      value:
+        row.createdBy || "-",
+    },
 
-                        {showForm && (
-                            <button
-                                type="button"
-                                className="btn btn-outline"
-                                onClick={resetForm}
-                                disabled={loading}
-                            >
-                                <Icon
-                                    name="x"
-                                    size={14}
-                                />
+    {
+      label: "Created At",
 
-                                Cancel
-                            </button>
-                        )}
-                    </div>
-                </div>
+      value: row.createdAt
+        ? new Date(
+            row.createdAt,
+          ).toLocaleString()
+        : "-",
+    },
 
-                {/* =====================================
-                    FORM
-                ===================================== */}
+    {
+      label: "Updated By",
 
-                {showForm && (
-                    <div className="card-panel-body">
-                        <form
-                            onSubmit={
-                                handleSubmit
-                            }
-                        >
-                            <div className="form-grid">
+      value:
+        row.updatedBy || "-",
+    },
 
-                                {/* =====================================
-                                    EMPLOYMENT NAME
-                                ===================================== */}
+    {
+      label: "Updated At",
 
-                                <Field
-                                    label="Employment Name"
-                                    required
-                                    error={
-                                        errors.EmploymentName
-                                    }
-                                    span2
-                                >
-                                    <input
-                                        value={
-                                            form.EmploymentName
-                                        }
-                                        onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                EmploymentName:
-                                                    e.target.value,
-                                            });
+      value: row.updatedAt
+        ? new Date(
+            row.updatedAt,
+          ).toLocaleString()
+        : "-",
+    },
 
-                                            setErrors({
-                                                ...errors,
-                                                EmploymentName:
-                                                    "",
-                                            });
-                                        }}
-                                        placeholder="e.g. Full Time"
-                                        disabled={
-                                            loading
-                                        }
-                                    />
-                                </Field>
+    {
+      label: "Delete By",
 
-                                {/* =====================================
-                                    EMPLOYMENT TYPE
-                                ===================================== */}
+      value:
+        row.deleteBy || "-",
+    },
 
-                                <Field
-                                    label="Employment Type"
-                                    required
-                                    error={
-                                        errors.EmploymentType
-                                    }
-                                    span2
-                                >
-                                    <input
-                                        value={
-                                            form.EmploymentType
-                                        }
-                                        onChange={(e) => {
-                                            setForm({
-                                                ...form,
-                                                EmploymentType:
-                                                    e.target.value,
-                                            });
+    {
+      label: "Delete At",
 
-                                            setErrors({
-                                                ...errors,
-                                                EmploymentType:
-                                                    "",
-                                            });
-                                        }}
-                                        placeholder="e.g. Permanent"
-                                        disabled={
-                                            loading
-                                        }
-                                    />
-                                </Field>
-                            </div>
+      value: row.deleteAt
+        ? new Date(
+            row.deleteAt,
+          ).toLocaleString()
+        : "-",
+    },
+  ];
 
-                            {/* =====================================
-                                ACTIONS
-                            ===================================== */}
+  // =====================================
+  // UI
+  // =====================================
 
-                            <div className="form-actions">
-                                <button
-                                    type="button"
-                                    className="btn btn-outline"
-                                    onClick={
-                                        resetForm
-                                    }
-                                    disabled={
-                                        loading
-                                    }
-                                >
-                                    Reset
-                                </button>
+  return (
+    <>
+      <PageHeader
+        title="Employment Type"
+        section="Master"
+      />
 
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                    disabled={
-                                        loading
-                                    }
-                                >
-                                    <Icon
-                                        name={
-                                            editingId !==
-                                            null
-                                                ? "edit"
-                                                : "plus"
-                                        }
-                                        size={15}
-                                    />
+      {/* =====================================
+          FORM
+      ===================================== */}
 
-                                    {loading
-                                        ? "Saving..."
-                                        : editingId !==
-                                            null
-                                            ? "Update Employment Type"
-                                            : "Add Employment Type"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                )}
+      {showForm && (
+        <div className="card-panel">
 
-                {/* =====================================
-                    ALL EMPLOYMENT TYPES
-                ===================================== */}
+          {/* =====================================
+              FORM HEADER
+          ===================================== */}
 
-                <div className="card-panel-head">
-                    <div>
-                        <h2>
-                            All Employment Types
-                        </h2>
+          <div className="card-panel-head">
 
-                        <p>
-                            {rows.length} employment
-                            types available
-                        </p>
-                    </div>
-                </div>
+            <div>
+              <h2>
+                {editingId !== null
+                  ? "Edit Employment Type"
+                  : "Add Employment Type"}
+              </h2>
 
-                {/* =====================================
-                    DATA TABLE
-                ===================================== */}
-
-                {loading ? (
-                    <div className="card-panel-body">
-                        <p className="cell-muted">
-                            Loading employment
-                            types...
-                        </p>
-                    </div>
-                ) : (
-                    <DataTable
-                        columns={columns}
-                        rows={rows}
-                        rowKey={(row) =>
-                            String(
-                                row.EmploymentTypeId,
-                            )
-                        }
-                        searchPlaceholder="Search employment types..."
-                        onSearch={(
-                            row,
-                            query,
-                        ) =>
-                            row.EmploymentName
-                                .toLowerCase()
-                                .includes(
-                                    query,
-                                ) ||
-                            row.EmploymentType
-                                .toLowerCase()
-                                .includes(
-                                    query,
-                                )
-                        }
-                        onView={(row) =>
-                            setViewTarget(
-                                row,
-                            )
-                        }
-                        onEdit={
-                            handleEdit
-                        }
-                        onDelete={(row) =>
-                            setDeleteTarget(
-                                row,
-                            )
-                        }
-                    />
-                )}
+              <p>
+                Manage employment names and employment types.
+              </p>
             </div>
 
-            {/* =====================================
-                VIEW MODAL
-            ===================================== */}
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={closeForm}
+              disabled={loading}
+            >
+              <Icon
+                name="x"
+                size={14}
+              />
 
-            <ViewModal
-                open={!!viewTarget}
-                title="Employment Type Details"
-                fields={
-                    viewTarget
-                        ? getViewFields(
-                            viewTarget,
-                        )
-                        : []
-                }
-                onClose={() =>
-                    setViewTarget(null)
-                }
-            />
+              Cancel
+            </button>
+          </div>
 
-            {/* =====================================
-                DELETE MODAL
-            ===================================== */}
+          {/* =====================================
+              FORM BODY
+          ===================================== */}
 
-            <ConfirmModal
-                open={!!deleteTarget}
-                title="Delete Employment Type?"
-                message={`"${deleteTarget?.EmploymentName}" will be permanently removed.`}
-                onCancel={() =>
-                    setDeleteTarget(null)
-                }
-                onConfirm={
-                    handleDelete
-                }
-            />
-        </>
-    );
+          <div className="card-panel-body">
+
+            <form
+              onSubmit={handleSubmit}
+            >
+
+              <div className="form-grid">
+
+                {/* =====================================
+                    EMPLOYMENT NAME
+                ===================================== */}
+
+                <Field
+                  label="Employment Name"
+                  required
+                  error={
+                    errors.EmploymentName
+                  }
+                  span2
+                >
+                  <input
+                    value={
+                      form.EmploymentName
+                    }
+                    onChange={(e) =>
+                      handleChange(
+                        "EmploymentName",
+                        e.target.value,
+                      )
+                    }
+                    placeholder="e.g. Full Time"
+                    disabled={loading}
+                    style={{ width: "50%" }}
+                  />
+                </Field>
+
+              </div>
+
+              {/* =====================================
+                  FORM ACTIONS
+              ===================================== */}
+
+              <div className="form-actions">
+
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={resetForm}
+                  disabled={loading}
+                >
+                  Reset
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={loading}
+                >
+                  <Icon
+                    name={
+                      editingId !== null
+                        ? "edit"
+                        : "plus"
+                    }
+                    size={15}
+                  />
+
+                  {loading
+                    ? "Saving..."
+                    : editingId !== null
+                      ? "Update Employment Type"
+                      : "Add Employment Type"}
+                </button>
+
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* =====================================
+          DATA TABLE CARD
+      ===================================== */}
+
+      <div className="card-panel">
+
+        {/* =====================================
+            TABLE HEADER
+        ===================================== */}
+
+        <div className="card-panel-header">
+
+
+          {/* =====================================
+              ADD BUTTON
+          ===================================== */}
+
+          {!showForm && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleAdd}
+            >
+              <Icon
+                name="plus"
+                size={15}
+              />
+
+              Add Employment Type
+            </button>
+          )}
+
+        </div>
+
+        {/* =====================================
+            DATA TABLE
+        ===================================== */}
+
+        {loading ? (
+          <div className="card-panel-body">
+            <p className="cell-muted">
+              Loading employment types...
+            </p>
+          </div>
+        ) : (
+          <DataTable
+            columns={columns}
+            rows={rows}
+            rowKey={(row) =>
+              String(
+                row.EmploymentTypeId,
+              )
+            }
+            searchPlaceholder="Search employment types..."
+            onSearch={(
+              row,
+              query,
+            ) =>
+              row.EmploymentName
+                .toLowerCase()
+                .includes(query) ||
+              row.EmploymentType
+                .toLowerCase()
+                .includes(query)
+            }
+            onView={(row) =>
+              setViewTarget(row)
+            }
+            onEdit={handleEdit}
+            onDelete={(row) =>
+              setDeleteTarget(row)
+            }
+          />
+        )}
+
+      </div>
+
+      {/* =====================================
+          VIEW MODAL
+      ===================================== */}
+
+      <ViewModal
+        open={!!viewTarget}
+        title="Employment Type Details"
+        fields={
+          viewTarget
+            ? getViewFields(
+                viewTarget,
+              )
+            : []
+        }
+        onClose={() =>
+          setViewTarget(null)
+        }
+      />
+
+      {/* =====================================
+          DELETE MODAL
+      ===================================== */}
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="Delete Employment Type?"
+        subject={`"${deleteTarget?.EmploymentName}" employment type will be deleted.`}
+        onCancel={() =>
+          setDeleteTarget(null)
+        }
+        onConfirm={
+          handleDelete
+        }
+      />
+    </>
+  );
 };
 
 export default Employment;

@@ -1387,7 +1387,7 @@ const BlogsMaster: React.FC = () => {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete blog?"
-        message={`"${deleteTarget?.title}" will be permanently removed.`}
+        subject={`"${deleteTarget?.title}" will be permanently removed.`}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />
