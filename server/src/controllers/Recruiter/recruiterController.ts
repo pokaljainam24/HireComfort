@@ -6,7 +6,9 @@ import {
   getRecruiterByIdService,
   updateRecruiterService,
   deleteRecruiterService,
+  getRecruiterAnalyticsService,
 } from "../../services/recruiterServices/recruiterService.js";
+
 
 export const createRecruiter = async (req: Request, res: Response) => {
   try {
@@ -27,6 +29,23 @@ export const createRecruiter = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getRecruiterAnalytics = async (req: Request, res: Response) => { 
+  try {
+    const analytics = await getRecruiterAnalyticsService();
+    return res.status(200).json({
+      success: true,
+      analytics,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching analytics",
+      error,
+    });
+  }
+};
+
 
 export const getRecruiters = async (req: Request, res: Response) => {
   try {

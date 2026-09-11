@@ -1,22 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import PageHeader from "../../components/common/PageHeader.tsx";
 import { Icon } from "../../components/common/Icon.tsx";
+import { dashboardApi } from "../../api/dashboardApi.ts";
+import type { AnalyticsData } from "../../types/dashboardAnalytics.ts";
 
-// =====================================
-// STATIC DASHBOARD DATA
-// (Not fetched from any API yet — wire this
-// up to jobApi / applicationApi once the
-// backend endpoints are ready.)
-// =====================================
-const stats = [
-  { label: "Jobs Posted", value: 0, icon: "briefcase", color: "#0d6efd", to: "/recruiter-panel/manage-jobs" },
-  { label: "Open Jobs", value: 0, icon: "grid", color: "#198754", to: "/recruiter-panel/manage-jobs" },
-  { label: "Total Applications", value: 0, icon: "inbox", color: "#fd7e14", to: "/recruiter-panel/applications" },
-  { label: "Shortlisted", value: 0, icon: "eye", color: "#6610f2", to: "/recruiter-panel/applications" },
-];
+
 
 const Dashboard: React.FC = () => {
+  const [analytics, setAnalytics] = useState<AnalyticsData>({
+    totalJobs: 0,
+    totalApplications: 0,
+  });
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const analyticsData = await dashboardApi.getAnalytics();
+        setAnalytics(analyticsData);
+      } catch (error) {
+        console.error("Failed to fetch recruiter analytics:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalytics();
+  }, []);
+
+  const stats = [
+    {
+      label: "Jobs Posted",
+      value: loading ? "..." : analytics.totalJobs,
+      icon: "briefcase",
+      color: "#0d6efd",
+      to: "/recruiter-panel/manage-jobs",
+    },
+    {
+      label: "Total Applications",
+      value: loading ? "..." : analytics.totalApplications,
+      icon: "inbox",
+      color: "#fd7e14",
+      to: "/recruiter-panel/applications",
+    },
+  ];
+
   return (
     <>
       <PageHeader title="Dashboard" section="Overview" />
@@ -45,16 +74,10 @@ const Dashboard: React.FC = () => {
             <Icon name="plus" size={14} /> Post a Job
           </Link>
         </div>
-        <div className="card-panel-body">
-          <p style={{ margin: 0, fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.7 }}>
-            Use the sidebar to keep your company and personal profile up to date, post new
-            openings, track every application across all your jobs, and change your account
-            password.
-          </p>
-        </div>
       </div>
     </>
   );
 };
 
 export default Dashboard;
+

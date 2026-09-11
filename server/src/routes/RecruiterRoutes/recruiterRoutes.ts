@@ -6,6 +6,7 @@ import {
   getRecruiter,
   updateRecruiter,
   deleteRecruiter,
+  getRecruiterAnalytics
 } from "../../controllers/Recruiter/recruiterController.js";
 
 const recruiterRouter = express.Router();
@@ -13,6 +14,8 @@ const recruiterRouter = express.Router();
 recruiterRouter.post("/", createRecruiter);
 
 recruiterRouter.get("/", getRecruiters);
+
+recruiterRouter.get("/analytics", getRecruiterAnalytics)
 
 recruiterRouter.get("/:id", getRecruiter);
 

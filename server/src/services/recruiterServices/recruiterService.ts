@@ -1,7 +1,10 @@
 import bcrypt from "bcrypt";
 import Recruiter from "../../models/RecruiterModel/Recruitermodel.js";
+import JobMaster from "../../models/RecruiterModel/JobMasterModel.js";
+import JobApplicationMaster from "../../models/RecruiterModel/JobapplicationMasterModel.js";
 
 export type IRecruiter = InstanceType<typeof Recruiter>;
+
 
 export async function createRecruiterService(
   recruiterData: Partial<IRecruiter>,
@@ -159,7 +162,7 @@ export async function createRecruiterService(
 
       mobileNumber: recruiterData.mobileNumber.trim(),
 
-      address: recruiterData.address.trim(),
+      address: recruiterData.address?.trim(),
 
       userName: recruiterData.userName.trim(),
 
@@ -280,3 +283,26 @@ export async function getAllRecruitersForAdminService() {
     throw error;
   }
 }
+
+export async function getRecruiterAnalyticsService() {
+  try {
+    const totalJobs = await JobMaster.countDocuments({
+      isActive: true,
+      isDisplay: true,
+    });
+
+    const totalApplications = await JobApplicationMaster.countDocuments({
+      isActive: true,
+      isDisplay: true,
+    });
+
+    return {
+      totalJobs,
+      totalApplications,
+    };
+  } catch (error) {
+    console.error("Error fetching recruiter analytics:", error);
+    throw error;
+  }
+}
+
