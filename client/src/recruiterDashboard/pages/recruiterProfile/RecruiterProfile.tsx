@@ -12,7 +12,6 @@ const empty: RecruiterProfileType = {
   address: "",
   userName: "",
   department: "",
-  remark: "",
   designation: ""
 };
 
@@ -189,18 +188,11 @@ const RecruiterProfile: React.FC = () => {
                   />
                 </Field>
                 <Field label="Address" span2>
-                  <input
+                  <textarea
+                    rows={3}
                     value={form.address}
                     onChange={(e) => setForm({ ...form, address: e.target.value })}
                     placeholder="Your address"
-                  />
-                </Field>
-                <Field label="Remark" span2>
-                  <textarea
-                    rows={3}
-                    value={form.remark}
-                    onChange={(e) => setForm({ ...form, remark: e.target.value })}
-                    placeholder="Any additional remarks..."
                   />
                 </Field>
               </div>

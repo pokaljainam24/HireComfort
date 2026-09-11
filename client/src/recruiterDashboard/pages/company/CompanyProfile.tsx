@@ -253,7 +253,8 @@ const CompanyProfile: React.FC = () => {
                   </select>
                 </Field>
                 <Field label="Address" span2 required error={errors.address}>
-                  <input
+                  <textarea
+                    rows={3}
                     value={form.address}
                     onChange={(e) => setForm({ ...form, address: e.target.value })}
                     placeholder="Office address"

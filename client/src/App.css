@@ -533,7 +533,7 @@
   padding: 10px 16px;
   border: none;
   background: transparent;
-  color: #25324B;
+  color: #25324b;
   text-decoration: none;
   cursor: pointer;
   text-align: left;
@@ -543,4 +543,3 @@
 .profile-dropdown-item.active {
   background: #f5f5f5;
 }
-

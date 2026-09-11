@@ -8,7 +8,6 @@ export interface RecruiterProfileType {
   userName: string;
   password?: string;
   department: string;
-  remark: string;
   designation: string;
 }
 
