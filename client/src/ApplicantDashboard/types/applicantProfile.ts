@@ -61,4 +61,6 @@ export interface ApplicantForm{
 
   dob?: Date;
   gender?: string;
+
+  
 }

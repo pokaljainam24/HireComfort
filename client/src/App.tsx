@@ -30,12 +30,12 @@ import ApplicantApp from "./ApplicantDashboard/ApplicantApp.tsx";
 
 function App() {
   const location = useLocation();
-  const isRecruiterRoute = location.pathname.startsWith("/recruiter-panel");
+  const isHomeRoute = !location.pathname.startsWith("/recruiter-panel") && !location.pathname.startsWith("/applicant-panel");
 
   return (
     <>
-      {!isRecruiterRoute && <Navbar />}
-      {!isRecruiterRoute && <VisitorTracker />}
+      {isHomeRoute && <Navbar />}
+      <VisitorTracker />
       <Routes>
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -57,10 +57,10 @@ function App() {
         <Route path="/blog-details/:id" element={<BlogDetails />} />
         <Route path="/faq" element={<Faq />} />
 
-        <Route path="/recruiter-panel/*" element={<RecruiterApp />} /> 
+        <Route path="/recruiter-panel/*" element={<RecruiterApp />} />
         <Route path="/applicant-panel/*" element={<ApplicantApp />} />
       </Routes>
-      {!isRecruiterRoute && <Footer />}
+      {isHomeRoute && <Footer />}
     </>
   );
 }

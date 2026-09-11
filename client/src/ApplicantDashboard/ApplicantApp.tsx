@@ -10,31 +10,16 @@ import ApplicantLayout from "./components/layout/ApplicantLayout.tsx";
 
 import Dashboard from "./pages/Dashboard/Dashboard.tsx";
 import ApplicantProfile from "./pages/Profile/ApplicantProfile.tsx";
-
-// Uncomment these when the pages are ready
-// import ApplicantEducation from "./pages/Education/ApplicantEducation.tsx";
-// import ApplicantCertificate from "./pages/Certificates/ApplicantCertificates.tsx";
-// import ApplicantExperience from "./pages/Experience/ApplicantExperience.tsx";
-// import ApplicantProject from "./pages/Project/ApplicantProject.tsx";
-
-// =====================================
-// Mounted at /applicant-panel/* from the
-// main client App.tsx.
-//
-// Paths below are relative to the mount point.
-//
-// Example:
-// path="applicant-profile"
-// resolves to:
-// /applicant-panel/applicant-profile
-// =====================================
-
- 
+import ChangePassword from "./pages/changePassword/ChangePassword.tsx";
+import ApplicantCertificate from "./pages/Certificates/applicantCertificate.tsx";
+import ApplicantEducation from "./pages/Education/applicantEducation.tsx";
+import ApplicantExperience from "./pages/Experience/ApplicantExperience.tsx";
+import ApplicantProject from "./pages/Project/ApplicantProject.tsx";
 
 const ApplicantApp: React.FC = () => {
 
 
- return <AuthProvider>
+  return <AuthProvider>
     <div className="applicant-app">
       <Routes>
         <Route element={<ApplicantLayout />}>
@@ -46,34 +31,36 @@ const ApplicantApp: React.FC = () => {
           />
 
           {/* Applicant Profile */}
-        <Route
+          <Route
             path="applicant-profile"
             element={<ApplicantProfile />}
           />
 
           {/* Applicant Education */}
-          {/* <Route
+          <Route
             path="applicant-education"
-            element={<ApplicantEducation />}
-          /> */}
+            element={<ApplicantEducation/>}
+          />
 
           {/* Applicant Certificates */}
-          {/* <Route
+          <Route
             path="applicant-certificates"
             element={<ApplicantCertificate />}
-          /> */}
+          />
 
           {/* Applicant Experience */}
-          {/* <Route
+          <Route
             path="applicant-experience"
             element={<ApplicantExperience />}
-          /> */}
+          />
 
           {/* Applicant Project */}
-          {/* <Route
+          <Route
             path="applicant-project"
             element={<ApplicantProject />}
-          /> */}
+          />
+
+          <Route path="change-password" element={<ChangePassword />} />
 
         </Route>
       </Routes>

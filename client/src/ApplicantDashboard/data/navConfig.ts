@@ -16,12 +16,12 @@ export const navConfig: NavGroup[] = [
   },
 
 
- {
+  {
     label: "Profile",
     items: [
       {
         label: "Applicant Profile",
-        path: "applicant-profile",
+        path: "/applicant-panel/applicant-profile",
         icon: "user",
       }
     ],
@@ -32,7 +32,7 @@ export const navConfig: NavGroup[] = [
     items: [
       {
         label: "Applicant Education",
-        path: "/applicant-education",
+        path: "/applicant-panel/applicant-education",
         icon: "education",
       },
     ],
@@ -43,7 +43,7 @@ export const navConfig: NavGroup[] = [
     items: [
       {
         label: "Applicant Certificate",
-        path: "/applicant-certificates",
+        path: "/applicant-panel/applicant-certificates",
         icon: "file-text",
       },
     ],
@@ -54,7 +54,7 @@ export const navConfig: NavGroup[] = [
     items: [
       {
         label: "Applicant Experience",
-        path: "/applicant-experience",
+        path: "/applicant-panel/applicant-experience",
         icon: "briefcase",
       },
     ],
@@ -63,11 +63,22 @@ export const navConfig: NavGroup[] = [
   {
     label: "Project",
     items: [
-    {
-    label:"Applicant Project",
-    path: "/applicant-project",
-    icon: "briefcase"
+      {
+        label: "Applicant Project",
+        path: "/applicant-panel/applicant-project",
+        icon: "briefcase"
+      },
+    ],
   },
-],
-}
+
+  {
+    label: "Account",
+    items: [
+      {
+        label: "Change Password",
+        path: "/applicant-panel/change-password",
+        icon: "lock",
+      },
+    ],
+  },
 ]
