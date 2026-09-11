@@ -7,6 +7,7 @@ import {
   updateApplicant,
   deleteApplicant,
   getApplicantByUsername,
+  updatePassword
 } from "../../controllers/applicantController/applicantController.js";
 
 import {
@@ -231,6 +232,8 @@ router.get(
   "/username/:username",
   getApplicantByUsername
 );
+
+router.patch("/:id/update-password", updatePassword);
 
 
 

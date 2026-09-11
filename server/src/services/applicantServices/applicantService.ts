@@ -280,5 +280,52 @@ export const getApplicantByUsernameService = async (username: string) => {
   return Applicant.findOne({
     userName: username,
     deleteAt: null,
-  });
+  }).select("-password");
 };
+
+export async function updatePasswordService(
+  applicantId: string,
+  newPassword: string,
+  currentPassword: string,
+  updatedBy: string = "admin",
+) {
+  try {
+    const applicant = await Applicant.findOne({
+      _id: applicantId,
+      isActive: true,
+      isDisplay: true,
+      deleteAt: null,
+    }).select("+password");
+
+    console.log(applicant)
+
+    if (!applicant) {
+      throw new Error("Recruiter not found");
+    }
+
+    const isCurrentPasswordValid = await bcrypt.compare(
+      currentPassword,
+      applicant.password,
+    );
+
+    if (!isCurrentPasswordValid) {
+      throw new Error("Invalid current password");
+    }
+
+    const isSamePassword = await bcrypt.compare(newPassword, applicant.password);
+    if (isSamePassword) {
+      throw new Error("New password cannot be the same as current password");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    applicant.password = hashedPassword;
+    applicant.updatedBy = updatedBy;
+    applicant.updatedAt = new Date();
+
+    return await applicant.save();
+  } catch (error) {
+    console.error("Error updating password service:", error);
+    throw error;
+  }
+}

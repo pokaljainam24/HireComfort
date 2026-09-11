@@ -1,4 +1,4 @@
-
+import http from "./http";
 import api from "../api/axios.ts";
 
 import type {
@@ -169,6 +169,66 @@ export const deleteApplicantApi = async (
   }
 };
 
+
+// =====================================
+// APPLICANT PROFILE
+// =====================================
+
+export const applicantProfileApi = {
+  get: async (
+    id: string
+  ): Promise<ApplicantProfileType> => {
+
+    const { data } = await http.get<{
+      success: boolean;
+      data: ApplicantProfileType;
+    }>(
+      "/applicants/" + id
+    );
+
+    return data.data;
+  },
+
+  update: async (
+    id: string,
+    payload: Partial<ApplicantProfileType>
+  ): Promise<ApplicantProfileType> => {
+
+    const { data } = await http.patch<{
+      success: boolean;
+      message: string;
+      data: ApplicantProfileType;
+    }>(
+      "/applicants/" + id,
+      payload
+    );
+
+    return data.data;
+  },
+
+  updatePassword: async (
+    id: string,
+    payload: {
+      currentPassword: string;
+      password: string;
+      confirmPassword: string;
+    }
+  ): Promise<{
+    message: string;
+    applicant: ApplicantProfileType;
+  }> => {
+
+    const { data } = await http.patch<{
+      message: string;
+      applicant: ApplicantProfileType;
+    }>(
+      "/applicants/" + id + "/update-password",
+      payload
+    );
+
+    return data;
+  },
+};
 
 
 

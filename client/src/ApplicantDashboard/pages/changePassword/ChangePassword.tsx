@@ -6,8 +6,9 @@ import Field from "../../components/common/Field";
 import { Icon } from "../../components/common/Icon";
 
 import { useAuth } from "../../context/AuthContext";
+import { applicantProfileApi } from "../../api/applicantProfileApi.ts";
 
-import { authApi } from "../../api/authApi.ts"
+
 
 import Swal from "sweetalert2";
 
@@ -18,8 +19,11 @@ const ChangePassword: React.FC = () => {
     // AUTH
     // =====================================
 
-    const { logout } = useAuth();
-
+    const user = JSON.parse(localStorage.getItem("user") ?? "{}")
+    if (!user) {
+        navigate("/login");
+        return;
+    }
     // =====================================
     // STATE
     // =====================================
@@ -497,17 +501,23 @@ const ChangePassword: React.FC = () => {
             // =====================================
             // CHANGE PASSWORD API
             // =====================================
-
-            await authApi.changePassword(
+            const payload = {
                 currentPassword,
-                newPassword,
+                password: newPassword,
+                confirmPassword
+            }
+
+
+            await applicantProfileApi.updatePassword(
+                user._id,
+                payload
+
             );
 
             // =====================================
             // CLEAR AUTH CONTEXT
             // =====================================
 
-            logout();
 
             // =====================================
             // EXTRA STORAGE CLEANUP

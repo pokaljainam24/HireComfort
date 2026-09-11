@@ -39,15 +39,13 @@ const Dashboard: React.FC = () => {
         <div className="card-panel-head">
           <div>
             <h2>Welcome back</h2>
-            <p>Manage your profile, post jobs and review applications.</p>
+            <p>Manage your profile</p>
           </div>
-          <Link to="/applicant-panel/" className="btn btn-primary btn-sm">
-            <Icon name="plus" size={14} /> Post a Job
-          </Link>
+          
         </div>
         <div className="card-panel-body">
           <p style={{ margin: 0, fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.7 }}>
-            Use the sidebar to keep your applicant personal profile up to date,
+            Use the sidebar to keep your applicant  profile up to date,
           </p>
         </div>
       </div>

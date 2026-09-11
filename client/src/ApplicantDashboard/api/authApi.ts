@@ -5,12 +5,12 @@ import http from "../api/http";
 // auth). This mirrors the admin panel's authApi 1:1.
 export interface LoginResponse {
   token: string;
-  recruiter: { id: string; fullName: string; email: string };
+  applicant: { id: string; fullName: string; email: string };
 }
 
 export const authApi = {
   login: async (email: string, password: string): Promise<LoginResponse> => {
-    const { data } = await http.post<LoginResponse>("/applicant/auth/login", { email, password });
+    const { data } = await http.post<LoginResponse>("/applicants/auth/login", { email, password });
     return data;
   },
   me: async (): Promise<{ id: string; fullName: string; email: string }> => {
@@ -18,6 +18,6 @@ export const authApi = {
     return data;
   },
   changePassword: async (currentPassword: string, newPassword: string): Promise<void> => {
-    await http.post("/applicant/auth/change-password", { currentPassword, newPassword });
+    await http.patch("/applicants/auth/change-password", { currentPassword, newPassword });
   },
 };
