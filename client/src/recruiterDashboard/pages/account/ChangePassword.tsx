@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { authApi } from "../../api/authApi.ts";
+import { recruiterProfileApi } from "../../api/recruiterProfileApi.ts";
 import PageHeader from "../../components/common/PageHeader.tsx";
 import Field from "../../components/common/Field.tsx";
+
 const ChangePassword: React.FC = () => {
+  const user = JSON.parse(localStorage.getItem("user") ?? "{}");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -15,7 +17,7 @@ const ChangePassword: React.FC = () => {
     const e: Record<string, string> = {};
     if (!currentPassword) e.currentPassword = "Enter your current password";
     if (!newPassword) e.newPassword = "Enter a new password";
-    else if (newPassword.length < 6) e.newPassword = "Use at least 6 characters";
+    else if (newPassword.length < 8) e.newPassword = "Use at least 8 characters";
     if (confirmPassword !== newPassword) e.confirmPassword = "Passwords do not match";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -24,11 +26,20 @@ const ChangePassword: React.FC = () => {
   const handleSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
     if (!validate()) return;
+    if (!user?._id) {
+      setFormError("User session not found.");
+      return;
+    }
+    console.log("Hello world")
     setSaving(true);
     setFormError("");
     setSaved(false);
     try {
-      await authApi.changePassword(currentPassword, newPassword);
+      await recruiterProfileApi.updatePassword(user._id, {
+        currentPassword,
+        password: newPassword,
+        confirmPassword,
+      });
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");

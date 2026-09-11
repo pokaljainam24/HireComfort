@@ -12,4 +12,15 @@ export const recruiterProfileApi = {
     const { data: { recruiter } } = await http.patch<RecruiterResponse>("/recruiters/" + id, payload);
     return recruiter;
   },
+  updatePassword: async (
+    id: string,
+    payload: { currentPassword: string; password: string; confirmPassword: string }
+  ): Promise<{ message: string; recruiter: RecruiterProfileType }> => {
+    const { data } = await http.patch<{ message: string; recruiter: RecruiterProfileType }>(
+      "/recruiters/" + id + "/update-password",
+      payload
+    );
+    return data;
+  },
 };
+

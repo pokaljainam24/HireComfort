@@ -7,6 +7,7 @@ import {
   updateRecruiterService,
   deleteRecruiterService,
   getRecruiterAnalyticsService,
+  updatePasswordService,
 } from "../../services/recruiterServices/recruiterService.js";
 
 
@@ -30,7 +31,7 @@ export const createRecruiter = async (req: Request, res: Response) => {
   }
 };
 
-export const getRecruiterAnalytics = async (req: Request, res: Response) => { 
+export const getRecruiterAnalytics = async (req: Request, res: Response) => {
   try {
     const analytics = await getRecruiterAnalyticsService();
     return res.status(200).json({
@@ -156,6 +157,73 @@ export const deleteRecruiter = async (req: Request, res: Response) => {
 
     return res.status(500).json({
       message: "Error deleting recruiter",
+    });
+  }
+};
+
+export const updatePassword = async (req: Request, res: Response) => {
+  try {
+    const recruiterId = req.params.id;
+    const { password, confirmPassword, currentPassword } = req.body;
+
+    if (!recruiterId || typeof recruiterId !== "string" || !recruiterId.trim()) {
+      return res.status(400).json({
+        message: "Invalid recruiter ID",
+      });
+    }
+
+    if (!currentPassword || typeof currentPassword !== "string" || !currentPassword.trim()) {
+      return res.status(400).json({
+        message: "Current password is required",
+      });
+    }
+
+    if (!password || typeof password !== "string") {
+      return res.status(400).json({
+        message: "Password is required",
+      });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: "Password must contain at least 8 characters",
+      });
+    }
+
+    if (!confirmPassword || typeof confirmPassword !== "string") {
+      return res.status(400).json({
+        message: "Confirm password is required",
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        message: "Password and Confirm Password do not match",
+      });
+    }
+
+    const recruiter = await updatePasswordService(
+      recruiterId,
+      password,
+      currentPassword,
+      "admin",
+    );
+
+    if (!recruiter) {
+      return res.status(404).json({
+        message: "Recruiter not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Password updated successfully",
+      recruiter,
+    });
+  } catch (error: any) {
+    console.error("Error updating password:", error);
+
+    return res.status(400).json({
+      message: error.message || "Error updating password",
     });
   }
 };

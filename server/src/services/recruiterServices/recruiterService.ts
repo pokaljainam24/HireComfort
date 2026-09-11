@@ -306,3 +306,48 @@ export async function getRecruiterAnalyticsService() {
   }
 }
 
+
+
+export async function updatePasswordService(
+  recruiterId: string,
+  newPassword: string,
+  currentPassword: string,
+  updatedBy: string = "admin",
+) {
+  try {
+    const recruiter = await Recruiter.findOne({
+      _id: recruiterId,
+      isActive: true,
+      isDisplay: true,
+    });
+
+    if (!recruiter) {
+      throw new Error("Recruiter not found");
+    }
+
+    const isCurrentPasswordValid = await bcrypt.compare(
+      currentPassword,
+      recruiter.password,
+    );
+
+    if (!isCurrentPasswordValid) {
+      throw new Error("Invalid current password");
+    }
+
+    const isSamePassword = await bcrypt.compare(newPassword, recruiter.password);
+    if (isSamePassword) {
+      throw new Error("New password cannot be the same as current password");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    recruiter.password = hashedPassword;
+    recruiter.updatedBy = updatedBy;
+    recruiter.updatedAt = new Date();
+
+    return await recruiter.save();
+  } catch (error) {
+    console.error("Error updating password service:", error);
+    throw error;
+  }
+}
