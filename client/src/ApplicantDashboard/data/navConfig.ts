@@ -21,7 +21,7 @@ export const navConfig: NavGroup[] = [
     items: [
       {
         label: "Applicant Profile",
-        path: "/applicant-panel/applicant-profile",
+        path: "/applicant-panel/profile",
         icon: "user",
       }
     ],

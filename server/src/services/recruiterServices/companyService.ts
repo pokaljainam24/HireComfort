@@ -257,12 +257,21 @@ export async function getCompanyByRecruiterIdService(recruiterId: string) {
           preserveNullAndEmptyArrays: true,
         },
       },
+      {
+        $project: {
+          recruiterId: 0,
+          createdBy: 0,
+          updatedBy: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          deleteAt: 0,
+          deleteBy: 0,
+          isActive: 0,
+          isDisplay: 0,
+          __v: 0
+        },
+      },
     ]);
-    // const company = await CompanyMaster.findOne({
-    //   recruiterId: recruiterId,
-    //   isActive: true,
-    //   isDisplay: true,
-    // }).populate("recruiterId");
     return company[0] ?? null;
   } catch (error) {
     console.error(`Error getting company with recruiter id ${recruiterId}:`, error);

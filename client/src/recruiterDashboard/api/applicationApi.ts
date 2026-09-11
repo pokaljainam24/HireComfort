@@ -13,7 +13,8 @@ export function formatApplication(raw: any): Application {
   const candidatePhone = applicant?.mobileNumber || applicant?.contactNumber || applicant?.phone || raw.candidatePhone || "—";
 
   const jobTitle = job?.title || raw.jobTitle || "N/A";
-  const rawStatus = (raw.applicationStatus || raw.status || "applied").toString().toLowerCase();
+  const rawStatus = (raw.applicationStatus || raw.status || "Applied").toString().trim();
+  const capitalizedStatus = rawStatus.charAt(0).toUpperCase() + rawStatus.slice(1);
 
   return {
     ...raw,
@@ -25,7 +26,7 @@ export function formatApplication(raw: any): Application {
     candidatePhone,
     resumeUrl: raw.resumeUrl || raw.resume || "",
     coverLetter: raw.coverLetter || raw.notes || "",
-    status: rawStatus as ApplicationStatus,
+    status: capitalizedStatus as ApplicationStatus,
     appliedAt: raw.appliedAt || raw.applicationDate || raw.createdAt || "",
   };
 }
@@ -43,8 +44,7 @@ export const applicationApi = {
     return formatApplication(raw);
   },
   updateStatus: async (id: string, status: ApplicationStatus): Promise<Application> => {
-    const { data } = await http.patch<ApplicationResponse>(`/job_application_master/${id}`, { applicationStatus: status });
-    const raw = data.jobApplication || data.jobApplications || data;
-    return formatApplication(raw);
+    await http.patch<ApplicationResponse>(`/job_application_master/${id}`, { applicationStatus: status });
+    return applicationApi.getOne(id);
   },
 };

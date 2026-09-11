@@ -23,6 +23,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     clearToken();
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
+    localStorage.removeItem("applicant_panel_token");
+    localStorage.removeItem("recruiter_panel_token");
+    // localStorage.clear();
     setUser(null);
   };
 

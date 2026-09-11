@@ -16,6 +16,7 @@ interface LoggedInUser {
 
 function Navbar() {
   const [loading, setLoading] = useState(true);
+  const userType = localStorage.getItem("role") ?? "";
 
   const [user, setUser] =
     useState<LoggedInUser | null>(null);
@@ -158,11 +159,10 @@ function Navbar() {
 
   const getUserName = () => {
     if (user?.firstName) {
-      return `${user.firstName}${
-        user.lastName
-          ? ` ${user.lastName}`
-          : ""
-      }`;
+      return `${user.firstName}${user.lastName
+        ? ` ${user.lastName}`
+        : ""
+        }`;
     }
 
     if (user?.userName) {
@@ -627,15 +627,14 @@ function Navbar() {
                     {/* PROFILE DROPDOWN */}
 
                     <div
-                      className={`profile-dropdown ${
-                        profileOpen
-                          ? "profile-dropdown-open"
-                          : ""
-                      }`}
+                      className={`profile-dropdown ${profileOpen
+                        ? "profile-dropdown-open"
+                        : ""
+                        }`}
                     >
 
                       <Link
-                        to="/profile"
+                        to={userType ? `${userType}-panel/profile` : "/login"}
                         className="profile-dropdown-item"
                         onClick={
                           closeProfileDropdown
@@ -907,15 +906,14 @@ function Navbar() {
                       {/* MOBILE PROFILE DROPDOWN */}
 
                       <div
-                        className={`profile-dropdown ${
-                          profileOpen
-                            ? "profile-dropdown-open"
-                            : ""
-                        }`}
+                        className={`profile-dropdown ${profileOpen
+                          ? "profile-dropdown-open"
+                          : ""
+                          }`}
                       >
 
                         <Link
-                          to="/profile"
+                          to={`${userType}-panel/profile`}
                           className="profile-dropdown-item"
                           onClick={
                             closeProfileDropdown

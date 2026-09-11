@@ -36,8 +36,6 @@ export const createJobMasterByRecruiterId = async (req: Request, res: Response) 
     const recruiterId = req.body.recruiterId;
     console.log(recruiterId)
     const company = await getCompanyByRecruiterIdService(recruiterId as string);
-    // console.log(recruiterId)
-    // TODO: The company data in response is null. 
     const payload = { ...req.body, companyId: company._id, createdBy: recruiterId }
     const jobMaster = await createJobMasterService(payload);
 

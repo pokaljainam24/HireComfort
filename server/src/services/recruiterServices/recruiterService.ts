@@ -204,7 +204,7 @@ export async function getRecruiterByIdService(id: string) {
       _id: id,
       isActive: true,
       isDisplay: true,
-    });
+    }).select("-deleteAt -deleteBy -createdBy -createdAt -updatedAt -updatedBy -__v -isActive -isDisplay -password");
   } catch (error) {
     console.error(`Error getting recruiter with id ${id}:`, error);
     throw error;

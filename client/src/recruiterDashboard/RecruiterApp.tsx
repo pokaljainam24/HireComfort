@@ -31,7 +31,7 @@ const RecruiterApp: React.FC = () => (
           <Route element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="company-profile" element={<CompanyProfile />} />
-            <Route path="recruiter-profile" element={<RecruiterProfile />} />
+            <Route path="profile" element={<RecruiterProfile />} />
             <Route path="post-job" element={<PostJob />} />
             <Route path="post-job/:id" element={<PostJob />} />
             <Route path="manage-jobs" element={<ManageJobs />} />

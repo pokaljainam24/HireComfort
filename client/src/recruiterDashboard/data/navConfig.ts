@@ -18,7 +18,7 @@ export const navConfig: NavGroup[] = [
     label: "Profile",
     items: [
       { label: "Company Profile", path: "/recruiter-panel/company-profile", icon: "building" },
-      { label: "Recruiter Profile", path: "/recruiter-panel/recruiter-profile", icon: "user" },
+      { label: "Recruiter Profile", path: "/recruiter-panel/profile", icon: "user" },
     ],
   },
   {

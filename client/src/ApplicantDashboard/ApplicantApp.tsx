@@ -32,14 +32,14 @@ const ApplicantApp: React.FC = () => {
 
           {/* Applicant Profile */}
           <Route
-            path="applicant-profile"
+            path="profile"
             element={<ApplicantProfile />}
           />
 
           {/* Applicant Education */}
           <Route
             path="applicant-education"
-            element={<ApplicantEducation/>}
+            element={<ApplicantEducation />}
           />
 
           {/* Applicant Certificates */}
