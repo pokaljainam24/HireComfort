@@ -8,7 +8,7 @@ import cors from "cors";
 // AdminPannel Menues routes
 import joobCategoryRoutes from "./routes/jobCategoryRoutes/jobCategoryRoutes.js";
 import jobSubCategoryRoutes from "./routes/jobSubCategoryRoutes/jobSubCategoryRoutes.js";
-import blogRoutes  from "./routes/blogRoutes/blogRoutes.js";
+import blogRoutes from "./routes/blogRoutes/blogRoutes.js";
 import cmsRoutes from "./routes/cmsRoutes/cmsRoutes.js";
 import faqRoutes from "./routes/FaqRoutes/faqRoutes.js";
 import emailCredentialRoutes from "./routes/EmailCredentialRoutes/emailCredentialRoutes.js";
@@ -66,7 +66,8 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ limit: "1mb", extended: true }));
 app.use(cookieParser());
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));

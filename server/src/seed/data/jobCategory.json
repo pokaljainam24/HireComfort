@@ -1,0 +1,182 @@
+[
+  {
+    "categoryId": "cat_it_001",
+    "name": "Information Technology",
+    "description": "Jobs related to software engineering, cloud computing, cybersecurity, data engineering, and infrastructure operations.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/it.png"
+  },
+  {
+    "categoryId": "cat_hc_002",
+    "name": "Healthcare & Life Sciences",
+    "description": "Clinical care, medical research, pharmaceutical operations, diagnostic services, and healthcare facility management.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/healthcare.png"
+  },
+  {
+    "categoryId": "cat_fin_003",
+    "name": "Finance & Accounting",
+    "description": "Corporate accounting, financial modeling, auditing, investment banking, tax advisory, and asset management.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/finance.png"
+  },
+  {
+    "categoryId": "cat_mfg_004",
+    "name": "Manufacturing & Engineering",
+    "description": "Industrial design, automation engineering, quality management, supply chain, and machinery operations.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/manufacturing.png"
+  },
+  {
+    "categoryId": "cat_mkt_005",
+    "name": "Marketing & Communications",
+    "description": "Brand strategy, digital advertising, public relations, content creation, social media growth, and market analytics.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/marketing.png"
+  },
+  {
+    "categoryId": "cat_crt_006",
+    "name": "Creative Arts & Design",
+    "description": "Graphic design, video editing, UI/UX prototyping, concept painting, 3D modeling, and multimedia production.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/creative-arts.png"
+  },
+  {
+    "categoryId": "cat_sls_007",
+    "name": "Sales & Business Development",
+    "description": "Enterprise account acquisitions, pipeline development, relationship management, and commercial contract negotiations.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/sales.png"
+  },
+  {
+    "categoryId": "cat_con_008",
+    "name": "Construction & Skilled Trades",
+    "description": "Civil engineering, electrical mapping, industrial plumbing, welding, carpentry, and site safety management.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/construction.png"
+  },
+  {
+    "categoryId": "cat_edu_009",
+    "name": "Education & Training",
+    "description": "Curriculum blueprinting, academic instructional development, corporate training, classroom direction, and mentorship.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/education.png"
+  },
+  {
+    "categoryId": "cat_hr_010",
+    "name": "Human Resources & Legal Services",
+    "description": "Talent sourcing, labor compliance, corporate governance, contract drafting, and organizational workplace design.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/hr-legal.png"
+  },
+  {
+    "categoryId": "cat_hos_011",
+    "name": "Hospitality & Food Services",
+    "description": "Culinary operations, property management, guest experience scaling, banquet logistics, and luxury service standards.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/hospitality.png"
+  },
+  {
+    "categoryId": "cat_log_012",
+    "name": "Logistics & Supply Chain",
+    "description": "Fleet optimization, warehouse layout tracking, inventory operations, global forwarding, and fulfillment frameworks.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/logistics.png"
+  },
+  {
+    "categoryId": "cat_cst_013",
+    "name": "Customer Support & Success",
+    "description": "Helpdesk systems direction, customer loyalty strategy, technical ticketing, and cross-channel complaint resolution.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/customer-support.png"
+  },
+  {
+    "categoryId": "cat_adm_014",
+    "name": "Administrative & Operations",
+    "description": "Office management, executive support coordination, facilities scheduling, and data registry verification frameworks.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/administrative.png"
+  },
+  {
+    "categoryId": "cat_agr_015",
+    "name": "Agriculture & Environmental",
+    "description": "Sustainable agronomy operations, soil engineering, environmental system testing, and automated farm infrastructure.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/agriculture.png"
+  },
+  {
+    "categoryId": "cat_rtl_016",
+    "name": "Retail & E-Commerce",
+    "description": "Merchandising optimization, e-commerce storefront scaling, point-of-sale systems management, and omni-channel tracking.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/retail.png"
+  },
+  {
+    "categoryId": "cat_ene_017",
+    "name": "Energy & Utilities",
+    "description": "Power grid mechanics, renewable system scaling, petroleum extraction tracking, and environmental utility engineering.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/energy.png"
+  },
+  {
+    "categoryId": "cat_re_018",
+    "name": "Real Estate & Property Management",
+    "description": "Commercial asset leasing, residential brokerage, appraisal data analysis, and structural facilities oversight.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/real-estate.png"
+  },
+  {
+    "categoryId": "cat_mar_019",
+    "name": "Marine & Maritime Operations",
+    "description": "Vessel navigation engineering, cargo safety compliance, port logistics routing, and naval hardware maintenance.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/marine.png"
+  },
+  {
+    "categoryId": "cat_aer_020",
+    "name": "Aerospace & Aviation",
+    "description": "Avionics mechanics, flight path tracking operations, drone configuration engineering, and air traffic system compliance.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/aerospace.png"
+  },
+  {
+    "categoryId": "cat_aut_021",
+    "name": "Automotive Technology",
+    "description": "Vehicle powertrain diagnostics, electric drive system calibration, assembly testing, and auto component design.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/automotive.png"
+  },
+  {
+    "categoryId": "cat_ngo_022",
+    "name": "NGO & Social Services",
+    "description": "Community program execution, fundraising tracking operations, humanitarian log logistics, and grant proposal design.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/ngo.png"
+  },
+  {
+    "categoryId": "cat_med_023",
+    "name": "Media & Broadcast Journalism",
+    "description": "News editing frameworks, audio broadcast operations, live investigative tracking, and digital publication scaling.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/media.png"
+  },
+  {
+    "categoryId": "cat_sec_024",
+    "name": "Security & Protective Services",
+    "description": "Surveillance system design, tactical risk mitigation, loss prevention tracking, and emergency incident dispatch rules.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/security.png"
+  },
+  {
+    "categoryId": "cat_bio_025",
+    "name": "Biotechnology & R&D",
+    "description": "Gene editing sequence evaluation, molecular analysis engineering, cell culture tracking, and laboratory assay design.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/biotech.png"
+  },
+  {
+    "categoryId": "cat_ins_026",
+    "name": "Insurance Services",
+    "description": "Actuarial math forecasting, claims handling verification, policy coverage writing, and broker distribution pipelines.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/insurance.png"
+  },
+  {
+    "categoryId": "cat_min_027",
+    "name": "Mining & Geological Extraction",
+    "description": "Subsurface resource mapping, seismic safety monitoring, drilling equipment mechanics, and mineral refinery tracking.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/mining.png"
+  },
+  {
+    "categoryId": "cat_fit_028",
+    "name": "Fitness, Wellness & Recreation",
+    "description": "Physical conditioning programming, athletic performance tracking, metabolic load design, and recreational facilities oversight.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/fitness.png"
+  },
+  {
+    "categoryId": "cat_gov_029",
+    "name": "Government & Public Policy",
+    "description": "Regulatory legislative research, municipal infrastructure planning, public registry maintenance, and budget allocation audits.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/government.png"
+  },
+  {
+    "categoryId": "cat_sci_030",
+    "name": "Data Science & Advanced Analytics",
+    "description": "Statistical modeling optimization, deep learning architecture tracking, big data cluster computing, and predictive business insights.",
+    "icon": "https://cdn.hirecomfort.com/icons/categories/data-science.png"
+  }
+]

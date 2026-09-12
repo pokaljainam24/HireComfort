@@ -194,7 +194,7 @@ const HomePageSearchForm = () => {
       <div className="box-industry">
         <Select
           options={industryOptions}
-          isSearchable
+          isSearchable={false}
           placeholder="Industry"
           className="select2"
           classNamePrefix="industry"
@@ -206,7 +206,7 @@ const HomePageSearchForm = () => {
       {/* Location */}
       <Select
         options={locationOptions}
-        isSearchable
+        isSearchable={false}
         placeholder="Location"
         className="select2"
         classNamePrefix="location"

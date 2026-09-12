@@ -1,0 +1,62 @@
+[
+  {
+    "employmentTypeId": "emp_ft_01",
+    "code": "FULL_TIME",
+    "name": "Full-Time",
+    "description": "Standard regular employment with full working hours per week (typically 35-40 hours) with standard benefits."
+  },
+  {
+    "employmentTypeId": "emp_pt_02",
+    "code": "PART_TIME",
+    "name": "Part-Time",
+    "description": "Regular employment with fewer hours per week than full-time, offering flexible schedules and prorated perks."
+  },
+  {
+    "employmentTypeId": "emp_ct_03",
+    "code": "CONTRACT",
+    "name": "Contract / Freelance",
+    "description": "Project-based or fixed-term engagement governed by a service level agreement, without standard corporate benefits."
+  },
+  {
+    "employmentTypeId": "emp_in_04",
+    "code": "INTERNSHIP",
+    "name": "Internship",
+    "description": "Fixed-term educational or practical training position designed for students or recent graduates to gain industry exposure."
+  },
+  {
+    "employmentTypeId": "emp_se_05",
+    "code": "SEASONAL",
+    "name": "Seasonal",
+    "description": "Temporary employment tied to specific peak operational periods, cyclical demands, or holiday surges."
+  },
+  {
+    "employmentTypeId": "emp_ap_06",
+    "code": "APPRENTICESHIP",
+    "name": "Apprenticeship",
+    "description": "Structured long-term program combining on-the-job vocational training with technical classroom instruction."
+  },
+  {
+    "employmentTypeId": "emp_co_07",
+    "code": "COMMISSION_ONLY",
+    "name": "Commission-Only",
+    "description": "Performance-linked role where payment is fully derived from sales conversions or transactions, without a fixed base salary."
+  },
+  {
+    "employmentTypeId": "emp_vd_08",
+    "code": "VENDOR_CONGEN",
+    "name": "Vendor / Third-Party",
+    "description": "Outsourced role where the professional remains an employee of an external agency or consulting vendor partner."
+  },
+  {
+    "employmentTypeId": "emp_vo_09",
+    "code": "VOLUNTARY",
+    "name": "Volunteer / Unpaid",
+    "description": "Altruistic, non-compensated regular or project role aligned with non-profit, charity, or grassroots initiatives."
+  },
+  {
+    "employmentTypeId": "emp_fl_10",
+    "code": "FLEXIBLE_HOURS",
+    "name": "Casual / On-Call",
+    "description": "Intermittent employment with no guaranteed or predictable weekly hours, called in as operational volumes demand."
+  }
+]

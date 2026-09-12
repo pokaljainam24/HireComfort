@@ -1,0 +1,122 @@
+[
+  {
+    "industryId": "ind_tech_01",
+    "code": "SOFTWARE_TECH",
+    "name": "Software & Information Technology",
+    "description": "Companies producing software, digital services, SaaS, cloud infrastructure, and IT solutions."
+  },
+  {
+    "industryId": "ind_hc_02",
+    "code": "HEALTHCARE_PHARMA",
+    "name": "Healthcare & Pharmaceuticals",
+    "description": "Hospitals, clinical networks, drug discovery firms, biotech outfits, and medical device manufacturing companies."
+  },
+  {
+    "industryId": "ind_fin_03",
+    "code": "FINANCIAL_SERVICES",
+    "name": "Banking & Financial Services",
+    "description": "Retail banking, investment groups, quantitative funds, asset management, and fintech platforms."
+  },
+  {
+    "industryId": "ind_mfg_04",
+    "code": "MANUFACTURING_HEAVY",
+    "name": "Industrial Manufacturing & Heavy Industry",
+    "description": "Automotive assembly plants, industrial machinery production, chemical refining, and large-scale manufacturing operations."
+  },
+  {
+    "industryId": "ind_edu_05",
+    "code": "EDUCATION_EDTECH",
+    "name": "Education & EdTech",
+    "description": "Primary and secondary learning systems, universities, professional trade institutions, and digital training platforms."
+  },
+  {
+    "industryId": "ind_log_06",
+    "code": "LOGISTICS_SUPPLY",
+    "name": "Logistics & Supply Chain Management",
+    "description": "Global freight networks, third-party distribution hubs, maritime cargo management, and last-mile delivery tracking systems."
+  },
+  {
+    "industryId": "ind_retail_07",
+    "code": "RETAIL_ECOMMERCE",
+    "name": "Retail & E-Commerce",
+    "description": "Consumer goods retailers, global digital marketplaces, boutique networks, and direct-to-consumer digital channels."
+  },
+  {
+    "industryId": "ind_energy_08",
+    "code": "ENERGY_UTILITIES",
+    "name": "Energy, Utilities & Renewables",
+    "description": "Power infrastructure grids, oil and gas exploration, solar arrays, wind turbine complexes, and sustainable utility distribution."
+  },
+  {
+    "industryId": "ind_media_09",
+    "code": "MEDIA_ENTERTAINMENT",
+    "name": "Media, Entertainment & Creative Arts",
+    "description": "Film production networks, broadcasting networks, digital streaming systems, animation studios, and game development publishers."
+  },
+  {
+    "industryId": "ind_const_10",
+    "code": "CONSTRUCTION_REAL_ESTATE",
+    "name": "Construction & Real Estate",
+    "description": "Commercial civil engineering firms, residential builders, architecture groups, and corporate real estate portfolios."
+  },
+  {
+    "industryId": "ind_aero_11",
+    "code": "AEROSPACE_DEFENSE",
+    "name": "Aerospace & Defense",
+    "description": "Commercial aircraft engineering, satellite deployment matrices, guidance systems, and military logistics infrastructure."
+  },
+  {
+    "industryId": "ind_tele_12",
+    "code": "TELECOMMUNICATIONS",
+    "name": "Telecommunications Networks",
+    "description": "Cellular network infrastructure, fiber-optic distribution grids, satellite communications, and internet service providers."
+  },
+  {
+    "industryId": "ind_agri_13",
+    "code": "AGRICULTURE_FOOD",
+    "name": "Agriculture & AgTech",
+    "description": "Precision farming initiatives, global crop logistics, sustainable aquaculture pools, and commercial food processing hubs."
+  },
+  {
+    "industryId": "ind_hosp_14",
+    "code": "HOSPITALITY_TOURISM",
+    "name": "Hospitality & Tourism",
+    "description": "Luxury resort portfolios, global cruise groups, large-scale travel brokers, and international restaurant franchises."
+  },
+  {
+    "industryId": "ind_auto_15",
+    "code": "AUTOMOTIVE_MOBILITY",
+    "name": "Automotive & Electric Mobility",
+    "description": "Electric vehicle engineers, combustion legacy companies, autonomous hardware loops, and urban mobility platforms."
+  },
+  {
+    "industryId": "ind_cons_16",
+    "code": "CONSULTING_STRATEGY",
+    "name": "Management Consulting & Professional Services",
+    "description": "Corporate operations advisory groups, legal representation networks, strategic business consulting, and expert corporate networks."
+  },
+  {
+    "industryId": "ind_govt_17",
+    "code": "GOVERNMENT_PUBLIC",
+    "name": "Government, Public Policy & Non-Profit",
+    "description": "Municipal administrative agencies, public policy think tanks, international NGOs, and humanitarian relief tracking frameworks."
+  },
+  {
+    "industryId": "ind_biotech_18",
+    "code": "BIOTECHNOLOGY",
+    "name": "Biotechnology & Genetic Engineering",
+    "description": "Gene editing therapeutics, agricultural genetic optimization, bio-synthetic material development, and clinical laboratory research."
+  },
+  {
+    "industryId": "ind_ins_19",
+    "code": "INSURANCE",
+    "name": "Insurance & Actuarial Risk",
+    "description": "Underwriting syndicates, corporate property coverage groups, life insurance structures, and data-driven reinsurance models."
+  },
+  {
+    "industryId": "ind_chem_20",
+    "code": "CHEMICALS_MATERIALS",
+    "name": "Chemicals & Advanced Materials",
+    "description": "Industrial polymers, smart alloy fabrication, agricultural fertilizers, pharmaceutical compound synthesis, and high-performance material coatings."
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "interviewTypeId": "int_onl_01",
+    "code": "ONLINE",
+    "name": "Online Video Interview",
+    "description": "Interviews conducted remotely via video conferencing platforms (e.g., Zoom, Google Meet, Microsoft Teams)."
+  },
+  {
+    "interviewTypeId": "int_ons_02",
+    "code": "ON_SITE",
+    "name": "On-Site / In-Person Interview",
+    "description": "Face-to-face evaluation conducted directly at the company's corporate office or physical business location."
+  },
+  {
+    "interviewTypeId": "int_phn_03",
+    "code": "TELEPHONIC",
+    "name": "Telephonic Screening",
+    "description": "Initial voice-only audio call to assess candidate baseline qualifications, communication skills, and compensation fit."
+  },
+  {
+    "interviewTypeId": "int_tst_04",
+    "code": "TECHNICAL_TEST",
+    "name": "Technical Assessment / Coding Test",
+    "description": "Proctored or unproctored skills assessment, coding challenge, or practical assignment completed via online evaluation portals."
+  },
+  {
+    "interviewTypeId": "int_grp_05",
+    "code": "GROUP_DISCUSSION",
+    "name": "Group Discussion / Panel Interview",
+    "description": "Simultaneous evaluation of multiple candidates or assessment by a cross-functional board of internal stakeholders."
+  },
+  {
+    "interviewTypeId": "int_hr_06",
+    "code": "HR_ROUND",
+    "name": "Human Resources / Behavioral Round",
+    "description": "Evaluation focusing on cultural alignment, core values, interpersonal soft skills, and reference checks."
+  }
+]

@@ -1,0 +1,710 @@
+[
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c01",
+    "name": "TypeScript",
+    "category": "Information Technology",
+    "description": "Typed superset of JavaScript that compiles to plain JavaScript."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c04",
+    "name": "Python",
+    "category": "Information Technology",
+    "description": "High-level programming language used extensively for backend development, data science, and automation."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c05",
+    "name": "Docker",
+    "category": "Information Technology",
+    "description": "Containerization platform used to pack, ship, and run applications consistently across environments."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c06",
+    "name": "Kubernetes",
+    "category": "Information Technology",
+    "description": "Open-source container orchestration system for automating software deployment, scaling, and management."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c07",
+    "name": "AWS Cloud Management",
+    "category": "Information Technology",
+    "description": "Designing, deploying, and managing scalable, fault-tolerant infrastructure systems on Amazon Web Services."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c08",
+    "name": "React.js",
+    "category": "Information Technology",
+    "description": "Open-source JavaScript library focused exclusively on building modular, component-based user interfaces."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c09",
+    "name": "Cybersecurity Threat Analysis",
+    "category": "Information Technology",
+    "description": "Proactive detection, isolation, and assessment of potential infrastructure exploits and security vulnerabilities."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c10",
+    "name": "SQL Database Administration",
+    "category": "Information Technology",
+    "description": "Optimizing, securing, and restructuring relational database management systems and query performance."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c11",
+    "name": "GraphQL API Design",
+    "category": "Information Technology",
+    "description": "Data query and manipulation language for APIs providing declarative data fetching patterns."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c12",
+    "name": "Machine Learning (Scikit-Learn)",
+    "category": "Information Technology",
+    "description": "Developing predictive algorithmic data pipelines, clustering models, and classification systems."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c13",
+    "name": "CI/CD Pipeline Automation",
+    "category": "Information Technology",
+    "description": "Implementing automated software testing and continuous integration deployment workflows via Jenkins or GitHub Actions."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c14",
+    "name": "Figma UI/UX Prototyping",
+    "category": "Information Technology",
+    "description": "Designing high-fidelity user flows, interactive wireframes, and standardized cross-platform components."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c15",
+    "name": "Patient Care Coordination",
+    "category": "Healthcare & Life Sciences",
+    "description": "Synchronizing medical assessments and cross-department healthcare services to match custom therapeutic goals."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c16",
+    "name": "Electronic Health Records (EHR)",
+    "category": "Healthcare & Life Sciences",
+    "description": "Managing, updating, and auditing digital clinical patient histories within strict regulatory frameworks."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c17",
+    "name": "Pharmacology Administration",
+    "category": "Healthcare & Life Sciences",
+    "description": "Accurately computing dosage metrics, identifying contraindications, and safely administering chemical agents."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c18",
+    "name": "Phlebotomy & Lab Diagnostics",
+    "category": "Healthcare & Life Sciences",
+    "description": "Executing aseptic venipuncture techniques and processing clinical bio-samples for laboratory screening."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c19",
+    "name": "Emergency Life Support (BLS/ACLS)",
+    "category": "Healthcare & Life Sciences",
+    "description": "Administering basic and advanced high-stress cardiopulmonary resuscitation algorithms and interventions."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c20",
+    "name": "Clinical Research Trial Operations",
+    "category": "Healthcare & Life Sciences",
+    "description": "Monitoring investigation compliance, validating human clinical metrics, and logging adverse trial effects."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c21",
+    "name": "Medical Billing & ICD-10 Coding",
+    "category": "Healthcare & Life Sciences",
+    "description": "Translating medical files into universally standardized alphabetic codes for insurance reimbursement claims."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c22",
+    "name": "Radiographic Image Processing",
+    "category": "Healthcare & Life Sciences",
+    "description": "Operating high-tech imaging machinery including X-Rays, MRIs, and CT setups following structural safety limits."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c23",
+    "name": "Surgical Instrument Sterilization",
+    "category": "Healthcare & Life Sciences",
+    "description": "Executing rigorous chemical and autoclave decontamination protocols inside operating theater spaces."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c24",
+    "name": "Telehealth Platform Management",
+    "category": "Healthcare & Life Sciences",
+    "description": "Conducting secure remote virtual assessments while upholding complete patient visual and textual confidentiality."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c25",
+    "name": "Corporate Financial Modeling",
+    "category": "Finance & Accounting",
+    "description": "Assembling complex multi-variable spreadsheet formulas to project prospective company fiscal performance metrics."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c26",
+    "name": "Tax Compliance & Filing",
+    "category": "Finance & Accounting",
+    "description": "Interpreting regional corporate tax laws to prepare legally sound institutional fiscal filings."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c27",
+    "name": "Auditing & Internal Controls",
+    "category": "Finance & Accounting",
+    "description": "Systematically inspecting corporate transactional logs to verify organizational balance tracking accuracy."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c28",
+    "name": "Portfolio Asset Management",
+    "category": "Finance & Accounting",
+    "description": "Balancing diverse equity, debt, and liquid asset classes to optimize targeted investor yield thresholds."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c29",
+    "name": "Risk Mitigation Engineering",
+    "category": "Finance & Accounting",
+    "description": "Quantifying market volatility parameters to buffer enterprise investments against catastrophic capital drops."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c30",
+    "name": "Cost Accounting & Variance Analysis",
+    "category": "Finance & Accounting",
+    "description": "Dissecting discrepancies between scheduled operational budgets and real manufacturing line expenses."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c31",
+    "name": "Mergers & Acquisitions Structuring",
+    "category": "Finance & Accounting",
+    "description": "Evaluating targets, drafting term sheets, and arranging financial vehicles for corporate buyouts."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c32",
+    "name": "Forex Currency Trading Navigation",
+    "category": "Finance & Accounting",
+    "description": "Executing short-term capital spreads based on geopolitical shifts and global interest rate adjustments."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c33",
+    "name": "Quantitative Algorithmic Programming",
+    "category": "Finance & Accounting",
+    "description": "Scripting automated statistical high-frequency trading rules using custom mathematical scripts."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c34",
+    "name": "Credit Underwriting & Risk Check",
+    "category": "Finance & Accounting",
+    "description": "Analyzing fiscal histories and balance structures to issue institutional business borrowing terms."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c35",
+    "name": "PLC Industrial Programming",
+    "category": "Manufacturing & Engineering",
+    "description": "Writing precise operational logic for Programmable Logic Controllers supervising heavy assembly systems."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c36",
+    "name": "SolidWorks CAD Design",
+    "category": "Manufacturing & Engineering",
+    "description": "Modeling detailed 3D mechanical components with precise stress tolerance and dimension boundaries."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c37",
+    "name": "Six Sigma Quality Optimization",
+    "category": "Manufacturing & Engineering",
+    "description": "Applying data-driven statistics to systematically drop error outputs in physical assembly spaces."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c38",
+    "name": "CNC Machining Operations",
+    "category": "Manufacturing & Engineering",
+    "description": "Calibrating and running automated computer numerical control mills to cut metal pieces perfectly."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c39",
+    "name": "Robotic Arm Synchronization",
+    "category": "Manufacturing & Engineering",
+    "description": "Programming multi-axis mechanical handlers for precise automated spot welding and product sorting."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c40",
+    "name": "Lean Supply Chain Coordination",
+    "category": "Manufacturing & Engineering",
+    "description": "Reconfiguring warehouse stock buffers to eliminate transit delays using Just-In-Time scheduling."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c41",
+    "name": "HVAC Engineering Mechanics",
+    "category": "Manufacturing & Engineering",
+    "description": "Assembling, balancing, and fixing large industrial environmental climate control units."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c42",
+    "name": "Metallurgical Properties Analysis",
+    "category": "Manufacturing & Engineering",
+    "description": "Testing raw alloys for yield stress limits, structural fatigue resistance, and environmental wear."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c43",
+    "name": "Predictive Factory Maintenance",
+    "category": "Manufacturing & Engineering",
+    "description": "Tracking heat and vibrations across machinery lines via IoT sensors to block hardware downtime."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c44",
+    "name": "Additive 3D Printing System Management",
+    "category": "Manufacturing & Engineering",
+    "description": "Calibrating advanced composite and powder laser sintering systems for component prototyping."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c45",
+    "name": "Search Engine Optimization (SEO)",
+    "category": "Marketing & Communication",
+    "description": "Auditing structural content and backlink tracking markers to scale web platform visibility."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c46",
+    "name": "Pay-Per-Click (PPC) Campaign Management",
+    "category": "Marketing & Communication",
+    "description": "Configuring keyword bidding loops on Google Ads to extract max lead conversions per dollar spent."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c47",
+    "name": "Brand Identity Design",
+    "category": "Marketing & Communication",
+    "description": "Crafting scalable visual guides, styling systems, and design aesthetics for market presentation."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c48",
+    "name": "High-Conversion Copywriting",
+    "category": "Marketing & Communication",
+    "description": "Drafting precise textual messaging engineered to drive prompt consumer purchasing decisions."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c49",
+    "name": "Market Cohort Analysis",
+    "category": "Marketing & Communication",
+    "description": "Dissecting audience demographic patterns and behavioral trends using raw analytics datasets."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c50",
+    "name": "Crisis Public Relations Control",
+    "category": "Marketing & Communication",
+    "description": "Deploying fast corporate damage-control strategies to protect public brand valuation indexes."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c51",
+    "name": "Social Media Growth Strategy",
+    "category": "Marketing & Communication",
+    "description": "Curating viral content distributions, community channels, and strategic creator partnership nets."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c52",
+    "name": "Email Marketing Funnel Construction",
+    "category": "Marketing & Communication",
+    "description": "Designing complex conditional behavioral automated retention maps via modern ESP systems."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c53",
+    "name": "Affiliate Network Optimization",
+    "category": "Marketing & Communication",
+    "description": "Vetting and tracking external commission-based sales networks via analytical tracking pipelines."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c54",
+    "name": "Event Production Management",
+    "category": "Marketing & Communication",
+    "description": "Organizing scheduling layers, sound-visual logistics, and entry checkpoints for corporate conventions."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c55",
+    "name": "Adobe Premiere Video Editing",
+    "category": "Creative Arts & Design",
+    "description": "Cutting, sequencing, and fine-tuning multi-camera narrative visual projects into polished master records."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c56",
+    "name": "3D Blender Character Rigging",
+    "category": "Creative Arts & Design",
+    "description": "Constructing internal transform skeletal frameworks for organic meshes to facilitate animation workflows."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c57",
+    "name": "Vector Illustration (Illustrator)",
+    "category": "Creative Arts & Design",
+    "description": "Drafting infinite-resolution visual art assets, custom iconography, and graphic print matrices."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c58",
+    "name": "Motion Graphics Design (After Effects)",
+    "category": "Creative Arts & Design",
+    "description": "Combining text typography, tracking scripts, and visual balance tricks into fluid promotional assets."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c59",
+    "name": "Digital Concept Painting",
+    "category": "Creative Arts & Design",
+    "description": "Illustrating high-atmosphere baseline world maps and structural reference art panels for pre-production."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c60",
+    "name": "Studio Lighting Design",
+    "category": "Creative Arts & Design",
+    "description": "Calibrating key, fill, rim flash positions, and light temperature metrics for commercial filming sets."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c61",
+    "name": "Creative Writing & Script Development",
+    "category": "Creative Arts & Design",
+    "description": "Fleshing out comprehensive multi-act standard screenplay dialog grids and thematic storyboard plans."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c62",
+    "name": "Audio Mix & Mastering (ProTools)",
+    "category": "Creative Arts & Design",
+    "description": "Balancing complex raw signal tracks, cutting noise floor levels, and tuning mastering frequency caps."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c63",
+    "name": "Typography & Editorial Grid Design",
+    "category": "Creative Arts & Design",
+    "description": "Configuring optimal type sizes, column spaces, and print hierarchies for high-volume catalogs."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c64",
+    "name": "Costume Fabrication & Textile Art",
+    "category": "Creative Arts & Design",
+    "description": "Patterning, sewing, and texturing physical materials to construct period-accurate performance garments."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c65",
+    "name": "Salesforce CRM Configuration",
+    "category": "Sales & Business Development",
+    "description": "Modifying automated custom pipeline stages, tracking filters, and internal team trigger alerts."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c66",
+    "name": "High-Value Contract Negotiation",
+    "category": "Sales & Business Development",
+    "description": "Structuring complex legal corporate pricing options to land win-win ongoing contractual alignments."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c67",
+    "name": "Cold Outbound Sourcing",
+    "category": "Sales & Business Development",
+    "description": "Locating and warming up targeted cold corporate decision makers via custom-tailored multi-channel pitches."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c68",
+    "name": "Enterprise Product Pitching",
+    "category": "Sales & Business Development",
+    "description": "Delivering high-stakes structural balance demonstrations directly to C-Suite executive boards."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c69",
+    "name": "Key Account Retention Management",
+    "category": "Sales & Business Development",
+    "description": "Nurturing multi-year high-revenue business ties to keep platform churn indexes low."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c70",
+    "name": "Strategic Sales Pipeline Scaling",
+    "category": "Sales & Business Development",
+    "description": "Projecting quarterly product distribution trends and managing local sales target breakdowns."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c71",
+    "name": "Strategic Partner Integrations",
+    "category": "Sales & Business Development",
+    "description": "Negotiating long-term co-marketing alliances and distribution pipelines between separate firms."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c72",
+    "name": "Competitive Market Reconnaissance",
+    "category": "Sales & Business Development",
+    "description": "Tracking rival pricing adjustments and product launch plans to adjust current business strategies."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c73",
+    "name": "B2B RFP Response Formulation",
+    "category": "Sales & Business Development",
+    "description": "Assembling highly comprehensive response files answering corporate Requests For Proposals."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c74",
+    "name": "Cross-Selling & Revenue Expansion",
+    "category": "Sales & Business Development",
+    "description": "Identifying subtle feature expansion needs within current client teams to upsell product lines."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c75",
+    "name": "Structural Blueprints Interpretation",
+    "category": "Construction & Trades",
+    "description": "Reading and translating dense architectural schematic scales into exact field build layouts."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c76",
+    "name": "Commercial Electrical Wiring",
+    "category": "Construction & Trades",
+    "description": "Routing three-phase high-voltage power mains through code-approved industrial metal conduits."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c77",
+    "name": "Industrial Pipefitting & Hydraulics",
+    "category": "Construction & Trades",
+    "description": "Threading, linking, and checking heavy high-pressure fuel and coolant transmission tubes."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c78",
+    "name": "Structural Steel SMAW Welding",
+    "category": "Construction & Trades",
+    "description": "Fusing load-bearing heavy steel beams using shielded metal arc welding protocols."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c79",
+    "name": "Civil Earthmoving Operations",
+    "category": "Construction & Trades",
+    "description": "Safely handling heavy site vehicles including tracked excavators and high-capacity earth grading machines."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c80",
+    "name": "Concrete Foundation Engineering",
+    "category": "Construction & Trades",
+    "description": "Setting up internal rebar reinforcing grids and monitoring chemical pour setting dynamics."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c81",
+    "name": "Commercial Roofing System Framing",
+    "category": "Construction & Trades",
+    "description": "Assembling composite weatherproofing barriers and hot-applied flat roof insulation layers."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c82",
+    "name": "Precision Carpentry & Joinery",
+    "category": "Construction & Trades",
+    "description": "Cutting and anchoring complex load-bearing internal wood framing assemblies perfectly to square."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c83",
+    "name": "OSHA-30 Site Safety Compliance",
+    "category": "Construction & Trades",
+    "description": "Enforcing rigorous site security protocols to eliminate fall, scaffolding, and line hazards."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c84",
+    "name": "Drywall Hanging & Texture Finishing",
+    "category": "Construction & Trades",
+    "description": "Mounting wallboard sheets smoothly and applying fine skimming compounds for painting prep."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c85",
+    "name": "K-12 Curriculum Blueprinting",
+    "category": "Education & Training",
+    "description": "Designing structured academic learning blocks mapped directly to state educational score targets."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c86",
+    "name": "E-Learning Instructional Development",
+    "category": "Education & Training",
+    "description": "Assembling interactive, self-paced virtual training paths inside SCORM LMS modules."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c87",
+    "name": "Classroom Dynamics Direction",
+    "category": "Education & Training",
+    "description": "Employing positive reinforcement and clear boundary framing to hold student group attention."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c88",
+    "name": "Differentiated Learning Design",
+    "category": "Education & Training",
+    "description": "Modifying instructional complexity variables to match diverse neurodivergent student baselines."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c89",
+    "name": "Educational Assessment Auditing",
+    "category": "Education & Training",
+    "description": "Formulating predictive testing blueprints to isolate specific comprehension performance drops."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c90",
+    "name": "Adult Corporate Coaching Delivery",
+    "category": "Education & Training",
+    "description": "Facilitating high-engagement executive workshops covering specific industry operational changes."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c91",
+    "name": "Language Immersion Instruction",
+    "category": "Education & Training",
+    "description": "Teaching secondary conversation fluencies directly using structural contextual target framing."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c92",
+    "name": "Special Education Advocacy Plan",
+    "category": "Education & Training",
+    "description": "Drafting legally binding Individualized Education Programs (IEPs) with multi-discipline teams."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c93",
+    "name": "STEM Lab Facilitation Safety",
+    "category": "Education & Training",
+    "description": "Supervising delicate chemical, biological, and electronic student laboratory build tests safely."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c94",
+    "name": "Academic Mentorship Counseling",
+    "category": "Education & Training",
+    "description": "Guiding students through university tier selections, career paths, and scholarship submissions."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c95",
+    "name": "Talent Sourcing Strategy",
+    "category": "Human Resources & Legal",
+    "description": "Mining advanced LinkedIn Boolean strings to extract hard-to-find passive specialty candidates."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c96",
+    "name": "Labor Laws & Compliance Tracking",
+    "category": "Human Resources & Legal",
+    "description": "Aligning internal operational staffing handbooks directly with evolving state employment acts."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c97",
+    "name": "Structured Compensation Benchmarking",
+    "category": "Human Resources & Legal",
+    "description": "Analyzing broad market wage matrix sheets to configure attractive, competitive salary tiers."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c98",
+    "name": "Workplace Friction Mediation",
+    "category": "Human Resources & Legal",
+    "description": "Guiding sensitive internal employee disputes toward objective, legally safe compromises."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c99",
+    "name": "Corporate Benefits Management",
+    "category": "Human Resources & Legal",
+    "description": "Configuring, processing, and renewing complex group health, wellness, and pension contracts."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7a8b9c00",
+    "name": "Legal Case Discovery Review",
+    "category": "Human Resources & Legal",
+    "description": "Sifting through huge volumes of litigation record transcripts to catalog key evidence files."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c01",
+    "name": "Intellectual Property Filing",
+    "category": "Human Resources & Legal",
+    "description": "Drafting airtight initial patent and trademark applications for submission to national registries."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c02",
+    "name": "Corporate Governance Oversight",
+    "category": "Human Resources & Legal",
+    "description": "Ensuring corporate executive board voting procedures perfectly follow strict regulatory bylaws."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c03",
+    "name": "Commercial Contract Drafting",
+    "category": "Human Resources & Legal",
+    "description": "Writing clear, legally binding commercial vendor obligations with explicit liability indemnity limits."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c04",
+    "name": "Performance Assessment Design",
+    "category": "Human Resources & Legal",
+    "description": "Building balanced KPIs and objective 360-degree milestone metrics for annual staff reviews."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c05",
+    "name": "Culinary Menu Architecture",
+    "category": "Hospitality & Services",
+    "description": "Engineering high-margin commercial restaurant dining recipes based on volatile raw product costs."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c06",
+    "name": "Hotel Property Management (Opera)",
+    "category": "Hospitality & Services",
+    "description": "Supervising real-time guest booking states, check-in channels, and room assignment flows."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c07",
+    "name": "High-End Concierge Coordination",
+    "category": "Hospitality & Services",
+    "description": "Sourcing and handling highly custom transit and dining itineraries for VIP clientele profiles."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c08",
+    "name": "Food Safety Compliance (HACCP)",
+    "category": "Hospitality & Services",
+    "description": "Enforcing rigid sanitization loops and internal thermal logging metrics to block kitchen bacterial vectors."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c09",
+    "name": "Sommelier Wine Curation",
+    "category": "Hospitality & Services",
+    "description": "Vetting international vintage inventory and configuring ideal flavor profiles to match custom menus."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c10",
+    "name": "Large-Scale Banquet Supervision",
+    "category": "Hospitality & Services",
+    "description": "Directing complex floor serving staff assignments for massive simultaneous multi-course dining functions."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c11",
+    "name": "Mixology & Craft Bar Operations",
+    "category": "Hospitality & Services",
+    "description": "Compounding custom artisanal syrups, tracking pour costs, and styling high-end cocktail lines."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c12",
+    "name": "Guest Sentiment Scaling Optimization",
+    "category": "Hospitality & Services",
+    "description": "Analyzing online hospitality feedback streams to adjust physical client service delivery rules."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c13",
+    "name": "Luxury Spa Operations Management",
+    "category": "Hospitality & Services",
+    "description": "Controlling specialized wellness inventory paths, therapy scheduling blocks, and treatment room setups."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c14",
+    "name": "Housekeeping Quality Auditing",
+    "category": "Hospitality & Services",
+    "description": "Executing structured white-glove checks on luxury room layouts following crisp presentation rules."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c15",
+    "name": "Active Technical Listening",
+    "category": "Universal Soft Skills",
+    "description": "Absorbing multi-layered project briefs fully without interrupting to isolate critical team needs."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c16",
+    "name": "Cross-Functional Collaboration",
+    "category": "Universal Soft Skills",
+    "description": "Bridging structural terminology gaps smoothly to align separate engineering and marketing squads."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c17",
+    "name": "Adaptive Time Chunking",
+    "category": "Universal Soft Skills",
+    "description": "Systematically splitting high-pressure parallel sprint tracks to deliver critical features before launch."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c18",
+    "name": "Complex Critical Evaluation",
+    "category": "Universal Soft Skills",
+    "description": "Sifting out emotional noise from raw system facts to accurately track down operational failures."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c19",
+    "name": "Agile Conflict Resolution",
+    "category": "Universal Soft Skills",
+    "description": "De-escalating friction over project feature design adjustments early before team dynamics drop."
+  },
+  {
+    "skillId": "650f1a2b3c4d5e6f7b8b9c20",
+    "name": "Dynamic Public Presentation",
+    "category": "Universal Soft Skills",
+    "description": "Condensing dense, confusing data frameworks into accessible, punchy updates for stakeholders."
+  }
+]

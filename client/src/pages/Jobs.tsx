@@ -1,17 +1,44 @@
+import { useEffect, useState } from "react";
 import IconGridHover from "../assets/imgs/template/icons/icon-grid-hover.svg";
 import IconList from "../assets/imgs/template/icons/icon-list.svg";
-import Brand1 from "../assets/imgs/brands/brand-1.png";
-import Brand2 from "../assets/imgs/brands/brand-2.png";
-import Brand3 from "../assets/imgs/brands/brand-3.png";
-import Brand4 from "../assets/imgs/brands/brand-4.png";
-import Brand5 from "../assets/imgs/brands/brand-5.png";
-import Brand6 from "../assets/imgs/brands/brand-6.png";
-import Brand7 from "../assets/imgs/brands/brand-7.png";
-import Brand8 from "../assets/imgs/brands/brand-8.png";
 import NewsletterRight from "../assets/imgs/template/newsletter-right.png";
 import NewsletterLeft from "../assets/imgs/template/newsletter-left.png";
+import { getJobCategories } from "../recruiterDashboard/api/jobCategoryApi.ts";
+import { jobApi } from "../recruiterDashboard/api/jobApi.ts";
+import type { JobCategory } from "../recruiterDashboard/types/jobCategory.ts";
+import type { Job } from "../recruiterDashboard/types/job.ts";
+import JobCard from "../components/JobCard.tsx";
 
 function Jobs() {
+  const [categories, setCategories] = useState<JobCategory[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [selectedIndustry, setSelectedIndustry] = useState<string>("");
+  // const [searchKeyword, setSearchKeyword] = useState<string>("");
+
+  useEffect(() => {
+    Promise.all([getJobCategories(), jobApi.getAll()])
+      .then(([categoriesData, jobsData]) => {
+        setCategories(categoriesData || []);
+        setJobs(jobsData || []);
+      })
+      .catch((err) => console.error("Failed to load jobs/categories", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filteredJobs = jobs.filter((job) => {
+    const matchesIndustry = selectedIndustry
+      ? job.categoryId === selectedIndustry
+      : true;
+    // const matchesKeyword = searchKeyword
+    //   ? job.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+    //   job.description?.toLowerCase().includes(searchKeyword.toLowerCase())
+    //   : true;
+    // return matchesIndustry && matchesKeyword;
+    return matchesIndustry;
+
+  });
+
   return (
     <>
       <main className="main">
@@ -20,30 +47,31 @@ function Jobs() {
             <div className="banner-hero banner-single banner-single-bg">
               <div className="block-banner text-center">
                 <h3 className="wow animate__animated animate__fadeInUp">
-                  <span className="color-brand-2">22 Jobs</span> Available Now
+                  <span className="color-brand-2">{jobs.length} Jobs</span> Available Now
                 </h3>
                 <div
                   className="font-sm color-text-paragraph-2 mt-10 wow animate__animated animate__fadeInUp"
                   data-wow-delay=".1s"
                 >
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero
-                  repellendus magni, <br className="d-none d-xl-block" />
-                  atque delectus molestias quis?
+                  Find your next dream job from top recruiters and companies worldwide.
                 </div>
                 <div
                   className="form-find text-start mt-40 wow animate__animated animate__fadeInUp"
                   data-wow-delay=".2s"
                 >
-                  <form>
+                  <form onSubmit={(e) => e.preventDefault()}>
                     <div className="box-industry">
-                      <select className="form-input mr-10 select-active input-industry">
-                        <option value="0">Industry</option>
-                        <option value="1">Software</option>
-                        <option value="2">Finance</option>
-                        <option value="3">Recruting</option>
-                        <option value="4">Management</option>
-                        <option value="5">Advertising</option>
-                        <option value="6">Development</option>
+                      <select
+                        className="form-input mr-10 select-active input-industry"
+                        value={selectedIndustry}
+                        onChange={(e) => setSelectedIndustry(e.target.value)}
+                      >
+                        <option value="">All Industries</option>
+                        {categories.map((cat) => (
+                          <option key={cat._id} value={cat._id}>
+                            {cat.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <select className="form-input mr-10 select-active">
@@ -305,8 +333,10 @@ function Jobs() {
                       className="form-input input-keysearch mr-10"
                       type="text"
                       placeholder="Your keyword... "
+                      value={""}
+                      onChange={(e) => { console.log(e.target.value) }}
                     />
-                    <button className="btn btn-default btn-find font-sm">
+                    <button className="btn btn-default btn-find font-sm" type="button">
                       Search
                     </button>
                   </form>
@@ -324,8 +354,8 @@ function Jobs() {
                     <div className="row">
                       <div className="col-xl-6 col-lg-5">
                         <span className="text-small text-showing">
-                          Showing <strong>41-60 </strong>of{" "}
-                          <strong>944 </strong>jobs
+                          Showing <strong>1-{filteredJobs.length} </strong>of{" "}
+                          <strong>{jobs.length} </strong>jobs
                         </span>
                       </div>
                       <div className="col-xl-6 col-lg-7 text-lg-end mt-sm-15">
@@ -415,1216 +445,64 @@ function Jobs() {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand1} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              LinkedIn
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">UI / UX Designer fulltime</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Fulltime</span>
-                            <span className="card-time">
-                              4<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Adobe XD
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Figma
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Photoshop
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$500</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                    {loading ? (
+                      <div className="col-12 text-center py-5">
+                        <h4>Loading jobs...</h4>
                       </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand2} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Adobe Ilustrator
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Full Stack Engineer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Part time</span>
-                            <span className="card-time">
-                              5<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              React
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              NodeJS
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$800</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                    ) : filteredJobs.length === 0 ? (
+                      <div className="col-12 text-center py-5">
+                        <h4>No jobs found</h4>
+                        <p className="text-muted">Try adjusting your filters or search keywords.</p>
                       </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand3} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Bing Search
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Java Software Engineer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Full time</span>
-                            <span className="card-time">
-                              6<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Python
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              AWS
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Photoshop
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$250</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand4} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Dailymotion
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Frontend Developer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Full time</span>
-                            <span className="card-time">
-                              6<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Typescript
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Java
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$250</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand5} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Linkedin
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">React Native Web Developer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Fulltime</span>
-                            <span className="card-time">
-                              4<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Angular
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$500</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand6} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Quora JSC
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Senior System Engineer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Part time</span>
-                            <span className="card-time">
-                              5<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              PHP
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              Android
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$800</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand7} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Nintendo
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Products Manager</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Full time</span>
-                            <span className="card-time">
-                              6<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              ASP .Net
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              Figma
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$250</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand8} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Periscope
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Lead Quality Control QA</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Full time</span>
-                            <span className="card-time">
-                              6<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              iOS
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              Laravel
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              Golang
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$250</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand1} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              LinkedIn
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">UI / UX Designer fulltime</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Fulltime</span>
-                            <span className="card-time">
-                              4<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Adobe XD
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Figma
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Photoshop
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$500</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand2} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Adobe Ilustrator
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Full Stack Engineer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Part time</span>
-                            <span className="card-time">
-                              5<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              React
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              NodeJS
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$800</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand3} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Bing Search
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Java Software Engineer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Full time</span>
-                            <span className="card-time">
-                              6<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Python
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              AWS
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Photoshop
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$250</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand4} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Dailymotion
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Frontend Developer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Full time</span>
-                            <span className="card-time">
-                              6<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Typescript
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Java
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$250</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand5} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Linkedin
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">React Native Web Developer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Fulltime</span>
-                            <span className="card-time">
-                              4<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Angular
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$500</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand6} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Quora JSC
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Senior System Engineer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Part time</span>
-                            <span className="card-time">
-                              5<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              PHP
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              Android
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$800</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand7} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Nintendo
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Products Manager</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Full time</span>
-                            <span className="card-time">
-                              6<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              ASP .Net
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              Figma
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$250</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand8} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Periscope
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Lead Quality Control QA</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Full time</span>
-                            <span className="card-time">
-                              6<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              iOS
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              Laravel
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="job-details"
-                            >
-                              Golang
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$250</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand1} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              LinkedIn
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">UI / UX Designer fulltime</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Fulltime</span>
-                            <span className="card-time">
-                              4<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Adobe XD
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Figma
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              Photoshop
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$500</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                      <div className="card-grid-2 hover-up">
-                        <div className="card-grid-2-image-left">
-                          <span className="flash"></span>
-                          <div className="image-box">
-                            <img src={Brand2} alt="jobBox" />
-                          </div>
-                          <div className="right-info">
-                            <a className="name-job" href="/Jobs/Details">
-                              Adobe Ilustrator
-                            </a>
-                            <span className="location-small">New York, US</span>
-                          </div>
-                        </div>
-                        <div className="card-block-info">
-                          <h6>
-                            <a href="job-details">Full Stack Engineer</a>
-                          </h6>
-                          <div className="mt-5">
-                            <span className="card-briefcase">Part time</span>
-                            <span className="card-time">
-                              5<span> minutes ago</span>
-                            </span>
-                          </div>
-                          <p className="font-sm color-text-paragraph mt-15">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Recusandae architecto eveniet, dolor quo
-                            repellendus pariatur.
-                          </p>
-                          <div className="mt-30">
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              React
-                            </a>
-                            <a
-                              className="btn btn-grey-small mr-5"
-                              href="jobs-grid"
-                            >
-                              NodeJS{" "}
-                            </a>
-                          </div>
-                          <div className="card-2-bottom mt-30">
-                            <div className="row">
-                              <div className="col-lg-7 col-7">
-                                <span className="card-text-price">$800</span>
-                                <span className="text-muted">/Hour</span>
-                              </div>
-                              <div className="col-lg-5 col-5 text-end">
-                                <div
-                                  className="btn btn-apply-now"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#ModalApplyJobForm"
-                                >
-                                  Apply now
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    ) : (
+                      filteredJobs.map((job) => <JobCard key={job._id} job={job} />)
+                    )}
                   </div>
-                </div>
-                <div className="paginations">
-                  <ul className="pager">
-                    <li>
-                      <a className="pager-prev" href="#"></a>
-                    </li>
-                    <li>
-                      <a className="pager-number" href="#">
-                        1
-                      </a>
-                    </li>
-                    <li>
-                      <a className="pager-number" href="#">
-                        2
-                      </a>
-                    </li>
-                    <li>
-                      <a className="pager-number" href="#">
-                        3
-                      </a>
-                    </li>
-                    <li>
-                      <a className="pager-number" href="#">
-                        4
-                      </a>
-                    </li>
-                    <li>
-                      <a className="pager-number" href="#">
-                        5
-                      </a>
-                    </li>
-                    <li>
-                      <a className="pager-number active" href="#">
-                        6
-                      </a>
-                    </li>
-                    <li>
-                      <a className="pager-number" href="#">
-                        7
-                      </a>
-                    </li>
-                    <li>
-                      <a className="pager-next" href="#"></a>
-                    </li>
-                  </ul>
+                  <div className="paginations">
+                    <ul className="pager">
+                      <li>
+                        <a className="pager-prev" href="#"></a>
+                      </li>
+                      <li>
+                        <a className="pager-number" href="#">
+                          1
+                        </a>
+                      </li>
+                      <li>
+                        <a className="pager-number" href="#">
+                          2
+                        </a>
+                      </li>
+                      <li>
+                        <a className="pager-number" href="#">
+                          3
+                        </a>
+                      </li>
+                      <li>
+                        <a className="pager-number" href="#">
+                          4
+                        </a>
+                      </li>
+                      <li>
+                        <a className="pager-number" href="#">
+                          5
+                        </a>
+                      </li>
+                      <li>
+                        <a className="pager-number active" href="#">
+                          6
+                        </a>
+                      </li>
+                      <li>
+                        <a className="pager-number" href="#">
+                          7
+                        </a>
+                      </li>
+                      <li>
+                        <a className="pager-next" href="#"></a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 col-12">
@@ -1655,384 +533,367 @@ function Jobs() {
                         <ul className="list-checkbox">
                           <li>
                             <label className="cb-container">
-                              <input type="checkbox" defaultChecked />
+                              <input
+                                type="radio"
+                                name="industrySidebar"
+                                checked={selectedIndustry === ""}
+                                onChange={() => setSelectedIndustry("")}
+                              />
                               <span className="text-small">All</span>
                               <span className="checkmark"></span>
                             </label>
-                            <span className="number-item">180</span>
+                            <span className="number-item">{jobs.length}</span>
                           </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Software</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">12</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Finance</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">23</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Recruting</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">43</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Management</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">65</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Advertising</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">76</span>
-                          </li>
+                          {categories.map((cat) => {
+                            const count = jobs.filter((j) => j.categoryId === cat._id).length;
+                            return (
+                              <li key={cat._id}>
+                                <label className="cb-container">
+                                  <input
+                                    type="radio"
+                                    name="industrySidebar"
+                                    checked={selectedIndustry === cat._id}
+                                    onChange={() => setSelectedIndustry(cat._id)}
+                                  />
+                                  <span className="text-small">{cat.name}</span>
+                                  <span className="checkmark"></span>
+                                </label>
+                                <span className="number-item">{count}</span>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
-                    </div>
-                    <div className="filter-block mb-20">
-                      <h5 className="medium-heading mb-25">Salary Range</h5>
-                      <div className="list-checkbox pb-20">
-                        <div className="row position-relative mt-10 mb-20">
-                          <div className="col-sm-12 box-slider-range">
-                            <div id="slider-range"></div>
-                          </div>
-                          <div className="box-input-money">
-                            <input
-                              className="input-disabled form-control min-value-money"
-                              type="text"
-                              name="min-value-money"
-                              disabled={false}
-                              defaultValue=""
-                            />
-                            <input
-                              className="form-control min-value"
-                              type="hidden"
-                              name="min-value"
-                              value=""
-                            />
-                          </div>
-                        </div>
-                        <div className="box-number-money">
-                          <div className="row mt-30">
-                            <div className="col-sm-6 col-6">
-                              <span className="font-sm color-brand-1">$0</span>
+                      <div className="filter-block mb-20">
+                        <h5 className="medium-heading mb-25">Salary Range</h5>
+                        <div className="list-checkbox pb-20">
+                          <div className="row position-relative mt-10 mb-20">
+                            <div className="col-sm-12 box-slider-range">
+                              <div id="slider-range"></div>
                             </div>
-                            <div className="col-sm-6 col-6 text-end">
-                              <span className="font-sm color-brand-1">
-                                $500
-                              </span>
+                            <div className="box-input-money">
+                              <input
+                                className="input-disabled form-control min-value-money"
+                                type="text"
+                                name="min-value-money"
+                                disabled={false}
+                                defaultValue=""
+                              />
+                              <input
+                                className="form-control min-value"
+                                type="hidden"
+                                name="min-value"
+                                value=""
+                              />
+                            </div>
+                          </div>
+                          <div className="box-number-money">
+                            <div className="row mt-30">
+                              <div className="col-sm-6 col-6">
+                                <span className="font-sm color-brand-1">$0</span>
+                              </div>
+                              <div className="col-sm-6 col-6 text-end">
+                                <span className="font-sm color-brand-1">
+                                  $500
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
+                        <div className="form-group mb-20">
+                          <ul className="list-checkbox">
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" defaultChecked />
+                                <span className="text-small">All</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">145</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">$0k - $20k</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">56</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">$20k - $40k</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">37</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">$40k - $60k</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">75</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">$60k - $80k</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">98</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">$80k - $100k</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">14</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">$100k - $200k</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">25</span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                      <div className="form-group mb-20">
-                        <ul className="list-checkbox">
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" defaultChecked />
-                              <span className="text-small">All</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">145</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">$0k - $20k</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">56</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">$20k - $40k</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">37</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">$40k - $60k</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">75</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">$60k - $80k</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">98</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">$80k - $100k</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">14</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">$100k - $200k</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">25</span>
-                          </li>
-                        </ul>
+                      <div className="filter-block mb-30">
+                        <h5 className="medium-heading mb-10">Popular Keyword</h5>
+                        <div className="form-group">
+                          <ul className="list-checkbox">
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" defaultChecked />
+                                <span className="text-small">Software</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">24</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Developer</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">45</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Web</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">57</span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                    <div className="filter-block mb-30">
-                      <h5 className="medium-heading mb-10">Popular Keyword</h5>
-                      <div className="form-group">
-                        <ul className="list-checkbox">
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" defaultChecked />
-                              <span className="text-small">Software</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">24</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Developer</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">45</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Web</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">57</span>
-                          </li>
-                        </ul>
+                      <div className="filter-block mb-30">
+                        <h5 className="medium-heading mb-10">Position</h5>
+                        <div className="form-group">
+                          <ul className="list-checkbox">
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Senior</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">12</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" defaultChecked />
+                                <span className="text-small">Junior</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">35</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Fresher</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">56</span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                    <div className="filter-block mb-30">
-                      <h5 className="medium-heading mb-10">Position</h5>
-                      <div className="form-group">
-                        <ul className="list-checkbox">
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Senior</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">12</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" defaultChecked />
-                              <span className="text-small">Junior</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">35</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Fresher</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">56</span>
-                          </li>
-                        </ul>
+                      <div className="filter-block mb-30">
+                        <h5 className="medium-heading mb-10">Experience Level</h5>
+                        <div className="form-group">
+                          <ul className="list-checkbox">
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Internship</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">56</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Entry Level</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">87</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" defaultChecked />
+                                <span className="text-small">Associate</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">24</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Mid Level</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">45</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Director</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">76</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Executive</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">89</span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                    <div className="filter-block mb-30">
-                      <h5 className="medium-heading mb-10">Experience Level</h5>
-                      <div className="form-group">
-                        <ul className="list-checkbox">
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Internship</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">56</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Entry Level</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">87</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" defaultChecked />
-                              <span className="text-small">Associate</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">24</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Mid Level</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">45</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Director</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">76</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Executive</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">89</span>
-                          </li>
-                        </ul>
+                      <div className="filter-block mb-30">
+                        <h5 className="medium-heading mb-10">Onsite/Remote</h5>
+                        <div className="form-group">
+                          <ul className="list-checkbox">
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">On-site</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">12</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" defaultChecked />
+                                <span className="text-small">Remote</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">65</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Hybrid</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">58</span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                    <div className="filter-block mb-30">
-                      <h5 className="medium-heading mb-10">Onsite/Remote</h5>
-                      <div className="form-group">
-                        <ul className="list-checkbox">
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">On-site</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">12</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" defaultChecked />
-                              <span className="text-small">Remote</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">65</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Hybrid</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">58</span>
-                          </li>
-                        </ul>
+                      <div className="filter-block mb-30">
+                        <h5 className="medium-heading mb-10">Job Posted</h5>
+                        <div className="form-group">
+                          <ul className="list-checkbox">
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" defaultChecked />
+                                <span className="text-small">All</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">78</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">1 day</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">65</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">7 days</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">24</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">30 days</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">56</span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                    <div className="filter-block mb-30">
-                      <h5 className="medium-heading mb-10">Job Posted</h5>
-                      <div className="form-group">
-                        <ul className="list-checkbox">
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" defaultChecked />
-                              <span className="text-small">All</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">78</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">1 day</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">65</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">7 days</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">24</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">30 days</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">56</span>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="filter-block mb-20">
-                      <h5 className="medium-heading mb-15">Job type</h5>
-                      <div className="form-group">
-                        <ul className="list-checkbox">
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Full Time</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">25</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" defaultChecked />
-                              <span className="text-small">Part Time</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">64</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Remote Jobs</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">78</span>
-                          </li>
-                          <li>
-                            <label className="cb-container">
-                              <input type="checkbox" />
-                              <span className="text-small">Freelancer</span>
-                              <span className="checkmark"></span>
-                            </label>
-                            <span className="number-item">97</span>
-                          </li>
-                        </ul>
+                      <div className="filter-block mb-20">
+                        <h5 className="medium-heading mb-15">Job type</h5>
+                        <div className="form-group">
+                          <ul className="list-checkbox">
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Full Time</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">25</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" defaultChecked />
+                                <span className="text-small">Part Time</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">64</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Remote Jobs</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">78</span>
+                            </li>
+                            <li>
+                              <label className="cb-container">
+                                <input type="checkbox" />
+                                <span className="text-small">Freelancer</span>
+                                <span className="checkmark"></span>
+                              </label>
+                              <span className="number-item">97</span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </div >
           </div>
-        </section>
+        </section >
         <section className="section-box mt-50 mb-20">
           <div className="container">
             <div className="box-newsletter">
@@ -2066,7 +927,7 @@ function Jobs() {
             </div>
           </div>
         </section>
-      </main>
+      </main >
     </>
   );
 }

@@ -1,0 +1,310 @@
+[
+  {
+    "subCategoryId": "sub_it_001",
+    "categoryId": "cat_it_001",
+    "subCategoryName": "Full Stack Development",
+    "description": "Engineering roles covering both frontend user interfaces and backend server logic.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/fullstack.png"
+  },
+  {
+    "subCategoryId": "sub_it_002",
+    "categoryId": "cat_it_001",
+    "subCategoryName": "DevOps & Cloud Engineering",
+    "description": "Automation of infrastructure provisioning, CI/CD deployment pipelines, and cloud system architecture.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/devops.png"
+  },
+  {
+    "subCategoryId": "sub_it_003",
+    "categoryId": "cat_it_001",
+    "subCategoryName": "Cybersecurity & InfoSec",
+    "description": "Protecting enterprise systems, network architecture, endpoints, and data assets from digital exploits.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/cybersecurity.png"
+  },
+  {
+    "subCategoryId": "sub_it_004",
+    "categoryId": "cat_it_001",
+    "subCategoryName": "Mobile App Development",
+    "description": "Building native and cross-platform mobile interfaces for iOS and Android environments.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/mobile.png"
+  },
+  {
+    "subCategoryId": "sub_hc_001",
+    "categoryId": "cat_hc_002",
+    "subCategoryName": "Nursing & Patient Care",
+    "description": "Frontline inpatient and outpatient medical assessment, drug administration, and clinical care support.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/nursing.png"
+  },
+  {
+    "subCategoryId": "sub_hc_002",
+    "categoryId": "cat_hc_002",
+    "subCategoryName": "Radiology & Diagnostic Imaging",
+    "description": "Operating advanced imaging equipment including X-Ray, MRI, CT, and ultrasound platforms.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/radiology.png"
+  },
+  {
+    "subCategoryId": "sub_hc_003",
+    "categoryId": "cat_hc_002",
+    "subCategoryName": "Clinical Lab Technology",
+    "description": "Analyzing biological samples, running chemistry assays, and cross-matching medical lab work.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/labtech.png"
+  },
+  {
+    "subCategoryId": "sub_fin_001",
+    "categoryId": "cat_fin_003",
+    "subCategoryName": "Corporate Audit & Tax",
+    "description": "Managing statutory tax compliance filings, independent audits, and structural book balancing.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/audit.png"
+  },
+  {
+    "subCategoryId": "sub_fin_002",
+    "categoryId": "cat_fin_003",
+    "subCategoryName": "Investment Banking & M&A",
+    "description": "Underwriting corporate capitalization assets, conducting target valuations, and facilitating buyouts.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/investment.png"
+  },
+  {
+    "subCategoryId": "sub_fin_003",
+    "categoryId": "cat_fin_003",
+    "subCategoryName": "Financial Planning & Analysis",
+    "description": "Building corporate forecasting models, monitoring budgets, and tracking capital variance metrics.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/fpa.png"
+  },
+  {
+    "subCategoryId": "sub_ds_001",
+    "categoryId": "cat_ds_004",
+    "subCategoryName": "Machine Learning Engineering",
+    "description": "Designing predictive statistical networks, neural topologies, and deep learning pipelines.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/mle.png"
+  },
+  {
+    "subCategoryId": "sub_ds_002",
+    "categoryId": "cat_ds_004",
+    "subCategoryName": "Data Engineering & Pipelines",
+    "description": "Constructing high-throughput ETL data flows, multi-tier data warehouses, and database clusters.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/dataeng.png"
+  },
+  {
+    "subCategoryId": "sub_ds_003",
+    "categoryId": "cat_ds_004",
+    "subCategoryName": "Business Intelligence & Analytics",
+    "description": "Extracting operational insights, configuring analytical dashboards, and mining trend parameters.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/bi.png"
+  },
+  {
+    "subCategoryId": "sub_aero_001",
+    "categoryId": "cat_aero_005",
+    "subCategoryName": "Avionics System Engineering",
+    "description": "Designing and validating aircraft radar, guidance computers, satellite links, and embedded control modules.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/avionics.png"
+  },
+  {
+    "subCategoryId": "sub_aero_002",
+    "categoryId": "cat_aero_005",
+    "subCategoryName": "Aerodynamics & Propulsion",
+    "description": "Modeling fluid airflow dynamics, jet/rocket propulsion boundaries, and structural thermal limits.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/propulsion.png"
+  },
+  {
+    "subCategoryId": "sub_bio_001",
+    "categoryId": "cat_bio_006",
+    "subCategoryName": "Genetic Research & Gene Editing",
+    "description": "Sequencing genomic strains, managing CRISPR workflows, and cataloging target molecular variations.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/genetics.png"
+  },
+  {
+    "subCategoryId": "sub_bio_002",
+    "categoryId": "cat_bio_006",
+    "subCategoryName": "Clinical Trial Management",
+    "description": "Supervising drug evaluation protocols, human sample testing phases, and FDA compliance tracking.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/trials.png"
+  },
+  {
+    "subCategoryId": "sub_mfg_001",
+    "categoryId": "cat_mfg_007",
+    "subCategoryName": "PLC & Automation Programming",
+    "description": "Writing process logic scripts for industrial microcontrollers controlling automated machinery tracks.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/plc.png"
+  },
+  {
+    "subCategoryId": "sub_mfg_002",
+    "categoryId": "cat_mfg_007",
+    "subCategoryName": "Mechanical CAD Design",
+    "description": "Drafting precise 3D component models with structural stress tolerance parameters.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/cad.png"
+  },
+  {
+    "subCategoryId": "sub_mkt_001",
+    "categoryId": "cat_mkt_008",
+    "subCategoryName": "Search Engine Optimization (SEO)",
+    "description": "Optimizing web content visibility, indexing, crawler performance, and digital backlink networks.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/seo.png"
+  },
+  {
+    "subCategoryId": "sub_mkt_002",
+    "categoryId": "cat_mkt_008",
+    "subCategoryName": "Performance Marketing & PPC",
+    "description": "Managing paid keyword conversion cycles, budget split tests, and consumer acquisition tracking metrics.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/ppc.png"
+  },
+  {
+    "subCategoryId": "sub_crt_001",
+    "categoryId": "cat_crt_009",
+    "subCategoryName": "3D Modeling & Animation",
+    "description": "Creating procedural environment meshes, organic bone rigs, and digital cinematic textures.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/animation.png"
+  },
+  {
+    "subCategoryId": "sub_crt_002",
+    "categoryId": "cat_crt_009",
+    "subCategoryName": "Video Production & Editing",
+    "description": "Sequencing raw camera logs, managing multi-track timing, color spaces, and master audio cuts.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/videoedit.png"
+  },
+  {
+    "subCategoryId": "sub_sls_001",
+    "categoryId": "cat_sls_010",
+    "subCategoryName": "Enterprise B2B Account Sales",
+    "description": "Navigating high-stakes product deployment pipelines with corporate executive boards.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/b2bsales.png"
+  },
+  {
+    "subCategoryId": "sub_con_001",
+    "categoryId": "cat_con_011",
+    "subCategoryName": "Commercial Electrical Systems",
+    "description": "Routing three-phase high-voltage power mains through structural building channels safely.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/electrical.png"
+  },
+  {
+    "subCategoryId": "sub_edu_001",
+    "categoryId": "cat_edu_012",
+    "subCategoryName": "Instructional SCORM Design",
+    "description": "Developing interactive digital lesson architectures inside corporate learning tracking systems.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/instructional.png"
+  },
+  {
+    "subCategoryId": "sub_hr_001",
+    "categoryId": "cat_hr_013",
+    "subCategoryName": "Talent Sourcing & Acquisition",
+    "description": "Configuring boolean search sequences to extract high-profile industry passive candidates.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/sourcing.png"
+  },
+  {
+    "subCategoryId": "sub_log_001",
+    "categoryId": "cat_log_014",
+    "subCategoryName": "Warehouse Automation & Operations",
+    "description": "Configuring automated stock retrieval queues and layout optimization templates.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/warehouse.png"
+  },
+  {
+    "subCategoryId": "sub_auto_001",
+    "categoryId": "cat_auto_015",
+    "subCategoryName": "EV Powertrain & Battery Tech",
+    "description": "Developing thermal management cycles and voltage switching limits for electric car platforms.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/evpowertrain.png"
+  },
+  {
+    "subCategoryId": "sub_nrg_001",
+    "categoryId": "cat_nrg_016",
+    "subCategoryName": "Solar PV Plant Grid Engineering",
+    "description": "Sizing photovoltaic arrays, inverter footprints, and tracking high-voltage transformer links.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/solar.png"
+  },
+  {
+    "subCategoryId": "sub_agr_001",
+    "categoryId": "cat_agr_017",
+    "subCategoryName": "Hydroponic & Precision Farming",
+    "description": "Managing automated liquid nutrient feeds, IoT soil telemetry, and light wavelength metrics.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/hydroponics.png"
+  },
+  {
+    "subCategoryId": "sub_cs_001",
+    "categoryId": "cat_cs_018",
+    "subCategoryName": "SaaS Escalation Tier Support",
+    "description": "Debugging deep application API errors and parsing logs to isolate customer environment conflicts.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/escalation.png"
+  },
+  {
+    "subCategoryId": "sub_rtl_001",
+    "categoryId": "cat_rtl_019",
+    "subCategoryName": "Omnichannel Inventory Analytics",
+    "description": "Reconciling live storefront sales patterns with continuous digital warehouse fulfillment tracks.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/retailinv.png"
+  },
+  {
+    "subCategoryId": "sub_hos_001",
+    "categoryId": "cat_hos_020",
+    "subCategoryName": "Commercial Kitchen Management",
+    "description": "Supervising ingredient production lines, layout scheduling, and food margin control tracks.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/kitchen.png"
+  },
+  {
+    "subCategoryId": "sub_re_001",
+    "categoryId": "cat_re_021",
+    "subCategoryName": "Commercial Property Valuation",
+    "description": "Analyzing yield cap metrics and market tenant distribution to price large asset holdings.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/revalue.png"
+  },
+  {
+    "subCategoryId": "sub_tel_001",
+    "categoryId": "cat_tel_022",
+    "subCategoryName": "5G Network Architecture Optimization",
+    "description": "Configuring cell site beamforming scripts, microwave transmission paths, and packet handoffs.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/tel5g.png"
+  },
+  {
+    "subCategoryId": "sub_chm_001",
+    "categoryId": "cat_chm_023",
+    "subCategoryName": "Petrochemical Refining Management",
+    "description": "Balancing fractional distillation heat metrics and catalyst regeneration processing speeds.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/refining.png"
+  },
+  {
+    "subCategoryId": "sub_mar_001",
+    "categoryId": "cat_mar_024",
+    "subCategoryName": "Vessel Hydrodynamics & Engineering",
+    "description": "Analyzing hull drag coefficients, ballast displacement control systems, and marine engine outputs.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/marine.png"
+  },
+  {
+    "subCategoryId": "sub_env_001",
+    "categoryId": "cat_env_025",
+    "subCategoryName": "Carbon Capture & Offset Valuation",
+    "description": "Auditing industrial emission metrics to compute verifiable sequestration credit pools.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/carbon.png"
+  },
+  {
+    "subCategoryId": "sub_med_001",
+    "categoryId": "cat_med_026",
+    "subCategoryName": "Investigative Broadcast Reporting",
+    "description": "Verifying public resource allocations and cross-checking public verification logs for news features.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/journalism.png"
+  },
+  {
+    "subCategoryId": "sub_fsh_001",
+    "categoryId": "cat_fsh_027",
+    "subCategoryName": "Textile Material Fabrication",
+    "description": "Engineering high-durability synthetic weaves and automated garment pattern templates.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/textile.png"
+  },
+  {
+    "subCategoryId": "sub_geo_001",
+    "categoryId": "cat_geo_028",
+    "subCategoryName": "Seismic Strata Mapping",
+    "description": "Processing acoustic reflection sensor waves to chart underground bedrock deposit bounds.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/seismic.png"
+  },
+  {
+    "subCategoryId": "sub_fd_001",
+    "categoryId": "cat_fd_029",
+    "subCategoryName": "Shelf-Life Extension Chemistry",
+    "description": "Formulating organic oxidation barriers and testing package vacuum degradation boundaries.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/foodtech.png"
+  },
+  {
+    "subCategoryId": "sub_ins_001",
+    "categoryId": "cat_ins_030",
+    "subCategoryName": "Actuarial Catastrophe Modeling",
+    "description": "Computing multi-decade localized weather risk matrices to establish property coverage pricing indexes.",
+    "icon": "https://cdn.hirecomfort.com/icons/subcategories/actuarial.png"
+  }
+]

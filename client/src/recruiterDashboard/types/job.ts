@@ -1,3 +1,5 @@
+import type { CompanyProfileType } from "./companyProfile";
+
 export type JobStatus = "open" | "closed" | "draft";
 export type JobType = "Full Time" | "Part Time" | "Contract" | "Internship" | "Freelance";
 
@@ -26,4 +28,5 @@ export interface Job {
   status: JobStatus;
   applicationCount?: number;
   createdAt?: string;
+  companyId?: CompanyProfileType;
 }

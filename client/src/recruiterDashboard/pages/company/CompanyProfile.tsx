@@ -198,12 +198,53 @@ const CompanyProfile: React.FC = () => {
                     placeholder="https://example.com"
                   />
                 </Field>
-                <Field label="Company Logo URL">
+                <Field label="Company Logo" error={errors.companyLogo}>
                   <input
-                    value={form.companyLogo}
-                    onChange={(e) => setForm({ ...form, companyLogo: e.target.value })}
-                    placeholder="https://example.com/logo.png"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const maxSize = 500 * 1024; // 500 KB
+                        if (file.size > maxSize) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            companyLogo: "Image size must be less than 500 KB",
+                          }));
+                          e.target.value = "";
+                          return;
+                        }
+                        setErrors((prev) => {
+                          const copy = { ...prev };
+                          delete copy.companyLogo;
+                          return copy;
+                        });
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setForm((prev) => ({ ...prev, companyLogo: reader.result as string }));
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
                   />
+                  {form.companyLogo && (
+                    <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12 }}>
+                      <div style={{ width: 64, height: 64, borderRadius: 8, border: "1px solid #e5e7eb", padding: 4, backgroundColor: "#f9fafb", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                        <img
+                          src={form.companyLogo}
+                          alt="Company Logo Preview"
+                          style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setForm((prev) => ({ ...prev, companyLogo: "" }))}
+                        style={{ fontSize: 12, color: "#dc2626", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
+                      >
+                        Remove Logo
+                      </button>
+                    </div>
+                  )}
                 </Field>
                 <Field label="Country" required error={errors.countryId}>
                   <select

@@ -1,0 +1,177 @@
+[
+  {
+    "qualificationId": "qual_btech_01",
+    "code": "BTECH",
+    "name": "Bachelor of Technology (B.Tech)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_be_02",
+    "code": "BE",
+    "name": "Bachelor of Engineering (B.E.)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_bsc_03",
+    "code": "BSC",
+    "name": "Bachelor of Science (B.Sc.)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_bca_04",
+    "code": "BCA",
+    "name": "Bachelor of Computer Applications (BCA)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": false
+  },
+  {
+    "qualificationId": "qual_bcom_05",
+    "code": "BCOM",
+    "name": "Bachelor of Commerce (B.Com)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_bba_06",
+    "code": "BBA",
+    "name": "Bachelor of Business Administration (BBA)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_ba_07",
+    "code": "BA",
+    "name": "Bachelor of Arts (B.A.)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_mtech_08",
+    "code": "MTECH",
+    "name": "Master of Technology (M.Tech)",
+    "degreeLevel": "Postgraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_me_09",
+    "code": "ME",
+    "name": "Master of Engineering (M.E.)",
+    "degreeLevel": "Postgraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_msc_10",
+    "code": "MSC",
+    "name": "Master of Science (M.Sc.)",
+    "degreeLevel": "Postgraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_mca_11",
+    "code": "MCA",
+    "name": "Master of Computer Applications (MCA)",
+    "degreeLevel": "Postgraduate",
+    "specializationAllowed": false
+  },
+  {
+    "qualificationId": "qual_mba_12",
+    "code": "MBA",
+    "name": "Master of Business Administration (MBA)",
+    "degreeLevel": "Postgraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_mcom_13",
+    "code": "MCOM",
+    "name": "Master of Commerce (M.Com)",
+    "degreeLevel": "Postgraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_phd_14",
+    "code": "PHD",
+    "name": "Doctor of Philosophy (Ph.D.)",
+    "degreeLevel": "Doctorate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_dip_15",
+    "code": "DIPLOMA",
+    "name": "Diploma / Polytechnic",
+    "degreeLevel": "Diploma",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_hsc_16",
+    "code": "HSC",
+    "name": "Higher Secondary Certificate (12th Grade)",
+    "degreeLevel": "High School",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_ssc_17",
+    "code": "SSC",
+    "name": "Secondary School Certificate (10th Grade)",
+    "degreeLevel": "High School",
+    "specializationAllowed": false
+  },
+  {
+    "qualificationId": "qual_mbbs_18",
+    "code": "MBBS",
+    "name": "Bachelor of Medicine, Bachelor of Surgery (MBBS)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": false
+  },
+  {
+    "qualificationId": "qual_barch_19",
+    "code": "BARCH",
+    "name": "Bachelor of Architecture (B.Arch)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": false
+  },
+  {
+    "qualificationId": "qual_llb_20",
+    "code": "LLB",
+    "name": "Bachelor of Laws (LL.B.)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": false
+  },
+  {
+    "qualificationId": "qual_llm_21",
+    "code": "LLM",
+    "name": "Master of Laws (LL.M.)",
+    "degreeLevel": "Postgraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_bdes_22",
+    "code": "BDES",
+    "name": "Bachelor of Design (B.Des)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_mdes_23",
+    "code": "MDES",
+    "name": "Master of Design (M.Des)",
+    "degreeLevel": "Postgraduate",
+    "specializationAllowed": true
+  },
+  {
+    "qualificationId": "qual_bpharm_24",
+    "code": "BPHARM",
+    "name": "Bachelor of Pharmacy (B.Pharm)",
+    "degreeLevel": "Undergraduate",
+    "specializationAllowed": false
+  },
+  {
+    "qualificationId": "qual_mpharm_25",
+    "code": "MPHARM",
+    "name": "Master of Pharmacy (M.Pharm)",
+    "degreeLevel": "Postgraduate",
+    "specializationAllowed": true
+  }
+]
