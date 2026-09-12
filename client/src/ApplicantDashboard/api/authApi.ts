@@ -14,7 +14,7 @@ export const authApi = {
     return data;
   },
   me: async (): Promise<{ id: string; fullName: string; email: string }> => {
-    const { data } = await http.get<{ id: string; fullName: string; email: string }>("/applicant/auth/me");
+    const { data } = await http.get<{ id: string; fullName: string; email: string }>("/applicants/auth/me");
     return data;
   },
   changePassword: async (currentPassword: string, newPassword: string): Promise<void> => {

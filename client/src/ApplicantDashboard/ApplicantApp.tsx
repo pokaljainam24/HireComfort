@@ -15,7 +15,8 @@ import ApplicantCertificate from "./pages/Certificates/applicantCertificate.tsx"
 import ApplicantEducation from "./pages/Education/applicantEducation.tsx";
 import ApplicantExperience from "./pages/Experience/ApplicantExperience.tsx";
 import ApplicantProject from "./pages/Project/ApplicantProject.tsx";
-import ProtectedRecruiterRoute from "../recruiterDashboard/components/layout/ProtectedRecruiterRoute.tsx";
+import ProtectedApplicantRoute from "../ApplicantDashboard/components/layout/ProtectedApplicantRoute.tsx";
+
 
 
 const ApplicantApp: React.FC = () => {
@@ -24,7 +25,7 @@ const ApplicantApp: React.FC = () => {
   return <AuthProvider>
     <div className="applicant-app">
       <Routes>
-        <Route element={<ProtectedRecruiterRoute />}>
+        <Route element={<ProtectedApplicantRoute />}>
 
         <Route element={<ApplicantLayout />}>
 

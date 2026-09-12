@@ -10,6 +10,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ title, onToggleSidebar, onToggleMobile }) => {
   const { user } = useAuth();
+  console.log("Header user:",user);
   const initial = user?.fullName?.trim()?.[0]?.toUpperCase() || "A";
 
   return (
@@ -40,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ title, onToggleSidebar, onToggleMobile 
           <div className="admin-avatar">{initial}</div>
           <div className="admin-chip-info">
             <div className="admin-chip-name">{user?.fullName || "Applicant"}</div>
-            <div className="admin-chip-role">Applicant</div>
+           
           </div>
         </div>
       </div>

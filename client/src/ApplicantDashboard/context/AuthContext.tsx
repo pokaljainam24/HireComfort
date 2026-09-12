@@ -35,11 +35,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    authApi
-      .me()
-      .then((applicant) => setUser(applicant))
-      .catch(() => clearToken())
-      .finally(() => setLoading(false));
+ authApi
+  .me()
+  .then((applicant) => {
+    console.log("Logged in applicant:", applicant);
+    setUser(applicant);
+  })
+  .catch((err) => {
+    console.error("Failed to load applicant:", err);
+    clearToken();
+    setUser(null);
+  })
+  .finally(() => {
+    setLoading(false);
+  });
   }, []);
 
   const login = async (email: string, password: string) => {

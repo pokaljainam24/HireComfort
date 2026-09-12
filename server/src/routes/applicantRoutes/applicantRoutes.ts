@@ -47,6 +47,7 @@ import {
   deleteProject,
 } from "../../controllers/applicantController/projectController.js";
 
+
 const router = Router();
 
 
@@ -233,9 +234,10 @@ router.get(
   getApplicantByUsername
 );
 
+// Applicant LOGIN
+
+
+
 router.patch("/:id/update-password", updatePassword);
-
-
-
 
 export default router;
