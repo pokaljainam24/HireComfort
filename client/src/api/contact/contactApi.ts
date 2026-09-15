@@ -1,68 +1,135 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/api/contacts";
+import api from "../axios.ts";
 
 // =====================================
-// CREATE CONTACT
+// Contact Create Payload
 // =====================================
 
-export const createContactApi = async (data: {
+export interface CreateContactPayload {
   name: string;
   company: string;
   email: string;
   phone: string;
   subject: string;
-}) => {
-  const response = await axios.post(API_URL, data);
-
-  return response.data;
-};
+  verificationToken: string;
+}
 
 // =====================================
-// GET CONTACTS
+// Send Contact OTP
 // =====================================
 
-export const getContactsApi = async () => {
-  const response = await axios.get(API_URL);
+export const sendContactOtpApi =
+  async (
+    email: string,
+  ) => {
+    const response =
+      await api.post(
+        "/contacts/send-otp",
+        {
+          email,
+        },
+      );
 
-  return response.data;
-};
-
-// =====================================
-// GET CONTACT BY ID
-// =====================================
-
-export const getContactByIdApi = async (id: string) => {
-  const response = await axios.get(`${API_URL}/${id}`);
-
-  return response.data;
-};
-
-// =====================================
-// UPDATE CONTACT
-// =====================================
-
-export const updateContactApi = async (
-  id: string,
-  data: {
-    name: string;
-    company: string;
-    email: string;
-    phone: string;
-    subject: string;
-  },
-) => {
-  const response = await axios.put(`${API_URL}/${id}`, data);
-
-  return response.data;
-};
+    return response.data;
+  };
 
 // =====================================
-// DELETE CONTACT
+// Verify Contact OTP
 // =====================================
 
-export const deleteContactApi = async (id: string) => {
-  const response = await axios.delete(`${API_URL}/${id}`);
+export const verifyContactOtpApi =
+  async (
+    email: string,
+    otp: string,
+  ) => {
+    const response =
+      await api.post(
+        "/contacts/verify-otp",
+        {
+          email,
+          otp,
+        },
+      );
 
-  return response.data;
-};
+    return response.data;
+  };
+
+// =====================================
+// Create Contact
+// =====================================
+
+export const createContactApi =
+  async (
+    data: CreateContactPayload,
+  ) => {
+    const response =
+      await api.post(
+        "/contacts",
+        data,
+      );
+
+    return response.data;
+  };
+
+// =====================================
+// Get All Contacts
+// =====================================
+
+export const getContactsApi =
+  async () => {
+    const response =
+      await api.get(
+        "/contacts",
+      );
+
+    return response.data;
+  };
+
+// =====================================
+// Get Contact By ID
+// =====================================
+
+export const getContactByIdApi =
+  async (
+    id: string,
+  ) => {
+    const response =
+      await api.get(
+        `/contacts/${id}`,
+      );
+
+    return response.data;
+  };
+
+// =====================================
+// Update Contact
+// =====================================
+
+export const updateContactApi =
+  async (
+    id: string,
+    data: any,
+  ) => {
+    const response =
+      await api.put(
+        `/contacts/${id}`,
+        data,
+      );
+
+    return response.data;
+  };
+
+// =====================================
+// Delete Contact
+// =====================================
+
+export const deleteContactApi =
+  async (
+    id: string,
+  ) => {
+    const response =
+      await api.delete(
+        `/contacts/${id}`,
+      );
+
+    return response.data;
+  };

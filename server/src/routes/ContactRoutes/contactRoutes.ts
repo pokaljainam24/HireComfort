@@ -1,5 +1,18 @@
 import { Router } from "express";
 
+// =====================================
+// OTP Controller
+// =====================================
+
+import {
+  sendContactOtp,
+  verifyContactOtp,
+} from "../../controllers/contactOtpController/contactOtpController.js";
+
+// =====================================
+// Contact Controller
+// =====================================
+
 import {
   createContact,
   getContacts,
@@ -11,33 +24,46 @@ import {
 const router = Router();
 
 // =====================================
-// Create Contact
+// OTP Routes
 // =====================================
 
-router.post("/", createContact);
+router.post(
+  "/send-otp",
+  sendContactOtp,
+);
+
+router.post(
+  "/verify-otp",
+  verifyContactOtp,
+);
 
 // =====================================
-// Get Contacts
+// Contact Routes
 // =====================================
 
-router.get("/", getContacts);
+router.post(
+  "/",
+  createContact,
+);
 
-// =====================================
-// Get Contact By ID
-// =====================================
+router.get(
+  "/",
+  getContacts,
+);
 
-router.get("/:id", getContact);
+router.get(
+  "/:id",
+  getContact,
+);
 
-// =====================================
-// Update Contact
-// =====================================
+router.put(
+  "/:id",
+  updateContact,
+);
 
-router.put("/:id", updateContact);
-
-// =====================================
-// Delete Contact
-// =====================================
-
-router.delete("/:id", deleteContact);
+router.delete(
+  "/:id",
+  deleteContact,
+);
 
 export default router;

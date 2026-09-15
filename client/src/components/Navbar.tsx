@@ -473,7 +473,7 @@ function Navbar() {
 
               {/* BURGER */}
 
-              <div className="burger-icon burger-icon-white mt-3">
+              <div className="burger-icon burger-icon-white mt-2">
                 <span className="burger-icon-top"></span>
                 <span className="burger-icon-mid"></span>
                 <span className="burger-icon-bottom"></span>
