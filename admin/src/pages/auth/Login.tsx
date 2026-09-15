@@ -110,7 +110,7 @@ const Login: React.FC = () => {
       <div className="login-card">
         <div className="login-mark">
           <img
-            src="/logo.png"
+            src="assets/images/logoWithText.png"
             alt="Admin Panel Logo"
           />
         </div>
