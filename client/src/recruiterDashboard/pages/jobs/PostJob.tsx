@@ -15,10 +15,11 @@ import { getCities } from "../../api/cityApi.ts";
 import { jobApi } from "../../api/jobApi.ts";
 import Field from "../../components/common/Field.tsx";
 import { Icon } from "../../components/common/Icon.tsx";
+import { getEmploymentTypes } from "../../api/EmploymentTypeApi.ts";
 
 type FormState = Omit<Job, "_id" | "skills"> & { skills: string };
 
-const jobTypes: JobType[] = ["Full Time", "Part Time", "Contract", "Internship", "Freelance"];
+
 
 const empty: FormState = {
   title: "",
@@ -55,23 +56,46 @@ const PostJob: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [employmentTypes, setEmploymentTypes] = useState<any[]>([]);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  useEffect(() => {
-    Promise.all([
-      getJobCategories().catch(() => []),
-      getJobSubCategories().catch(() => []),
-      getCountries().catch(() => []),
-      getStates().catch(() => []),
-      getCities().catch(() => []),
-    ]).then(([cat, sub, c, s, ci]) => {
-      console.log(sub)
-      setCategories(cat);
-      setSubCategories(sub);
-      setCountries(c);
-      setStates(s);
-      setCities(ci);
-    });
+   useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [
+          cat,
+          sub,
+          c,
+          s,
+          ci,
+          employment,
+        ] = await Promise.all([
+          getJobCategories().catch(() => []),
+          getJobSubCategories().catch(() => []),
+          getCountries().catch(() => []),
+          getStates().catch(() => []),
+          getCities().catch(() => []),
+          getEmploymentTypes().catch(() => []),
+        ]);
+  
+        setCategories(Array.isArray(cat) ? cat : []);
+        setSubCategories(Array.isArray(sub) ? sub : []);
+        setCountries(Array.isArray(c) ? c : []);
+        setStates(Array.isArray(s) ? s : []);
+        setCities(Array.isArray(ci) ? ci : []);
+        setEmploymentTypes(
+          Array.isArray(employment) ? employment : []
+        );
+  
+        console.log("Employment Types:", employment);
+      } catch (error) {
+        console.error("Error loading Post Job data:", error);
+  
+        setEmploymentTypes([]);
+      }
+    };
+  
+    loadData();
   }, []);
 
   useEffect(() => {
@@ -221,36 +245,73 @@ const PostJob: React.FC = () => {
                     placeholder="e.g. Senior Frontend Developer"
                   />
                 </Field>
-                <Field label="Job Category" required error={errors.categoryId}>
-                  <select
-                    value={form.categoryId}
-                    onChange={(e) => setForm({ ...form, categoryId: e.target.value, subCategoryId: "" })}
+               <Field label="Job Category" required error={errors.categoryId}>
+                    <select
+                      value={form.categoryId}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          categoryId: e.target.value,
+                          subCategoryId: "",
+                        })
+                      }
+                    >
+                      <option value="">Select category</option>
+                  
+                      {categories.map((category) => (
+                        <option key={category._id} value={category._id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+               <Field
+                    label="Job Subcategory"
+                    required
+                    error={errors.subCategoryId}
                   >
-                    <option value="">Select category</option>
-                    {categories.map((c) => (
-                      <option key={c._id} value={c._id}>{c.name}</option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label="Job Sub Category">
-                  <select
-                    value={form.subCategoryId}
-                    onChange={(e) => setForm({ ...form, subCategoryId: e.target.value })}
-                    disabled={!form.categoryId}
-                  >
-                    <option value="">Select sub category</option>
-                    {filteredSubCategories.map((s) => (
-                      <option key={s._id} value={s._id}>{s.name}</option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label="Job Type">
+                    <select
+                      value={form.subCategoryId}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          subCategoryId: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">Select subcategory</option>
+                  
+                      {filteredSubCategories.map((subcategory) => (
+                        <option
+                          key={subcategory._id}
+                          value={subcategory._id}
+                        >
+                          {subcategory.name}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+             <Field label="Job Type">
                   <select
                     value={form.jobType}
-                    onChange={(e) => setForm({ ...form, jobType: e.target.value as JobType })}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        jobType: e.target.value as JobType,
+                      })
+                    }
                   >
-                    {jobTypes.map((t) => (
-                      <option key={t} value={t}>{t}</option>
+                    <option value="">
+                      Select job type
+                    </option>
+                
+                    {employmentTypes.map((type) => (
+                      <option
+                        key={type.EmploymentTypeId}
+                        value={type.EmploymentType}
+                      >
+                        {type.EmploymentName}
+                      </option>
                     ))}
                   </select>
                 </Field>

@@ -1,12 +1,12 @@
 import  mongoose, { Schema, Document } from "mongoose";
 
 export interface IIndustryMaster {
-  IndustryId: number;
+  IndustryId: string;
   IndustryName: string;
 
   // Status
-  isActive: boolean;
-  isDisplay: boolean;
+  isActive?: boolean;
+  isDisplay?: boolean;
 
   // Audit
   createdAt: Date;
@@ -24,7 +24,7 @@ export type IndustryMasterDocument = IIndustryMaster & Document;
 const industryMasterSchema = new Schema<IndustryMasterDocument>(
   {
     IndustryId: {
-      type: Number,
+      type: String,
       required: true,
       unique: true,
     },
@@ -76,6 +76,7 @@ const industryMasterSchema = new Schema<IndustryMasterDocument>(
 const IndustryMaster = mongoose.model<IndustryMasterDocument>(
   "IndustryMaster",
   industryMasterSchema,
+  "industrymasters"
 );
 
 export default IndustryMaster;

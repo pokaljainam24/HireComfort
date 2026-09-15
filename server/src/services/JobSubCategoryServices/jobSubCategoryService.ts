@@ -187,18 +187,13 @@ export async function createJobSubCategoryService(
 
 export async function getJobSubCategoriesService() {
   try {
-    return await JobSubCategoryMaster.find({
-      isActive: true,
-      isDisplay: true,
-    }).sort({
+    const jobSubCategories = await JobSubCategoryMaster.find().sort({
       createdAt: -1,
     });
-  } catch (error) {
-    console.error(
-      "Error getting job sub categories:",
-      error,
-    );
 
+    return jobSubCategories;
+  } catch (error) {
+    console.error("Error getting job subcategories:", error);
     throw error;
   }
 }

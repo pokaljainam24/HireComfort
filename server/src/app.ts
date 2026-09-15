@@ -52,6 +52,8 @@ import loginRoutes from "./routes/LoginRoutes/LoginRoutes.js";
 //visitor routes
 import visitorRoutes from "./routes/VisitorRoutes/VisitorRoutes.js";
 
+import companyTypeRoutes from "./routes/CompanyTypesRoute/companyTypesRoutes.js";
+
 import path from "path";
 
 const app = express();
@@ -118,7 +120,7 @@ app.use("/api/auth", loginRoutes);
 
 app.use("/api/visitor", visitorRoutes);
 
-
+app.use("/api/company-types", companyTypeRoutes);
 export default app;
 
 

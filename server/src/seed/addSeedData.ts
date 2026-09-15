@@ -6,6 +6,8 @@ import jobCategoryData from './data/jobCategory.json' with {type: "json"}
 import jobSubCategoryData from './data/jobSubCategory.json' with {type: "json"}
 import qualityData from './data/quality.json' with {type: "json"}
 import skillsData from './data/skills.json' with {type: "json"}
+// import type  CompanyTypedata from './data/companyType.json' with {type: "json"};
+
 
 /**
  * Inserts seed data into a MongoDB collection.
@@ -51,11 +53,20 @@ export async function seedCollection(
 async function getData() {
     await seedCollection(employmentData, url, 'employmenttypemasters')
     // await seedCollection(industryData, url, 'industrymasters')
+<<<<<<< Updated upstream
     // await seedCollection(interviewTypeData, url, 'interviewmasters') -------------
     // await seedCollection(jobCategoryData, url, 'jobcategories')-----------
     // await seedCollection(jobSubCategoryData, url, 'jobsubcategories')----------
     // await seedCollection(qualityData, url, 'qualificationmasters')-----------
     // await seedCollection(skillsData, url, 'skillsmasters')----------------
+=======
+    // await seedCollection(interviewTypeData, url, 'interviewmasters')
+    // await seedCollection(jobCategoryData, url, 'jobcategories')
+    // await seedCollection(jobSubCategoryData, url, 'jobsubcategories')
+    // await seedCollection(qualityData, url, 'qualificationmasters')
+    // await seedCollection(skillsData, url, 'skillsmasters')
+    // await seedCollection(CompanyTypeMaster ,url,'companyTypes');
+>>>>>>> Stashed changes
 }
 
 getData().then(() => console.log('All seed data inserted successfully!')).catch((error) => console.error(error))

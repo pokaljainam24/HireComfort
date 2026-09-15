@@ -121,6 +121,12 @@ const paths: Record<string, React.ReactNode> = {
     <path d="M16 14c2.8.4 5 2.8 5 6" />
   </>
 ),
+  user: (
+    <>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" />
+    </>
+  ),
 building: (
   <>
     <path d="M4 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17" />

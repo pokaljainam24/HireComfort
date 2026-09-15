@@ -7,8 +7,8 @@ export interface IJobSubCategory extends Document {
   icon: string;
 
   // Status
-  isActive: boolean;
-  isDisplay: boolean;
+  isActive?: boolean;
+  isDisplay?: boolean;
 
   // Audit
   createdAt: Date;

@@ -3,6 +3,8 @@ import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext.tsx";
 import { navConfig } from "../../data/navConfig.ts";
 import { Icon } from "../common/Icon.tsx";
+import logoWithText from '/assets/images/logoWithText.png'
+import logo from '/assets/images/logo.png'
 
 interface SidebarProps {
   collapsed: boolean;
@@ -30,8 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, mobileOpen, onCloseMobile 
         ].join(" ")}
       >
         <div className="sidebar-brand">
-          <div className="sidebar-brand-mark">RP</div>
-          <span className="sidebar-brand-text">Recruiter Panel</span>
+          <img src={collapsed ? logo : logoWithText} className="sidebar-brand-image" alt="Logo" />
         </div>
 
         <nav className="sidebar-nav">

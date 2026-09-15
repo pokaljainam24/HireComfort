@@ -126,11 +126,8 @@ export async function createEmploymentTypeService(
 
 export async function getEmploymentTypesService() {
   try {
-    return await EmploymentTypeMaster.find({
-      isActive: true,
-      isDisplay: true,
-    }).sort({
-      EmploymentTypeId: 1,
+    return await EmploymentTypeMaster.find().sort({
+      EmploymentName: 1,
     });
 
   } catch (error) {

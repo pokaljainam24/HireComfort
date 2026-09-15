@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import PageHeader from "../../components/common/PageHeader.tsx";
@@ -23,7 +24,7 @@ const Dashboard: React.FC = () => {
     {
       label: "Applicant education",
       value: 0,
-      icon: "grid",
+      icon: "qualification",
       color: "#198754",
       to: "/applicant-panel/applicant-education",
     },
@@ -71,38 +72,80 @@ const Dashboard: React.FC = () => {
         return;
       }
 
-      const token = localStorage.getItem("applicant_panel_token");
+      // Get token
+      const token = localStorage.getItem(
+        "applicant_panel_token"
+      );
 
-      const response = await Promise.all([
-        http.get(`/applicant-certificates/${applicantId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }),
+      if (!token) {
+        console.error("Applicant token not found");
+        return;
+      }
 
-        http.get(`/applicant-education/${applicantId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }),
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
-        http.get(`/applicant-project/${applicantId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }),
+      /*
+       * IMPORTANT:
+       * These URLs match your Express routes.
+       */
 
-        http.get(`/applicant-experience/${applicantId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }),
+      const [
+        certificatesResponse,
+        educationResponse,
+        projectsResponse,
+        experienceResponse,
+      ] = await Promise.all([
+        // Certificates
+        http.get(
+          `/applicant-certificates/applicant/${applicantId}`,
+          config
+        ),
+
+        // Education
+        http.get(
+          `/applicant-education/applicant/${applicantId}`,
+          config
+        ),
+
+        // Projects
+        http.get(
+          `/applicant-projects/applicant/${applicantId}`,
+          config
+        ),
+
+        // Experience
+        http.get(
+          `/applicant-experience/applicant/${applicantId}`,
+          config
+        ),
       ]);
 
-      const certificates = response[0].data?.data || [];
-      const education = response[1].data?.data || [];
-      const projects = response[2].data?.data || [];
-      const experience = response[3].data?.data || [];
+      /*
+       * Get returned data safely.
+       *
+       * Depending on your controller response,
+       * data may be directly an array or inside data.
+       */
+
+      const certificates =
+        certificatesResponse.data?.data || [];
+
+      const education =
+        educationResponse.data?.data || [];
+
+      const projects =
+        projectsResponse.data?.data || [];
+
+      const experience =
+        experienceResponse.data?.data || [];
+
+      /*
+       * Update dashboard counts dynamically
+       */
 
       setStats([
         {
@@ -112,6 +155,7 @@ const Dashboard: React.FC = () => {
           color: "#0d6efd",
           to: "/applicant-panel/applicant-certificates",
         },
+
         {
           label: "Applicant education",
           value: education.length,
@@ -119,6 +163,7 @@ const Dashboard: React.FC = () => {
           color: "#198754",
           to: "/applicant-panel/applicant-education",
         },
+
         {
           label: "Applicant project",
           value: projects.length,
@@ -126,6 +171,7 @@ const Dashboard: React.FC = () => {
           color: "#fd7e14",
           to: "/applicant-panel/applicant-project",
         },
+
         {
           label: "Applicant Experience",
           value: experience.length,
@@ -135,7 +181,10 @@ const Dashboard: React.FC = () => {
         },
       ]);
     } catch (error) {
-      console.error("Error loading dashboard data:", error);
+      console.error(
+        "Error loading dashboard data:",
+        error
+      );
     }
   };
 
@@ -187,7 +236,8 @@ const Dashboard: React.FC = () => {
               lineHeight: 1.7,
             }}
           >
-            Use the sidebar to keep your applicant profile up to date.
+            Use the sidebar to keep your applicant profile
+            up to date.
           </p>
         </div>
       </div>
@@ -196,3 +246,6 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+
+
+

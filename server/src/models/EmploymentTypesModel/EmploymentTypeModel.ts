@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IEmploymentTypeMaster {
-  EmploymentTypeId: number;
+  EmploymentTypeId: string;
   EmploymentName: string;
   EmploymentType: string;
   // Status
@@ -26,7 +26,7 @@ const employmentTypeMasterSchema =
   new Schema<EmploymentTypeMasterDocument>(
     {
       EmploymentTypeId: {
-        type: Number,
+        type: String,
         required: true,
         unique: true,
       },
@@ -80,11 +80,12 @@ const employmentTypeMasterSchema =
       timestamps: true,
     },
   );
-
+  
 const EmploymentTypeMaster =
   mongoose.model<EmploymentTypeMasterDocument>(
     "EmploymentTypeMaster",
     employmentTypeMasterSchema,
+    "employmenttypemasters"
   );
 
 export default EmploymentTypeMaster;

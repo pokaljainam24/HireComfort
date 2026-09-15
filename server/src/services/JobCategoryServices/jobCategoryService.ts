@@ -85,13 +85,13 @@ export async function createJobCategoryService(
 
 export async function getJobCategoryService() {
   try {
-    return await JobCategoryMaster.find({
-      isActive: true,
-      isDisplay: true,
-    }).sort({ createdAt: -1 });
+    const jobCategories = await JobCategoryMaster.find().sort({
+      createdAt: -1,
+    });
+
+    return jobCategories;
   } catch (error) {
     console.error("Error getting job categories:", error);
-
     throw error;
   }
 }
@@ -104,8 +104,8 @@ export async function getJobCategoryByIdService(id: string) {
   try {
     return await JobCategoryMaster.findOne({
       _id: id,
-      isActive: true,
-      isDisplay: true,
+      // isActive: true,
+      // isDisplay: true,
     });
   } catch (error) {
     console.error(`Error getting job category with id ${id}: `, error);
@@ -156,8 +156,8 @@ export async function updateJobCategoryService(
 
       name: updateData.name.trim(),
 
-      isActive: true,
-      isDisplay: true,
+      // isActive: true,
+      // isDisplay: true,
     });
 
     if (existingCategory) {
@@ -180,8 +180,8 @@ export async function updateJobCategoryService(
     return await JobCategoryMaster.findOneAndUpdate(
       {
         _id: id,
-        isActive: true,
-        isDisplay: true,
+        // isActive: true,
+        // isDisplay: true,
       },
 
       updatePayload,

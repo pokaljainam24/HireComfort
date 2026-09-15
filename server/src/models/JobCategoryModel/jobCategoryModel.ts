@@ -26,7 +26,6 @@ const jobCategorySchema = new Schema<IJobCategory>(
     // =====================================
     // BASIC FIELDS
     // =====================================
-    
     name: {
       type: String,
       required: true,
@@ -98,6 +97,8 @@ const jobCategorySchema = new Schema<IJobCategory>(
 const JobCategoryModel = mongoose.model<IJobCategory>(
   "JobCategory",
   jobCategorySchema,
+  "jobcategories"
+  
 );
 
 export default JobCategoryModel;
