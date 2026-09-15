@@ -1,4 +1,4 @@
-﻿/*import vendors*/
+/*import vendors*/
 @import url(./vendors/normalize.css);
 @import url(./vendors/bootstrap.min.css);
 @import url(./vendors/uicons-regular-rounded.css);
@@ -3059,8 +3059,8 @@ ul li:last-child .card-list-4 {
 }
 .header .main-header .header-right {
   display: inline-block;
-  min-width: 215px;
   text-align: right;
+  margin-right: 15px;
 }
 .header .main-header .header-nav {
   display: inline-block;
@@ -8643,12 +8643,6 @@ ul li:last-child .card-list-4 {
 @media (min-width: 1400px) {
   .container.wide {
     max-width: 1544px;
-  }
-}
-/*OTHER SCREEN*/
-@media screen and (min-width: 1200px) and (max-width: 1440px) {
-  .header-right {
-    display: none;
   }
 }
 

@@ -20,7 +20,6 @@ export const createCompany = async (req: Request, res: Response) => {
 
     const company = await createCompanyService({
       ...req.body,
-      createdBy: req.user.username,
     });
 
     return res.status(201).json({

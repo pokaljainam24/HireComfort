@@ -137,10 +137,11 @@ function Navbar() {
 
   const getProfileImage = () => {
     if (!user?.profilePic) {
-      return "/assets/imgs/avatar/default-avatar.png";
+      return "/imgs/avatars/avatar-5.png";
     }
 
     if (
+      user.profilePic.startsWith("data:") ||
       user.profilePic.startsWith("http://") ||
       user.profilePic.startsWith("https://")
     ) {
@@ -151,25 +152,6 @@ function Navbar() {
       /^\/+/,
       "",
     )}`;
-  };
-
-  // =====================================
-  // USER NAME
-  // =====================================
-
-  const getUserName = () => {
-    if (user?.firstName) {
-      return `${user.firstName}${user.lastName
-        ? ` ${user.lastName}`
-        : ""
-        }`;
-    }
-
-    if (user?.userName) {
-      return user.userName;
-    }
-
-    return "My Profile";
   };
 
   // =====================================
@@ -587,19 +569,7 @@ function Navbar() {
                       onClick={
                         toggleProfileDropdown
                       }
-                    >
-
-                      {/* NAME */}
-
-                      <span
-                        style={{
-                          fontWeight: 500,
-                          color: "#25324B",
-                          whiteSpace: "nowrap",
-                        }}
                       >
-                        {getUserName()}
-                      </span>
 
                       {/* PROFILE PHOTO */}
 
@@ -868,17 +838,6 @@ function Navbar() {
                           toggleProfileDropdown
                         }
                       >
-
-                        {/* NAME */}
-
-                        <span
-                          style={{
-                            fontWeight: 500,
-                            color: "#25324B",
-                          }}
-                        >
-                          {getUserName()}
-                        </span>
 
                         {/* PROFILE PHOTO */}
 

@@ -105,6 +105,9 @@ const RecruiterProfile: React.FC = () => {
     try {
       const updated = await recruiterProfileApi.update(user._id, form);
       setForm({ ...empty, ...updated });
+      const currentStoredUser = JSON.parse(localStorage.getItem("user") || "{}");
+      localStorage.setItem("user", JSON.stringify({ ...currentStoredUser, ...updated }));
+      window.dispatchEvent(new Event("storage"));
       setSaved(true);
     } catch (err: any) {
       setFormError(err?.response?.data?.message || "Something went wrong. Please try again.");
@@ -134,6 +137,71 @@ const RecruiterProfile: React.FC = () => {
                 </p>
               )}
               <div className="form-grid">
+                <Field label="Profile Picture" error={errors.profilePic} hint="Max size 500KB (JPEG, PNG, WebP)">
+                  <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
+                    <div
+                      style={{
+                        width: "64px",
+                        height: "64px",
+                        borderRadius: "50%",
+                        backgroundColor: "#f1f5f9",
+                        border: "1px solid #cbd5e1",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        overflow: "hidden",
+                        flexShrink: 0
+                      }}
+                    >
+                      {form.profilePic ? (
+                        <img
+                          src={form.profilePic}
+                          alt="Profile"
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      ) : (
+                        <span style={{ fontSize: "20px", color: "#94a3b8", fontWeight: 600 }}>
+                          {form.firstName ? form.firstName.charAt(0).toUpperCase() : "U"}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          if (file.size > 500 * 1024) {
+                            setErrors((prev) => ({ ...prev, profilePic: "File size must be 500KB or less" }));
+                            return;
+                          }
+                          setErrors((prev) => {
+                            const newErr = { ...prev };
+                            delete newErr.profilePic;
+                            return newErr;
+                          });
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setForm((prev) => ({ ...prev, profilePic: reader.result as string }));
+                          };
+                          reader.readAsDataURL(file);
+                        }}
+                        style={{ fontSize: "13px" }}
+                      />
+                      {form.profilePic && (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => setForm((prev) => ({ ...prev, profilePic: "" }))}
+                          style={{ width: "fit-content", padding: "2px 8px", fontSize: "12px" }}
+                        >
+                          Remove Photo
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </Field>
                 <Field label="First Name" required error={errors.firstName}>
                   <input
                     value={form.firstName}

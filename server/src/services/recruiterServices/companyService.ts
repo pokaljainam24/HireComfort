@@ -1,5 +1,6 @@
 import mongoose, { Types } from "mongoose";
 import CompanyMaster from "../../models/RecruiterModel/Companymodel.js";
+import Recruiter from "../../models/RecruiterModel/Recruitermodel.js";
 import City from "../../models/CityModel/CityModel.js";
 import State from "../../models/StateModel/StateModel.js";
 
@@ -148,6 +149,17 @@ export async function createCompanyService(
     validateSocialUrl(companyData.facebook, "Facebook");
 
     // ==============================
+    // Fetch Recruiter for CreatedBy
+    // ==============================
+    let createdBy = companyData.createdBy;
+    if (!createdBy) {
+      const recruiter = await Recruiter.findById(companyData.recruiterId).lean();
+      if (recruiter) {
+        createdBy = `${recruiter.firstName}`;
+      }
+    }
+
+    // ==============================
     // Create Company
     // ==============================
     const company = new CompanyMaster({
@@ -165,6 +177,7 @@ export async function createCompanyService(
       city: companyData.city,
       state: companyData.state,
       country: companyData.country,
+      createdBy: createdBy || "admin",
     });
 
     return await company.save();

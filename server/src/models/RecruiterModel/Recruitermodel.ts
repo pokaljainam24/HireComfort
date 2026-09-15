@@ -12,6 +12,7 @@ export interface IRecruiter {
   remark: string;
   joiningDate: Date;
   designation: string;
+  profilePic?: string;
 
   // Status
   isActive: boolean;
@@ -75,6 +76,10 @@ const recruiterSchema = new Schema<IRecruiter>(
     designation: {
       type: String,
       required: false,
+    },
+    profilePic: {
+      type: String,
+      default: "",
     },
     // Status
     isActive: {

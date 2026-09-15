@@ -9,6 +9,7 @@ export interface RecruiterProfileType {
   password?: string;
   department: string;
   designation: string;
+  profilePic?: string;
 }
 
 export type RecruiterResponse = {
