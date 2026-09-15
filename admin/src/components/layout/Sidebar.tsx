@@ -6,6 +6,8 @@ import { navConfig } from "@/data/navConfig";
 import { Icon } from "@/components/common/Icon";
 import { useAuth } from "@/context/AuthContext";
 
+
+
 interface SidebarProps {
   collapsed: boolean;
   mobileOpen: boolean;
@@ -58,9 +60,13 @@ const Sidebar: React.FC<SidebarProps> = ({
       >
         <div className="sidebar-brand">
           <div className="sidebar-brand-mark">
-            <img src="/logo.png" alt="Admin Panel Logo" />
+            <img
+              src={collapsed ? "/assets/images/logo.png" : "/assets/images/logoWithText.png"}
+              alt="Admin Panel Logo"
+            />
           </div>
         </div>
+
 
         <nav className="sidebar-nav">
           {navConfig.map((group) => (
