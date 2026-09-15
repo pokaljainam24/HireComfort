@@ -7,6 +7,7 @@ import {
   updateJobApplicationService,
   deleteJobApplicationService,
 } from "../../services/recruiterServices/JobapplicationMasterService.js";
+import { getJobMasterByIdService } from "../../services/recruiterServices/JobMasterService.js";
 
 
 // Create Job Application
@@ -15,24 +16,34 @@ export const createJobApplication = async (
   res: Response
 ) => {
   try {
-    const jobApplication =
-      await createJobApplicationService({
-        ...req.body,
-        createdBy: "admin",
-      });
+    const { applicantId, applicationDate, appliedAt, createdBy, jobId } = req.body;
+
+    const job = await getJobMasterByIdService(jobId);
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+    const jobApplication = await createJobApplicationService({
+      jobId,
+      applicantId,
+      applicationDate,
+      appliedAt,
+      createdBy,
+      recruiterId: job.companyId?.recruiterId || job.recruiterId,
+      companyId: job.companyId?._id || job.companyId,
+    });
 
     return res.status(201).json({
-      message: "Job application created successfully",
+      message: "Job Application submitted successfully",
       jobApplication,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       "Error creating job application:",
       error
     );
 
-    return res.status(500).json({
-      message: "Error creating job application",
+    return res.status(400).json({
+      message: error?.message || "Error creating job application",
     });
   }
 };

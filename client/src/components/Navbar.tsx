@@ -276,45 +276,12 @@ function Navbar() {
                     <ul className="sub-menu">
                       <li>
                         <Link
-                          to="/jobs"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
-                        >
-                          Browse Jobs
-                        </Link>
-                      </li>
-
-                      <li>
-                        <Link
                           to="/jobs-latest"
                           onClick={() =>
                             window.scrollTo(0, 0)
                           }
                         >
                           Latest Jobs
-                        </Link>
-                      </li>
-
-                      <li>
-                        <Link
-                          to="/jobs-featured"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
-                        >
-                          Featured Jobs
-                        </Link>
-                      </li>
-
-                      <li>
-                        <Link
-                          to="/jobs-remote"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
-                        >
-                          Remote Jobs
                         </Link>
                       </li>
                     </ul>
@@ -569,7 +536,7 @@ function Navbar() {
                       onClick={
                         toggleProfileDropdown
                       }
-                      >
+                    >
 
                       {/* PROFILE PHOTO */}
 
@@ -662,26 +629,8 @@ function Navbar() {
 
                       <ul className="sub-menu">
                         <li>
-                          <Link to="/jobs">
-                            Browse Jobs
-                          </Link>
-                        </li>
-
-                        <li>
                           <Link to="/jobs-latest">
                             Latest Jobs
-                          </Link>
-                        </li>
-
-                        <li>
-                          <Link to="/jobs-featured">
-                            Featured Jobs
-                          </Link>
-                        </li>
-
-                        <li>
-                          <Link to="/jobs-remote">
-                            Remote Jobs
                           </Link>
                         </li>
                       </ul>

@@ -12,6 +12,66 @@ const JobDetails: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [locationStr, setLocationStr] = useState<string>("");
+    // const { user } = useAuth()
+    // console.log(user)
+    const [applying, setApplying] = useState<boolean>(false);
+    const [applyMsg, setApplyMsg] = useState<string>("");
+    const [applyError, setApplyError] = useState<string>("");
+
+    const [applicationStatus, setApplicationStatus] = useState<string | null>(null);
+
+    const handleApplyNow = async () => {
+        setApplyMsg("");
+        setApplyError("");
+
+        const role = localStorage.getItem("role");
+        const userStr = localStorage.getItem("user");
+
+        if (role !== "applicant" || !userStr) {
+            setApplyError("Only applicants can apply for jobs. Please log in as an applicant.");
+            return;
+        }
+
+        const user = JSON.parse(userStr);
+        if (!job || !user._id) {
+            setApplyError("Missing job or applicant information.");
+            return;
+        }
+
+        setApplying(true);
+
+        try {
+
+            const payload = {
+                jobId: job._id,
+                applicantId: user._id,
+                applicationDate: new Date().toISOString(),
+                appliedAt: new Date().toISOString(),
+                createdBy: user.userName || "applicant"
+            };
+            console.log(payload)
+
+            const response = await fetch("http://localhost:5000/api/job_application_master", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            const resData = await response.json();
+
+            if (response.ok) {
+                setApplyMsg(resData.message || "Application submitted successfully!");
+                setApplicationStatus(resData.jobApplication?.applicationStatus || "Applied");
+            } else {
+                setApplyError(resData.message || "Failed to submit job application.");
+            }
+        } catch (err: any) {
+            console.error("Apply job error:", err);
+            setApplyError("Network error while submitting application. Please try again.");
+        } finally {
+            setApplying(false);
+        }
+    };
 
     useEffect(() => {
         if (!id) return;
@@ -20,6 +80,30 @@ const JobDetails: React.FC = () => {
             .getOne(id)
             .then(async (data: any) => {
                 setJob(data);
+
+                // Check user type and application status if applicant
+                const role = localStorage.getItem("role");
+                const userStr = localStorage.getItem("user");
+                if (role === "applicant" && userStr) {
+                    try {
+                        const user = JSON.parse(userStr);
+                        const appRes = await fetch("http://localhost:5000/api/job_application_master");
+                        if (appRes.ok) {
+                            const appData = await appRes.json();
+                            const applications = appData.jobApplications || [];
+                            const existingApp = applications.find((app: any) => {
+                                const appId = typeof app.applicantId === "object" ? app.applicantId?._id : app.applicantId;
+                                const jId = typeof app.jobId === "object" ? app.jobId?._id : app.jobId;
+                                return String(appId) === String(user._id) && String(jId) === String(id);
+                            });
+                            if (existingApp) {
+                                setApplicationStatus(existingApp.applicationStatus || "Applied");
+                            }
+                        }
+                    } catch (appErr) {
+                        console.error("Failed to fetch application status:", appErr);
+                    }
+                }
 
                 try {
                     const cId = data.city || data.cityId;
@@ -316,21 +400,51 @@ const JobDetails: React.FC = () => {
                                     )}
                                 </div>
 
-                                <button
-                                    className="btn btn-apply-now w-100 mt-4"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#ModalApplyJobForm"
-                                    style={{
-                                        backgroundColor: "#2563eb",
-                                        color: "#ffffff",
-                                        padding: "12px 20px",
-                                        borderRadius: 10,
-                                        fontSize: 14,
-                                        fontWeight: 600
-                                    }}
-                                >
-                                    Apply Now
-                                </button>
+                                {applyMsg && (
+                                    <div className="alert alert-success mt-3" style={{ fontSize: 13, borderRadius: 8 }}>
+                                        {applyMsg}
+                                    </div>
+                                )}
+                                {applyError && (
+                                    <div className="alert alert-danger mt-3" style={{ fontSize: 13, borderRadius: 8 }}>
+                                        {applyError}
+                                    </div>
+                                )}
+
+                                {applicationStatus ? (
+                                    <div
+                                        className="w-100 mt-4 text-center"
+                                        style={{
+                                            backgroundColor: "#16a34a",
+                                            color: "#ffffff",
+                                            padding: "12px 20px",
+                                            borderRadius: 10,
+                                            fontSize: 14,
+                                            fontWeight: 600,
+                                            textTransform: "capitalize"
+                                        }}
+                                    >
+                                        Status: {applicationStatus}
+                                    </div>
+                                ) : (
+                                    <button
+                                        className="btn btn-apply-now w-100 mt-4"
+                                        type="button"
+                                        onClick={handleApplyNow}
+                                        disabled={applying}
+                                        style={{
+                                            backgroundColor: "#2563eb",
+                                            color: "#ffffff",
+                                            padding: "12px 20px",
+                                            borderRadius: 10,
+                                            fontSize: 14,
+                                            fontWeight: 600,
+                                            opacity: applying ? 0.7 : 1
+                                        }}
+                                    >
+                                        {applying ? "Applying..." : "Apply Now"}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

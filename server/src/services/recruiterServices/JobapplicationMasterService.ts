@@ -55,52 +55,52 @@ export const createJobApplicationService = async (
     // =====================================
     // Rating Validation
     // =====================================
-    if (data.rating === undefined || data.rating === null) {
-      throw new Error("Rating is required");
-    }
+    // if (data.rating === undefined || data.rating === null) {
+    //   throw new Error("Rating is required");
+    // }
 
-    if (typeof data.rating !== "number" || isNaN(data.rating)) {
-      throw new Error("Rating must be a number");
-    }
+    // if (typeof data.rating !== "number" || isNaN(data.rating)) {
+    //   throw new Error("Rating must be a number");
+    // }
 
-    if (data.rating < 0 || data.rating > 5) {
-      throw new Error("Rating must be between 0 and 5");
-    }
+    // if (data.rating < 0 || data.rating > 5) {
+    //   throw new Error("Rating must be between 0 and 5");
+    // }
 
-    // =====================================
-    // Notes Validation
-    // =====================================
-    if (!data.notes?.trim()) {
-      throw new Error("Notes are required");
-    }
+    // // =====================================
+    // // Notes Validation
+    // // =====================================
+    // if (!data.notes?.trim()) {
+    //   throw new Error("Notes are required");
+    // }
 
-    // =====================================
-    // Application Status Validation
-    // =====================================
-    if (!data.applicationStatus?.trim()) {
-      throw new Error("Application status is required");
-    }
+    // // =====================================
+    // // Application Status Validation
+    // // =====================================
+    // if (!data.applicationStatus?.trim()) {
+    //   throw new Error("Application status is required");
+    // }
 
-    const allowedApplicationStatus = [
-      "Applied",
-      "Shortlisted",
-      "Rejected",
-      "Interview",
-      "Selected",
-      "Hired",
-    ];
+    // const allowedApplicationStatus = [
+    //   "Applied",
+    //   "Shortlisted",
+    //   "Rejected",
+    //   "Interview",
+    //   "Selected",
+    //   "Hired",
+    // ];
 
-    if (
-      !allowedApplicationStatus.includes(
-        data.applicationStatus.trim(),
-      )
-    ) {
-      throw new Error(
-        `Application status must be one of: ${allowedApplicationStatus.join(
-          ", ",
-        )}`,
-      );
-    }
+    // if (
+    //   !allowedApplicationStatus.includes(
+    //     data.applicationStatus.trim(),
+    //   )
+    // ) {
+    //   throw new Error(
+    //     `Application status must be one of: ${allowedApplicationStatus.join(
+    //       ", ",
+    //     )}`,
+    //   );
+    // }
 
     // =====================================
     // Application Date Validation
@@ -128,40 +128,33 @@ export const createJobApplicationService = async (
       throw new Error("Invalid applied date");
     }
 
-    // =====================================
-    // Expected Salary Validation
-    // =====================================
-    if (
-      data.expectedsalary === undefined ||
-      data.expectedsalary === null
-    ) {
-      throw new Error("Expected salary is required");
-    }
+    // // =====================================
+    // // Expected Salary Validation
+    // // =====================================
+    // if (
+    //   data.expectedsalary === undefined ||
+    //   data.expectedsalary === null
+    // ) {
+    //   throw new Error("Expected salary is required");
+    // }
 
-    if (
-      typeof data.expectedsalary !== "number" ||
-      isNaN(data.expectedsalary)
-    ) {
-      throw new Error("Expected salary must be a number");
-    }
+    // if (
+    //   typeof data.expectedsalary !== "number" ||
+    //   isNaN(data.expectedsalary)
+    // ) {
+    //   throw new Error("Expected salary must be a number");
+    // }
 
-    if (data.expectedsalary < 0) {
-      throw new Error("Expected salary cannot be negative");
-    }
+    // if (data.expectedsalary < 0) {
+    //   throw new Error("Expected salary cannot be negative");
+    // }
 
     // =====================================
     // Notice Period Validation
     // =====================================
-    if (!data.noticeperiod?.trim()) {
-      throw new Error("Notice period is required");
-    }
-
-    // =====================================
-    // Resume Validation
-    // =====================================
-    if (!data.resume?.trim()) {
-      throw new Error("Resume is required");
-    }
+    // if (!data.noticeperiod?.trim()) {
+    //   throw new Error("Notice period is required");
+    // }
 
     // =====================================
     // Check Duplicate Application
@@ -205,14 +198,12 @@ export const createJobApplicationService = async (
           data.companyId.toString(),
         ),
 
-        notes: data.notes.trim(),
+        // notes: data.notes?.trim() || "",
 
         applicationStatus:
           data.applicationStatus,
 
-        noticeperiod: data.noticeperiod.trim(),
-
-        resume: data.resume.trim(),
+        noticeperiod: data?.noticeperiod?.trim() || "",
 
         applicationDate,
 
