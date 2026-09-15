@@ -134,21 +134,21 @@ const JobDetails: React.FC = () => {
                                     <h2 style={{ fontSize: 26, fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>
                                         {job.title}
                                     </h2>
-                                    <div className="d-flex flex-wrap align-items-center gap-3" style={{ fontSize: 14, color: "#64748b" }}>
-                                        <span style={{ fontWeight: 600, color: "#3b82f6" }}>
-                                            <i className="fi-rr-briefcase me-1" />
+                                    <div className="d-flex flex-wrap align-items-center gap-3" style={{ fontSize: 14, color: "#64748b", lineHeight: 1 }}>
+                                        <span className="d-inline-flex align-items-center" style={{ fontWeight: 600, color: "#3b82f6" }}>
+                                            <i className="fi-rr-briefcase me-1" style={{ display: "inline-flex", alignItems: "center" }} />
                                             {companyName}
                                         </span>
-                                        <span>•</span>
-                                        <span>
-                                            <i className="fi-rr-marker me-1" />
+                                        <span className="d-inline-flex align-items-center">•</span>
+                                        <span className="d-inline-flex align-items-center">
+                                            <i className="fi-rr-marker me-1" style={{ display: "inline-flex", alignItems: "center" }} />
                                             {locationStr || ""}
                                         </span>
                                         {job.createdAt && (
                                             <>
-                                                <span>•</span>
-                                                <span>
-                                                    <i className="fi-rr-clock me-1" />
+                                                <span className="d-inline-flex align-items-center">•</span>
+                                                <span className="d-inline-flex align-items-center">
+                                                    <i className="fi-rr-clock me-1" style={{ display: "inline-flex", alignItems: "center" }} />
                                                     Posted {new Date(job.createdAt).toLocaleDateString()}
                                                 </span>
                                             </>
@@ -156,24 +156,6 @@ const JobDetails: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-lg-4 col-md-12 text-lg-end mt-4 mt-lg-0">
-                            <button
-                                className="btn btn-apply-now hover-up"
-                                data-bs-toggle="modal"
-                                data-bs-target="#ModalApplyJobForm"
-                                style={{
-                                    backgroundColor: "#2563eb",
-                                    color: "#ffffff",
-                                    padding: "12px 28px",
-                                    borderRadius: 10,
-                                    fontSize: 15,
-                                    fontWeight: 600,
-                                    boxShadow: "0 4px 12px rgba(37,99,235,0.25)"
-                                }}
-                            >
-                                Apply Now
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -244,26 +226,6 @@ const JobDetails: React.FC = () => {
                                     gap: 20
                                 }}
                             >
-                                <div
-                                    style={{
-                                        width: 60,
-                                        height: 60,
-                                        minWidth: 60,
-                                        borderRadius: 12,
-                                        backgroundColor: "#f8fafc",
-                                        border: "1px solid #e2e8f0",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        padding: 6
-                                    }}
-                                >
-                                    <img
-                                        src={brandImg}
-                                        alt={companyName}
-                                        style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-                                    />
-                                </div>
                                 <div>
                                     <h5 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>
                                         About {companyName}

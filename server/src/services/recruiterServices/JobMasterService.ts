@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import JobMaster from "../../models/RecruiterModel/JobMasterModel.js";
+import City from "../../models/CityModel/CityModel.js";
 
 export type IJobMaster = InstanceType<typeof JobMaster>;
 
@@ -236,10 +237,51 @@ export const createJobMasterService = async (data: Partial<IJobMaster>) => {
 // Get All Jobs
 export const getJobMastersService = async () => {
   try {
-    const jobs = await JobMaster.find({
-      isActive: true,
-      isDisplay: true,
-    }).populate("companyId");
+    const jobs = await JobMaster.aggregate([
+      {
+        $match: {
+          isActive: true,
+          isDisplay: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "companymasters",
+          localField: "companyId",
+          foreignField: "_id",
+          as: "companyId",
+        },
+      },
+      {
+        $unwind: {
+          path: "$companyId",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "city",
+          localField: "city",
+          foreignField: "id",
+          as: "cityDetails",
+        },
+      },
+      {
+        $addFields: {
+          city: {
+            $ifNull: [
+              { $arrayElemAt: ["$cityDetails.name", 0] },
+              "$city",
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          cityDetails: 0,
+        },
+      },
+    ]);
 
     return jobs;
   } catch (error) {
@@ -256,7 +298,7 @@ export const getJobMasterByIdService = async (id: string) => {
       _id: id,
       isActive: true,
       isDisplay: true,
-    }).populate("companyId");
+    }).populate("companyId").lean();
 
     return job;
   } catch (error) {

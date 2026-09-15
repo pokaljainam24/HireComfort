@@ -15,7 +15,7 @@ import skillsData from './data/skills.json' with {type: "json"}
  * @param collectionName Target collection name.
  */
 
-const url = 'mongodb+srv://pokaljainam_db_user:oji8xbGsqID1w4j1@cluster0.8rd4lng.mongodb.net/Hire-Comfort'
+const url = process.env.DB_URL
 export async function seedCollection(
     data: Record<string, any>[],
     dbUrl: string,
@@ -49,13 +49,13 @@ export async function seedCollection(
 
 
 async function getData() {
-    // await seedCollection(employmentData, url, 'employmenttypemasters')
+    await seedCollection(employmentData, url, 'employmenttypemasters')
     // await seedCollection(industryData, url, 'industrymasters')
-    // await seedCollection(interviewTypeData, url, 'interviewmasters')
-    // await seedCollection(jobCategoryData, url, 'jobcategories')
-    // await seedCollection(jobSubCategoryData, url, 'jobsubcategories')
-    // await seedCollection(qualityData, url, 'qualificationmasters')
-    // await seedCollection(skillsData, url, 'skillsmasters')
+    // await seedCollection(interviewTypeData, url, 'interviewmasters') -------------
+    // await seedCollection(jobCategoryData, url, 'jobcategories')-----------
+    // await seedCollection(jobSubCategoryData, url, 'jobsubcategories')----------
+    // await seedCollection(qualityData, url, 'qualificationmasters')-----------
+    // await seedCollection(skillsData, url, 'skillsmasters')----------------
 }
 
 getData().then(() => console.log('All seed data inserted successfully!')).catch((error) => console.error(error))
