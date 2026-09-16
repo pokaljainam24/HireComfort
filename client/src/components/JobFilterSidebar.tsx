@@ -23,13 +23,13 @@ const JobFilterSidebar: React.FC<JobFilterSidebarProps> = ({
   return (
     <div className="sidebar-shadow none-shadow mb-30">
       <div className="sidebar-filters">
-        <div className="filter-block head-border mb-30">
-          <h5>
-            Advance Filter{" "}
-            <a className="link-reset" href="#" onClick={onResetFilters}>
-              Reset
-            </a>
-          </h5>
+        <div className="company-mobile-reset">
+          <a
+            href="#"
+            onClick={onResetFilters}
+          >
+            Reset
+          </a>
         </div>
 
         <div className="filter-block mb-20">

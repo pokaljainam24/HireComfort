@@ -293,7 +293,7 @@ function Blog() {
                   SIDEBAR
               ===================================== */}
 
-              <div className="col-lg-4 col-md-12 col-sm-12 col-12 pl-40 pl-lg-15 mt-lg-30">
+              <div className="col-lg-4 col-md-12 col-sm-12 col-12 pl-20 pl-lg-15 mt-lg-30">
 
                 {/* =====================================
                     TRENDING NOW
@@ -319,7 +319,7 @@ function Blog() {
                         </figure>
 
                         <div className="content">
-                          <h5>
+                          <h5 className="trending-post-title">
                             {post.title}
                           </h5>
 
@@ -333,7 +333,7 @@ function Blog() {
                                 }
                               />
 
-                              <span>
+                              <span className="trending-post-title">
                                 {post.authorName ||
                                   "Admin"}
                               </span>

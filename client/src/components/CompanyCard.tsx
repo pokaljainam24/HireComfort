@@ -27,7 +27,7 @@ const CompanyCard = ({
         </div>
 
         <div className="info-text mt-10">
-          <h5 className="font-bold">
+          <h5 className="font-bold fs-6 fs-md-5">
             <a href={href}>{name}</a>
           </h5>
 

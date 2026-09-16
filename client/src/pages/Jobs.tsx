@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { getJobCategories } from "../recruiterDashboard/api/jobCategoryApi.ts";
 import { jobApi } from "../recruiterDashboard/api/jobApi.ts";
+
 import type { JobCategory } from "../recruiterDashboard/types/jobCategory.ts";
 import type { Job } from "../recruiterDashboard/types/job.ts";
+
 import JobCard from "../components/JobCard.tsx";
 import JobsBanner from "../components/JobsBanner.tsx";
 import JobSortHeader from "../components/JobSortHeader.tsx";
@@ -11,7 +13,13 @@ import JobPagination from "../components/JobPagination.tsx";
 import JobFilterSidebar from "../components/JobFilterSidebar.tsx";
 import NewsletterBox from "../components/NewsletterBox.tsx";
 
-const JOB_TYPES = ["Full Time", "Part Time", "Contract", "Internship", "Freelance"];
+const JOB_TYPES = [
+  "Full Time",
+  "Part Time",
+  "Contract",
+  "Internship",
+  "Freelance",
+];
 
 function Jobs() {
   const [categories, setCategories] = useState<JobCategory[]>([]);
@@ -19,25 +27,57 @@ function Jobs() {
   const [totalJobs, setTotalJobs] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [page, setPage] = useState<number>(1);
+
   const limit = 15;
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedJobType, setSelectedJobType] = useState<string>("");
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [activeSearch, setActiveSearch] = useState<string>("");
-  const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
 
-  // Load Categories on mount
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>("");
+
+  const [selectedJobType, setSelectedJobType] =
+    useState<string>("");
+
+  const [searchKeyword, setSearchKeyword] =
+    useState<string>("");
+
+  const [activeSearch, setActiveSearch] =
+    useState<string>("");
+
+  const [sortBy, setSortBy] =
+    useState<"newest" | "oldest">("newest");
+
+  // =========================================
+  // MOBILE FILTER DRAWER
+  // =========================================
+
+  const [isFilterOpen, setIsFilterOpen] =
+    useState<boolean>(false);
+
+  // =========================================
+  // LOAD CATEGORIES
+  // =========================================
+
   useEffect(() => {
     getJobCategories()
-      .then((data) => setCategories(data || []))
-      .catch((err) => console.error("Failed to load categories", err));
+      .then((data) => {
+        setCategories(data || []);
+      })
+      .catch((err) => {
+        console.error(
+          "Failed to load categories",
+          err
+        );
+      });
   }, []);
 
-  // Fetch jobs whenever page, filters, active search, or sort changes
+  // =========================================
+  // FETCH JOBS
+  // =========================================
+
   useEffect(() => {
     setLoading(true);
+
     jobApi
       .getAll({
         page,
@@ -52,18 +92,47 @@ function Jobs() {
         setTotalJobs(res.totalJobs || 0);
         setTotalPages(res.totalPages || 1);
       })
-      .catch((err) => console.error("Failed to load jobs", err))
-      .finally(() => setLoading(false));
-  }, [page, activeSearch, selectedCategory, selectedJobType, sortBy]);
+      .catch((err) => {
+        console.error(
+          "Failed to load jobs",
+          err
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [
+    page,
+    activeSearch,
+    selectedCategory,
+    selectedJobType,
+    sortBy,
+  ]);
 
-  const handleSearchSubmit = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+  // =========================================
+  // SEARCH
+  // =========================================
+
+  const handleSearchSubmit = (
+    e?: React.FormEvent
+  ) => {
+    if (e) {
+      e.preventDefault();
+    }
+
     setPage(1);
     setActiveSearch(searchKeyword);
   };
 
-  const handleResetFilters = (e: React.MouseEvent) => {
+  // =========================================
+  // RESET FILTERS
+  // =========================================
+
+  const handleResetFilters = (
+    e: React.MouseEvent
+  ) => {
     e.preventDefault();
+
     setSelectedCategory("");
     setSelectedJobType("");
     setSearchKeyword("");
@@ -72,27 +141,104 @@ function Jobs() {
     setPage(1);
   };
 
-  const handleCategoryChange = (catId: string) => {
+  // =========================================
+  // CATEGORY CHANGE
+  // =========================================
+
+  const handleCategoryChange = (
+    catId: string
+  ) => {
     setSelectedCategory(catId);
     setPage(1);
   };
 
-  const handleJobTypeChange = (type: string) => {
-    setSelectedJobType(type === selectedJobType ? "" : type);
+  // =========================================
+  // JOB TYPE CHANGE
+  // =========================================
+
+  const handleJobTypeChange = (
+    type: string
+  ) => {
+    setSelectedJobType(
+      type === selectedJobType ? "" : type
+    );
+
     setPage(1);
   };
 
-  const handleSortChange = (newSort: "newest" | "oldest") => {
+  // =========================================
+  // SORT CHANGE
+  // =========================================
+
+  const handleSortChange = (
+    newSort: "newest" | "oldest"
+  ) => {
     setSortBy(newSort);
     setPage(1);
   };
 
-  const startItem = totalJobs === 0 ? 0 : (page - 1) * limit + 1;
-  const endItem = Math.min(page * limit, totalJobs);
+  // =========================================
+  // PAGINATION
+  // =========================================
+
+  const startItem =
+    totalJobs === 0
+      ? 0
+      : (page - 1) * limit + 1;
+
+  const endItem = Math.min(
+    page * limit,
+    totalJobs
+  );
+
+  // =========================================
+  // OPEN FILTER
+  // =========================================
+
+  const openFilter = () => {
+    setIsFilterOpen(true);
+
+    // Prevent background page scrolling
+    document.body.style.overflow = "hidden";
+  };
+
+  // =========================================
+  // CLOSE FILTER
+  // =========================================
+
+  const closeFilter = () => {
+    setIsFilterOpen(false);
+
+    // Restore page scrolling
+    document.body.style.overflow = "";
+  };
+
+  // Restore body scroll when component unmounts
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   return (
     <>
       <main className="main">
+
+        {/* =========================================
+            MOBILE FILTER OVERLAY
+        ========================================= */}
+
+        {isFilterOpen && (
+          <div
+            className="jobs-filter-overlay"
+            onClick={closeFilter}
+          ></div>
+        )}
+
+        {/* =========================================
+            JOB BANNER
+        ========================================= */}
+
         <JobsBanner
           totalJobs={totalJobs}
           searchValue={searchKeyword}
@@ -100,11 +246,56 @@ function Jobs() {
           onSearchSubmit={handleSearchSubmit}
         />
 
+        {/* =========================================
+            JOB SECTION
+        ========================================= */}
+
         <section className="section-box mt-30">
           <div className="container">
+
             <div className="row flex-row-reverse">
+
+              {/* =====================================
+                  JOB LIST
+              ===================================== */}
+
               <div className="col-lg-9 col-md-12 col-sm-12 col-12 float-right">
+
                 <div className="content-page">
+
+                  {/* =================================
+                      MOBILE FILTER BUTTON
+                  ================================= */}
+
+                  <div className="jobs-mobile-filter-row">
+
+                    <button
+                      type="button"
+                      className="jobs-mobile-filter-btn"
+                      onClick={openFilter}
+                      aria-label="Open filters"
+                    >
+                      <i className="fi-rr-menu-burger"></i>
+                    </button>
+
+                    <span className="jobs-mobile-showing">
+                      Showing{" "}
+                      <strong>
+                        {startItem}-{endItem}
+                      </strong>{" "}
+                      of{" "}
+                      <strong>
+                        {totalJobs}
+                      </strong>{" "}
+                      jobs
+                    </span>
+
+                  </div>
+
+                  {/* =================================
+                      SORT HEADER
+                  ================================= */}
+
                   <JobSortHeader
                     startItem={startItem}
                     endItem={endItem}
@@ -113,46 +304,128 @@ function Jobs() {
                     onSortChange={handleSortChange}
                   />
 
+                  {/* =================================
+                      JOB CARDS
+                  ================================= */}
+
                   <div className="row">
+
                     {loading ? (
                       <div className="col-12 text-center py-5">
-                        <h4>Loading jobs...</h4>
+                        <h4>
+                          Loading jobs...
+                        </h4>
                       </div>
                     ) : jobs.length === 0 ? (
                       <div className="col-12 text-center py-5">
-                        <h4>No jobs found</h4>
-                        <p className="text-muted">Try adjusting your filters or search keywords.</p>
+
+                        <h4>
+                          No jobs found
+                        </h4>
+
+                        <p className="text-muted">
+                          Try adjusting your
+                          filters or search
+                          keywords.
+                        </p>
+
                       </div>
                     ) : (
-                      jobs.map((job) => <JobCard key={job._id} job={job} />)
+                      jobs.map((job) => (
+                        <JobCard
+                          key={job._id}
+                          job={job}
+                        />
+                      ))
                     )}
+
                   </div>
+
+                  {/* =================================
+                      PAGINATION
+                  ================================= */}
 
                   <JobPagination
                     page={page}
                     totalPages={totalPages}
                     onPageChange={setPage}
                   />
+
                 </div>
               </div>
 
+              {/* =====================================
+                  FILTER SIDEBAR
+              ===================================== */}
+
               <div className="col-lg-3 col-md-12 col-sm-12 col-12">
-                <JobFilterSidebar
-                  categories={categories}
-                  selectedCategory={selectedCategory}
-                  selectedJobType={selectedJobType}
-                  jobTypes={JOB_TYPES}
-                  onCategoryChange={handleCategoryChange}
-                  onJobTypeChange={handleJobTypeChange}
-                  onResetFilters={handleResetFilters}
-                />
+
+                <div
+                  className={`jobs-filter-drawer ${
+                    isFilterOpen
+                      ? "jobs-filter-drawer-open"
+                      : ""
+                  }`}
+                >
+
+                  {/* =================================
+                      MOBILE FILTER HEADER
+                  ================================= */}
+
+                  <div className="jobs-mobile-filter-header">
+
+                    <h5>
+                      Advance Filter
+                    </h5>
+
+                    <button
+                      type="button"
+                      className="jobs-filter-close-btn"
+                      onClick={closeFilter}
+                      aria-label="Close filters"
+                    >
+                      <i className="fi-rr-cross-small"></i>
+                    </button>
+
+                  </div>
+
+                  {/* =================================
+                      FILTER SIDEBAR
+                  ================================= */}
+
+                  <JobFilterSidebar
+                    categories={categories}
+                    selectedCategory={selectedCategory}
+                    selectedJobType={selectedJobType}
+                    jobTypes={JOB_TYPES}
+                    onCategoryChange={
+                      handleCategoryChange
+                    }
+                    onJobTypeChange={
+                      handleJobTypeChange
+                    }
+                    onResetFilters={
+                      handleResetFilters
+                    }
+                  />
+
+                </div>
+
               </div>
+
             </div>
           </div>
         </section>
 
+        {/* =========================================
+            NEWSLETTER
+        ========================================= */}
+
         <NewsletterBox />
+
       </main>
+
+      
     </>
   );
 }

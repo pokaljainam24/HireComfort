@@ -21,7 +21,6 @@ const JobPagination: React.FC<JobPaginationProps> = ({
             className="pager-prev btn btn-link"
             disabled={page === 1}
             onClick={() => onPageChange(Math.max(1, page - 1))}
-            style={{ border: "none", background: "none" }}
           ></button>
         </li>
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((pNum) => (
@@ -43,7 +42,6 @@ const JobPagination: React.FC<JobPaginationProps> = ({
             className="pager-next btn btn-link"
             disabled={page === totalPages}
             onClick={() => onPageChange(Math.min(totalPages, page + 1))}
-            style={{ border: "none", background: "none" }}
           ></button>
         </li>
       </ul>

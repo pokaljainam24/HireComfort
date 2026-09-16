@@ -6795,10 +6795,28 @@ ul li:last-child .card-list-4 {
 .sidebar-border,
 .sidebar-shadow {
   border: 1px solid #e0e6f7;
-  padding: 25px;
+  padding: 15px;
   border-radius: 8px;
   background-color: #ffffff;
   margin-bottom: 40px;
+}
+
+.trending-post-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.post-list-small-item .content {
+  flex: 1;
+  min-width: 0;
+}
+
+.trending-post-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar-border .sidebar-heading,
@@ -9136,6 +9154,10 @@ ul li:last-child .card-list-4 {
     font-size: 38px;
   }
 
+  .sidebar-shadow {
+    padding: 15px !important;
+  }
+
   .swiper-button-next,
   .swiper-button-prev {
     display: none;
@@ -9569,4 +9591,316 @@ ul li:last-child .card-list-4 {
     padding-left: 0;
     padding-right: 0;
   }
+}
+
+/* =========================================
+          RESPONSIVE FILTER CSS
+      ========================================= */
+
+
+.jobs-mobile-filter-row {
+  display: none;
+}
+
+.jobs-mobile-filter-btn {
+  border: 1px solid #e1e7f0;
+  background: #ffffff;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  cursor: pointer;
+
+  flex-shrink: 0;
+
+  transition: all 0.2s ease;
+}
+
+.jobs-mobile-filter-btn i {
+  font-size: 17px;
+  color: #3c65f5;
+}
+
+.jobs-mobile-filter-btn:hover {
+  background: #3c65f5;
+  border-color: #3c65f5;
+}
+
+.jobs-mobile-filter-btn:hover i {
+  color: #ffffff;
+}
+
+.jobs-mobile-showing {
+  font-size: 14px;
+  color: #25324b;
+  white-space: nowrap;
+}
+
+.jobs-mobile-showing strong {
+  font-weight: 600;
+}
+
+
+/* =========================================
+           FILTER DRAWER
+        ========================================= */
+
+.jobs-filter-drawer {
+  width: 100%;
+}
+
+.jobs-mobile-filter-header {
+  display: none;
+}
+
+
+/* =========================================
+           OVERLAY
+        ========================================= */
+
+.jobs-filter-overlay {
+  display: none;
+}
+
+
+/* =========================================
+           TABLET + MOBILE
+        ========================================= */
+
+@media (max-width: 991px) {
+
+  /* -----------------------------------------
+             MOBILE SHOWING + HAMBURGER
+          ----------------------------------------- */
+
+  .jobs-mobile-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-height: 40px;
+    margin-bottom: 15px;
+  }
+
+
+  /* -----------------------------------------
+             HIDE DUPLICATE SHOWING FROM SORT HEADER
+          ----------------------------------------- */
+
+  .jobs-mobile-filter-row+.box-filters-job {
+    margin-top: 0;
+  }
+
+
+  /* -----------------------------------------
+             SIDEBAR DRAWER
+          ----------------------------------------- */
+
+  .jobs-filter-drawer {
+    position: fixed;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 380px;
+    max-width: 90vw;
+
+    height: 100vh;
+
+    z-index: 10000;
+
+    background: #ffffff;
+
+    overflow-y: auto;
+
+    box-shadow:
+      -5px 0 25px rgba(0, 0, 0, 0.15);
+
+    transform: translateX(100%);
+
+    transition:
+      transform 0.3s ease;
+
+    padding: 0;
+  }
+
+
+  /* -----------------------------------------
+             OPEN DRAWER
+          ----------------------------------------- */
+
+  .jobs-filter-drawer-open {
+    transform: translateX(0);
+  }
+
+
+  /* -----------------------------------------
+             MOBILE HEADER
+          ----------------------------------------- */
+
+  .jobs-mobile-filter-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px;
+
+    border-bottom: 1px solid #e5e9f0;
+
+    background: #ffffff;
+
+    position: sticky;
+    top: 0;
+
+    z-index: 5;
+  }
+
+  .jobs-mobile-filter-header h5 {
+    margin: 0;
+
+    font-size: 20px;
+    font-weight: 600;
+
+    color: #1c2436;
+  }
+
+
+  /* -----------------------------------------
+             CLOSE BUTTON
+          ----------------------------------------- */
+
+  .jobs-filter-close-btn {
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid #e5e9f0;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+  }
+
+  .jobs-filter-close-btn i {
+    font-size: 20px;
+    color: #1c2436;
+  }
+
+  .jobs-filter-close-btn:hover {
+    background: #3c65f5;
+    border-color: #3c65f5;
+  }
+
+  .jobs-filter-close-btn:hover i {
+    color: #ffffff;
+  }
+
+
+  /* -----------------------------------------
+             SIDEBAR CONTENT
+          ----------------------------------------- */
+
+  .jobs-filter-drawer .sidebar-shadow {
+    box-shadow: none !important;
+
+    margin-bottom: 0 !important;
+
+    border-radius: 0 !important;
+  }
+
+  .jobs-filter-drawer .sidebar-filters {
+    padding: 20px;
+  }
+
+
+  /* -----------------------------------------
+             OVERLAY
+          ----------------------------------------- */
+
+  .jobs-filter-overlay {
+    display: block;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    background:
+      rgba(0, 0, 0, 0.45);
+  }
+
+
+  /* -----------------------------------------
+             SORT HEADER
+          ----------------------------------------- */
+
+  .box-filters-job {
+    margin-bottom: 20px;
+  }
+
+}
+
+
+/* =========================================
+           SMALL MOBILE
+        ========================================= */
+
+@media (max-width: 575px) {
+
+  .jobs-mobile-filter-row {
+    gap: 8px;
+  }
+
+  .jobs-mobile-filter-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .jobs-mobile-filter-btn i {
+    font-size: 16px;
+  }
+
+  .jobs-mobile-showing {
+    font-size: 13px;
+  }
+
+
+  /* Full width drawer */
+
+  .jobs-filter-drawer {
+    width: 100%;
+    max-width: 100%;
+  }
+
+
+  .jobs-mobile-filter-header {
+    padding: 16px;
+  }
+
+  .jobs-mobile-filter-header h5 {
+    font-size: 18px;
+  }
+
+
+  .jobs-filter-drawer .sidebar-filters {
+    padding: 16px;
+  }
+
 }
