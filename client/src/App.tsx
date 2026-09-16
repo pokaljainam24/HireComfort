@@ -8,9 +8,6 @@ import About from "./pages/About";
 import Footer from "./components/Footer";
 import Contact from "./pages/Contact";
 import Jobs from "./pages/Jobs";
-import JobsLatest from "./pages/JobsLatest";
-import JobsRemote from "./pages/JobsRemote";
-import JobsFeatured from "./pages/JobsFeatured";
 import Companies from "./pages/Companies";
 
 // import styles
@@ -44,11 +41,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/jobs" element={<Jobs />} />
-        <Route path="/jobs-latest" element={<JobsLatest />} />
-        <Route path="/jobs-featured" element={<JobsFeatured />} />
-        <Route path="/jobs-remote" element={<JobsRemote />} />
         <Route path="/companies" element={<Companies />} />
-        <Route path="/jobs-remote" element={<JobsRemote />} />
         <Route path="/companies-featured" element={<CompaniesFeatured />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/blog" element={<Blog />} />

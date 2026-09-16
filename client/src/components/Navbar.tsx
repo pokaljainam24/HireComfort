@@ -263,7 +263,7 @@ function Navbar() {
 
                   {/* JOBS */}
 
-                  <li className="has-children">
+                  <li>
                     <Link
                       to="/jobs"
                       onClick={() =>
@@ -272,19 +272,6 @@ function Navbar() {
                     >
                       Jobs
                     </Link>
-
-                    <ul className="sub-menu">
-                      <li>
-                        <Link
-                          to="/jobs-latest"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
-                        >
-                          Latest Jobs
-                        </Link>
-                      </li>
-                    </ul>
                   </li>
 
                   {/* COMPANIES */}
@@ -612,18 +599,10 @@ function Navbar() {
                       </Link>
                     </li>
 
-                    <li className="has-children">
+                    <li>
                       <Link to="/jobs">
                         Jobs
                       </Link>
-
-                      <ul className="sub-menu">
-                        <li>
-                          <Link to="/jobs-latest">
-                            Latest Jobs
-                          </Link>
-                        </li>
-                      </ul>
                     </li>
 
                     <li className="has-children">

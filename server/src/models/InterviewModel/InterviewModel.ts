@@ -55,5 +55,6 @@ const interviewRoundSchema = new Schema<IInterviewRound>(
 
 export const InterviewRound = mongoose.model<IInterviewRound>(
   "InterviewRound",
-  interviewRoundSchema
+  interviewRoundSchema,
+  "interviewmasters"
 );
