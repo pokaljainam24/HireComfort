@@ -3,10 +3,37 @@ import http from "./http.ts";
 
 const API_URL = "http://localhost:5000/api/job_master";
 
+export interface GetJobsQuery {
+    page?: number;
+    limit?: number;
+    search?: string;
+    categoryId?: string;
+    jobType?: string;
+    sort?: "newest" | "oldest";
+}
+
+export interface JobsResponse {
+    jobs: Job[];
+    totalJobs: number;
+    totalPages: number;
+    currentPage: number;
+    limit: number;
+}
+
 export const jobApi = {
-    getAll: async (): Promise<Job[]> => {
-        const response = await http.get(API_URL);
-        return response.data.jobs;
+    getAll: async (params?: GetJobsQuery): Promise<JobsResponse> => {
+        const response = await http.get(API_URL, { params });
+        // Handle backward compatibility if response.data only returns { jobs }
+        if (Array.isArray(response.data.jobs) && response.data.totalJobs === undefined) {
+            return {
+                jobs: response.data.jobs,
+                totalJobs: response.data.jobs.length,
+                totalPages: 1,
+                currentPage: 1,
+                limit: response.data.jobs.length,
+            };
+        }
+        return response.data;
     },
     getOne: async (id: string): Promise<Job> => {
         const response = await http.get(`${API_URL}/${id}`);

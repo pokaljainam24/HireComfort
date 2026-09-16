@@ -6,6 +6,7 @@ import {
   getJobMasterByIdService,
   updateJobMasterService,
   deleteJobMasterService,
+  type GetJobMastersParams,
 } from "../../services/recruiterServices/JobMasterService.js";
 import { getCompanyByRecruiterIdService } from "../../services/recruiterServices/companyService.js";
 
@@ -55,11 +56,19 @@ export const createJobMasterByRecruiterId = async (req: Request, res: Response) 
 // Get All Jobs
 export const getJobMasters = async (req: Request, res: Response) => {
   try {
-    const jobs = await getJobMastersService();
+    const { page, limit, search, categoryId, jobType, sort } = req.query;
 
-    return res.status(200).json({
-      jobs,
-    });
+    const queryOptions: GetJobMastersParams = {};
+    if (page) queryOptions.page = Number(page);
+    if (limit) queryOptions.limit = Number(limit);
+    if (search) queryOptions.search = String(search);
+    if (categoryId) queryOptions.categoryId = String(categoryId);
+    if (jobType) queryOptions.jobType = String(jobType);
+    if (sort) queryOptions.sort = sort === "oldest" ? "oldest" : "newest";
+
+    const result = await getJobMastersService(queryOptions);
+
+    return res.status(200).json(result);
   } catch (error) {
     console.error("Error getting jobs:", error);
 

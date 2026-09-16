@@ -10,6 +10,8 @@ import {
 import { getJobMasterByIdService } from "../../services/recruiterServices/JobMasterService.js";
 
 
+import type { ICompanyMaster } from "../../models/RecruiterModel/Companymodel.js";
+
 // Create Job Application
 export const createJobApplication = async (
   req: Request,
@@ -22,15 +24,22 @@ export const createJobApplication = async (
     if (!job) {
       return res.status(404).json({ message: "Job not found" });
     }
-    const jobApplication = await createJobApplicationService({
+
+    const company = job.companyId as unknown as (ICompanyMaster & { _id: any }) | null;
+
+    const payload: any = {
       jobId,
       applicantId,
       applicationDate,
       appliedAt,
       createdBy,
-      recruiterId: job.companyId?.recruiterId || job.recruiterId,
-      companyId: job.companyId?._id || job.companyId,
-    });
+      companyId: company?._id || job.companyId,
+    };
+    if (company?.recruiterId) {
+      payload.recruiterId = company.recruiterId;
+    }
+
+    const jobApplication = await createJobApplicationService(payload);
 
     return res.status(201).json({
       message: "Job Application submitted successfully",

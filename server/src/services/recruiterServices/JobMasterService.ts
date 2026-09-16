@@ -234,16 +234,53 @@ export const createJobMasterService = async (data: Partial<IJobMaster>) => {
   }
 };
 
+export interface GetJobMastersParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  categoryId?: string;
+  jobType?: string;
+  sort?: "newest" | "oldest";
+}
+
 // Get All Jobs
-export const getJobMastersService = async () => {
+export const getJobMastersService = async (params: GetJobMastersParams = {}) => {
   try {
-    const jobs = await JobMaster.aggregate([
-      {
-        $match: {
-          isActive: true,
-          isDisplay: true,
-        },
-      },
+    const page = Math.max(1, Number(params.page) || 1);
+    const limit = Math.max(1, Number(params.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    const matchStage: any = {
+      isActive: true,
+      isDisplay: true,
+    };
+
+    if (params.categoryId && mongoose.Types.ObjectId.isValid(params.categoryId)) {
+      matchStage.categoryId = new mongoose.Types.ObjectId(params.categoryId);
+    }
+
+    if (params.jobType && params.jobType.trim() !== "") {
+      matchStage.jobType = { $regex: params.jobType.trim(), $options: "i" };
+    }
+
+    if (params.search && params.search.trim() !== "") {
+      const searchRegex = new RegExp(params.search.trim(), "i");
+      matchStage.$or = [
+        { title: searchRegex },
+        { description: searchRegex },
+        { skills: { $elemMatch: { $regex: searchRegex } } },
+      ];
+    }
+
+    const sortOrder = params.sort === "oldest" ? 1 : -1;
+    const sortStage: any = {
+      _id: sortOrder,
+      createdAt: sortOrder,
+    };
+
+    const pipeline: any[] = [
+      { $match: matchStage },
+      { $sort: sortStage },
       {
         $lookup: {
           from: "companymasters",
@@ -281,9 +318,26 @@ export const getJobMastersService = async () => {
           cityDetails: 0,
         },
       },
-    ]);
+      {
+        $facet: {
+          jobs: [{ $skip: skip }, { $limit: limit }],
+          totalCount: [{ $count: "count" }],
+        },
+      },
+    ];
 
-    return jobs;
+    const result = await JobMaster.aggregate(pipeline);
+    const jobs = result[0]?.jobs || [];
+    const totalJobs = result[0]?.totalCount[0]?.count || 0;
+    const totalPages = Math.ceil(totalJobs / limit) || 1;
+
+    return {
+      jobs,
+      totalJobs,
+      totalPages,
+      currentPage: page,
+      limit,
+    };
   } catch (error) {
     console.error("Error in getJobMastersService:", error);
 

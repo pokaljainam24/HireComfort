@@ -1,7 +1,7 @@
 import Select from "react-select";
 import arrowDownIcon from "../assets/imgs/template/icons/arrow-down.svg";
 
-const industryOptions = [
+const categoryOptions = [
   { value: "1", label: "Software" },
   { value: "2", label: "Finance" },
   { value: "3", label: "Recruiting" },
@@ -187,17 +187,34 @@ const customStyles = {
   }),
 };
 
-const HomePageSearchForm = () => {
+interface HomePageSearchFormProps {
+  searchValue?: string;
+  onSearchChange?: (val: string) => void;
+  onSearchSubmit?: (e?: React.FormEvent) => void;
+}
+
+const HomePageSearchForm = ({
+  searchValue = "",
+  onSearchChange,
+  onSearchSubmit,
+}: HomePageSearchFormProps) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onSearchSubmit) {
+      onSearchSubmit(e);
+    }
+  };
+
   return (
-    <form className="job-search-form">
-      {/* Industry */}
+    <form className="job-search-form" onSubmit={handleSubmit}>
+      {/* Category */}
       <div className="box-industry">
         <Select
-          options={industryOptions}
+          options={categoryOptions}
           isSearchable={false}
-          placeholder="Industry"
+          placeholder="Category"
           className="select2"
-          classNamePrefix="industry"
+          classNamePrefix="category"
           styles={customStyles}
           components={{ DropdownIndicator: CustomDropdownIndicator }}
         />
@@ -219,6 +236,8 @@ const HomePageSearchForm = () => {
         className="form-input input-keysearch"
         type="text"
         placeholder="Your keyword..."
+        value={searchValue}
+        onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
       />
 
       {/* Search */}

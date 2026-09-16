@@ -65,9 +65,7 @@ const ContactOtpSchema =
 // =====================================
 
 ContactOtpSchema.index(
-    {
-        expiresAt: 1,
-    },
+    {},
     {
         expireAfterSeconds: 0,
     },
