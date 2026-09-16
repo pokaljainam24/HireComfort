@@ -1,7 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface IQualificationMaster {
-  qualificationTest: string;
+  qualificationId: string;
+  code: string;
+  name: string;
+  degreeLevel: string;
+  specializationAllowed: boolean;
 
   // Status
   isActive: boolean;
@@ -18,55 +22,84 @@ export interface IQualificationMaster {
   deleteBy: string | null;
 }
 
-const qualificationMasterSchema = new Schema<IQualificationMaster>(
-  {
-    qualificationTest: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+const qualificationMasterSchema =
+  new Schema<IQualificationMaster>(
+    {
+      qualificationId: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+      },
 
-    // Status
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
+      code: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        uppercase: true,
+      },
 
-    isDisplay: {
-      type: Boolean,
-      default: true,
-    },
+      name: {
+        type: String,
+        required: true,
+        trim: true,
+      },
 
-    // Audit
-    createdBy: {
-      type: String,
-      required: true,
-    },
+      degreeLevel: {
+        type: String,
+        required: true,
+        trim: true,
+      },
 
-    updatedBy: {
-      type: String,
-      default: null,
-    },
+      specializationAllowed: {
+        type: Boolean,
+        default: false,
+      },
 
-    // Soft Delete
-    deleteAt: {
-      type: Date,
-      default: null,
-    },
+      // Status
+      isActive: {
+        type: Boolean,
+        default: true,
+      },
 
-    deleteBy: {
-      type: String,
-      default: null,
-    },
-  },
-  {
-    timestamps: true,
-  },
-);
+      isDisplay: {
+        type: Boolean,
+        default: true,
+      },
 
-const QualificationMaster = mongoose.model<IQualificationMaster>(
-  "QualificationMaster",
-  qualificationMasterSchema,
-);
+      // Audit
+      createdBy: {
+        type: String,
+        required: true,
+      },
+
+      updatedBy: {
+        type: String,
+        default: null,
+      },
+
+      // Soft Delete
+      deleteAt: {
+        type: Date,
+        default: null,
+      },
+
+      deleteBy: {
+        type: String,
+        default: null,
+      },
+    },
+    {
+      timestamps: true,
+    }
+  );
+
+const QualificationMaster =
+  mongoose.model<IQualificationMaster>(
+    "QualificationMaster",
+    qualificationMasterSchema,
+    "qualificationmasters"
+  );
 
 export default QualificationMaster;

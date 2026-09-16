@@ -12,22 +12,76 @@ import {
 // Create Qualification
 // =====================================
 
-export const createQualification = async (req: Request, res: Response) => {
+export const createQualification = async (
+  req: Request,
+  res: Response,
+) => {
   try {
-    const qualification = await createQualificationService({
-      ...req.body,
-      createdBy: "admin",
-    });
+    const {
+      qualificationId,
+      code,
+      name,
+      degreeLevel,
+      specializationAllowed,
+    } = req.body;
+
+    // ==============================
+    // Required Field Validation
+    // ==============================
+
+    if (!qualificationId?.trim()) {
+      return res.status(400).json({
+        message: "Qualification ID is required",
+      });
+    }
+
+    if (!code?.trim()) {
+      return res.status(400).json({
+        message: "Qualification code is required",
+      });
+    }
+
+    if (!name?.trim()) {
+      return res.status(400).json({
+        message: "Qualification name is required",
+      });
+    }
+
+    if (!degreeLevel?.trim()) {
+      return res.status(400).json({
+        message: "Degree level is required",
+      });
+    }
+
+    // ==============================
+    // Create
+    // ==============================
+
+    const qualification =
+      await createQualificationService({
+        qualificationId: qualificationId.trim(),
+        code: code.trim().toUpperCase(),
+        name: name.trim(),
+        degreeLevel: degreeLevel.trim(),
+        specializationAllowed:
+          specializationAllowed ?? false,
+        createdBy: "admin",
+      });
 
     return res.status(201).json({
       message: "Qualification created successfully",
       qualification,
     });
-  } catch (error) {
-    console.error("Error creating qualification:", error);
+  } catch (error: any) {
+    console.error(
+      "Error creating qualification:",
+      error,
+    );
 
     return res.status(500).json({
-      message: "Error creating qualification",
+      message:
+        error.message ||
+        "Error creating qualification",
     });
   }
 };
@@ -36,18 +90,27 @@ export const createQualification = async (req: Request, res: Response) => {
 // Get All Qualification
 // =====================================
 
-export const getQualifications = async (req: Request, res: Response) => {
+export const getQualifications = async (
+  req: Request,
+  res: Response,
+) => {
   try {
-    const qualifications = await getQualificationService();
+    const qualifications =
+      await getQualificationService();
 
     return res.status(200).json({
       qualifications,
     });
-  } catch (error) {
-    console.error("Error getting qualifications:", error);
+  } catch (error: any) {
+    console.error(
+      "Error getting qualifications:",
+      error,
+    );
 
     return res.status(500).json({
-      message: "Error getting qualifications",
+      message:
+        error.message ||
+        "Error getting qualifications",
     });
   }
 };
@@ -56,17 +119,24 @@ export const getQualifications = async (req: Request, res: Response) => {
 // Get Qualification By ID
 // =====================================
 
-export const getQualification = async (req: Request, res: Response) => {
+export const getQualification = async (
+  req: Request,
+  res: Response,
+) => {
   try {
-    const qualificationId = req.params.id;
+    const qualificationId =
+      String(req.params.id);
 
-    if (typeof qualificationId !== "string") {
+    if (!qualificationId) {
       return res.status(400).json({
         message: "Invalid qualification ID",
       });
     }
 
-    const qualification = await getQualificationByIdService(qualificationId);
+    const qualification =
+      await getQualificationByIdService(
+        qualificationId,
+      );
 
     if (!qualification) {
       return res.status(404).json({
@@ -77,11 +147,16 @@ export const getQualification = async (req: Request, res: Response) => {
     return res.status(200).json({
       qualification,
     });
-  } catch (error) {
-    console.error("Error getting qualification:", error);
+  } catch (error: any) {
+    console.error(
+      "Error getting qualification:",
+      error,
+    );
 
     return res.status(500).json({
-      message: "Error getting qualification",
+      message:
+        error.message ||
+        "Error getting qualification",
     });
   }
 };
@@ -90,20 +165,124 @@ export const getQualification = async (req: Request, res: Response) => {
 // Update Qualification
 // =====================================
 
-export const updateQualification = async (req: Request, res: Response) => {
+export const updateQualification = async (
+  req: Request,
+  res: Response,
+) => {
   try {
-    const qualificationId = req.params.id;
+    const qualificationId =
+      String(req.params.id);
 
-    if (typeof qualificationId !== "string") {
+    if (!qualificationId) {
       return res.status(400).json({
         message: "Invalid qualification ID",
       });
     }
 
-    const qualification = await updateQualificationService(qualificationId, {
-      ...req.body,
-      updatedBy: "admin",
-    });
+    const {
+      qualificationId: newQualificationId,
+      code,
+      name,
+      degreeLevel,
+      specializationAllowed,
+      isActive,
+      isDisplay,
+    } = req.body;
+
+    // ==============================
+    // Validation
+    // ==============================
+
+    if (
+      newQualificationId !== undefined &&
+      !newQualificationId?.trim()
+    ) {
+      return res.status(400).json({
+        message: "Qualification ID is required",
+      });
+    }
+
+    if (
+      code !== undefined &&
+      !code?.trim()
+    ) {
+      return res.status(400).json({
+        message: "Qualification code is required",
+      });
+    }
+
+    if (
+      name !== undefined &&
+      !name?.trim()
+    ) {
+      return res.status(400).json({
+        message: "Qualification name is required",
+      });
+    }
+
+    if (
+      degreeLevel !== undefined &&
+      !degreeLevel?.trim()
+    ) {
+      return res.status(400).json({
+        message: "Degree level is required",
+      });
+    }
+
+    // ==============================
+    // Build Update Data
+    // ==============================
+
+    const updateData: Record<string, any> = {};
+
+    if (newQualificationId !== undefined) {
+      updateData.qualificationId =
+        newQualificationId.trim();
+    }
+
+    if (code !== undefined) {
+      updateData.code =
+        code.trim().toUpperCase();
+    }
+
+    if (name !== undefined) {
+      updateData.name =
+        name.trim();
+    }
+
+    if (degreeLevel !== undefined) {
+      updateData.degreeLevel =
+        degreeLevel.trim();
+    }
+
+    if (
+      specializationAllowed !== undefined
+    ) {
+      updateData.specializationAllowed =
+        Boolean(specializationAllowed);
+    }
+
+    if (isActive !== undefined) {
+      updateData.isActive =
+        Boolean(isActive);
+    }
+
+    if (isDisplay !== undefined) {
+      updateData.isDisplay =
+        Boolean(isDisplay);
+    }
+
+    updateData.updatedBy = "admin";
+
+    // ==============================
+    // Update
+    // ==============================
+
+    const qualification =
+      await updateQualificationService(
+        qualificationId,
+        updateData,
+      );
 
     if (!qualification) {
       return res.status(404).json({
@@ -112,14 +291,20 @@ export const updateQualification = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json({
-      message: "Qualification updated successfully",
+      message:
+        "Qualification updated successfully",
       qualification,
     });
-  } catch (error) {
-    console.error("Error updating qualification:", error);
+  } catch (error: any) {
+    console.error(
+      "Error updating qualification:",
+      error,
+    );
 
     return res.status(500).json({
-      message: "Error updating qualification",
+      message:
+        error.message ||
+        "Error updating qualification",
     });
   }
 };
@@ -128,11 +313,15 @@ export const updateQualification = async (req: Request, res: Response) => {
 // Delete Qualification
 // =====================================
 
-export const deleteQualification = async (req: Request, res: Response) => {
+export const deleteQualification = async (
+  req: Request,
+  res: Response,
+) => {
   try {
-    const qualificationId = req.params.id;
+    const qualificationId =
+      String(req.params.id);
 
-    if (typeof qualificationId !== "string") {
+    if (!qualificationId) {
       return res.status(400).json({
         message: "Invalid qualification ID",
       });
@@ -140,10 +329,11 @@ export const deleteQualification = async (req: Request, res: Response) => {
 
     const deleteBy = "admin";
 
-    const qualification = await deleteQualificationService(
-      qualificationId,
-      deleteBy,
-    );
+    const qualification =
+      await deleteQualificationService(
+        qualificationId,
+        deleteBy,
+      );
 
     if (!qualification) {
       return res.status(404).json({
@@ -152,14 +342,20 @@ export const deleteQualification = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json({
-      message: "Qualification deleted successfully",
+      message:
+        "Qualification deleted successfully",
       qualification,
     });
-  } catch (error) {
-    console.error("Error deleting qualification:", error);
+  } catch (error: any) {
+    console.error(
+      "Error deleting qualification:",
+      error,
+    );
 
     return res.status(500).json({
-      message: "Error deleting qualification",
+      message:
+        error.message ||
+        "Error deleting qualification",
     });
   }
 };

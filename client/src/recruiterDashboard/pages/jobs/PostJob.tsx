@@ -16,6 +16,10 @@ import { jobApi } from "../../api/jobApi.ts";
 import Field from "../../components/common/Field.tsx";
 import { Icon } from "../../components/common/Icon.tsx";
 import { getEmploymentTypes } from "../../api/EmploymentTypeApi.ts";
+import type { Qualification } from "../../types/qualification.ts";
+import { getQualifications } from "../../api/QualificationApi.ts";
+import type { Skills } from "../../types/skills.ts";
+import { getSkills } from "../../api/skillsApi.ts";
 
 type FormState = Omit<Job, "_id" | "skills"> & { skills: string };
 
@@ -57,9 +61,11 @@ const PostJob: React.FC = () => {
   const [formError, setFormError] = useState("");
   const [saved, setSaved] = useState(false);
   const [employmentTypes, setEmploymentTypes] = useState<any[]>([]);
+  const [qualifications, setQualifications] = useState<Qualification[]>([]);
+  const [skillsList, setSkillsList] = useState<Skills[]>([]);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-   useEffect(() => {
+  useEffect(() => {
     const loadData = async () => {
       try {
         const [
@@ -69,6 +75,8 @@ const PostJob: React.FC = () => {
           s,
           ci,
           employment,
+          qualifications,
+          skills,
         ] = await Promise.all([
           getJobCategories().catch(() => []),
           getJobSubCategories().catch(() => []),
@@ -76,8 +84,10 @@ const PostJob: React.FC = () => {
           getStates().catch(() => []),
           getCities().catch(() => []),
           getEmploymentTypes().catch(() => []),
+          getQualifications().catch(() => []),
+          getSkills().catch(() => []),
         ]);
-  
+
         setCategories(Array.isArray(cat) ? cat : []);
         setSubCategories(Array.isArray(sub) ? sub : []);
         setCountries(Array.isArray(c) ? c : []);
@@ -86,15 +96,30 @@ const PostJob: React.FC = () => {
         setEmploymentTypes(
           Array.isArray(employment) ? employment : []
         );
-  
+        setQualifications(
+          Array.isArray(qualifications)
+            ? qualifications
+            : []
+        );
+
+        console.log(
+          "Qualifications:",
+          qualifications
+        );
+        setSkillsList(
+          Array.isArray(skills) ? skills : []
+        );
+
+        console.log("Skills:", skills);
+
         console.log("Employment Types:", employment);
       } catch (error) {
         console.error("Error loading Post Job data:", error);
-  
+
         setEmploymentTypes([]);
       }
     };
-  
+
     loadData();
   }, []);
 
@@ -245,53 +270,53 @@ const PostJob: React.FC = () => {
                     placeholder="e.g. Senior Frontend Developer"
                   />
                 </Field>
-               <Field label="Job Category" required error={errors.categoryId}>
-                    <select
-                      value={form.categoryId}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          categoryId: e.target.value,
-                          subCategoryId: "",
-                        })
-                      }
-                    >
-                      <option value="">Select category</option>
-                  
-                      {categories.map((category) => (
-                        <option key={category._id} value={category._id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                  </Field>
-               <Field
-                    label="Job Subcategory"
-                    required
-                    error={errors.subCategoryId}
+                <Field label="Job Category" required error={errors.categoryId}>
+                  <select
+                    value={form.categoryId}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        categoryId: e.target.value,
+                        subCategoryId: "",
+                      })
+                    }
                   >
-                    <select
-                      value={form.subCategoryId}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          subCategoryId: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">Select subcategory</option>
-                  
-                      {filteredSubCategories.map((subcategory) => (
-                        <option
-                          key={subcategory._id}
-                          value={subcategory._id}
-                        >
-                          {subcategory.name}
-                        </option>
-                      ))}
-                    </select>
-                  </Field>
-             <Field label="Job Type">
+                    <option value="">Select category</option>
+
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field
+                  label="Job Subcategory"
+                  required
+                  error={errors.subCategoryId}
+                >
+                  <select
+                    value={form.subCategoryId}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        subCategoryId: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Select subcategory</option>
+
+                    {filteredSubCategories.map((subcategory) => (
+                      <option
+                        key={subcategory._id}
+                        value={subcategory._id}
+                      >
+                        {subcategory.name}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="Job Type">
                   <select
                     value={form.jobType}
                     onChange={(e) =>
@@ -304,7 +329,7 @@ const PostJob: React.FC = () => {
                     <option value="">
                       Select job type
                     </option>
-                
+
                     {employmentTypes.map((type) => (
                       <option
                         key={type.EmploymentTypeId}
@@ -380,13 +405,33 @@ const PostJob: React.FC = () => {
                     onChange={(e) => setForm({ ...form, nop: Number(e.target.value) })}
                   />
                 </Field>
-                <Field label="Qualification" required error={errors.qualification}>
-                  <input
-                    type="text"
+                <Field
+                  label="Qualification"
+                  required
+                  error={errors.qualification}
+                >
+                  <select
                     value={form.qualification}
-                    onChange={(e) => setForm({ ...form, qualification: e.target.value })}
-                    placeholder="e.g., Bachelor's Degree in Computer Science"
-                  />
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        qualification: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">
+                      Select qualification
+                    </option>
+
+                    {qualifications.map((qualification) => (
+                      <option
+                        key={qualification._id}
+                        value={qualification._id}
+                      >
+                        {qualification.name}
+                      </option>
+                    ))}
+                  </select>
                 </Field>
                 <Field label="Min Experience (yrs)">
                   <input
@@ -411,12 +456,29 @@ const PostJob: React.FC = () => {
                     onChange={(e) => setForm({ ...form, deadline: e.target.value })}
                   />
                 </Field>
-                <Field label="Skills" hint="Comma separated, e.g. React, Node.js, SQL">
-                  <input
+                <Field label="Skills" required error={errors.skills}>
+                  <select
                     value={form.skills}
-                    onChange={(e) => setForm({ ...form, skills: e.target.value })}
-                    placeholder="React, Node.js, SQL"
-                  />
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        skills: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">
+                      Select skill
+                    </option>
+
+                    {skillsList.map((skill) => (
+                      <option
+                        key={skill._id}
+                        value={skill._id}
+                      >
+                        {skill.name}
+                      </option>
+                    ))}
+                  </select>
                 </Field>
                 <Field label="Job Description" required error={errors.description} span3>
                   <Editor

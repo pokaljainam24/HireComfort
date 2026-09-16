@@ -10,14 +10,49 @@ import {
 
 const qualificationRoutes = express.Router();
 
-qualificationRoutes.post("/", createQualification);
+// =====================================
+// Create Qualification
+// =====================================
 
-qualificationRoutes.get("/", getQualifications);
+qualificationRoutes.post(
+  "/",
+  createQualification,
+);
 
-qualificationRoutes.get("/:id", getQualification);
+// =====================================
+// Get All Qualifications
+// =====================================
 
-qualificationRoutes.patch("/:id", updateQualification);
+qualificationRoutes.get(
+  "/",
+  getQualifications,
+);
 
-qualificationRoutes.delete("/:id", deleteQualification);
+// =====================================
+// Get Qualification By ID
+// =====================================
+
+qualificationRoutes.get(
+  "/:id",
+  getQualification,
+);
+
+// =====================================
+// Update Qualification
+// =====================================
+
+qualificationRoutes.patch(
+  "/:id",
+  updateQualification,
+);
+
+// =====================================
+// Delete Qualification
+// =====================================
+
+qualificationRoutes.delete(
+  "/:id",
+  deleteQualification,
+);
 
 export default qualificationRoutes;

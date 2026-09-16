@@ -6,18 +6,30 @@ export type ISkillsMaster = InstanceType<typeof SkillsMaster>;
 // Create Skills
 // =====================================
 
-export async function createSkillsService(skillsData: Partial<ISkillsMaster>) {
+export async function createSkillsService(
+  skillsData: Partial<ISkillsMaster>,
+) {
   try {
     // ==============================
     // Skills Validation
     // ==============================
 
-    if (!skillsData.skillsTest?.trim()) {
-      throw new Error("Skills is required");
+    if (!skillsData.skillId?.trim()) {
+      throw new Error("Skill ID is required");
     }
 
-    if (skillsData.skillsTest.trim().length < 2) {
-      throw new Error("Skills must contain at least 2 characters");
+    if (!skillsData.name?.trim()) {
+      throw new Error("Skill name is required");
+    }
+
+    if (skillsData.name.trim().length < 2) {
+      throw new Error(
+        "Skill name must contain at least 2 characters",
+      );
+    }
+
+    if (!skillsData.category?.trim()) {
+      throw new Error("Skill category is required");
     }
 
     // ==============================
@@ -27,7 +39,10 @@ export async function createSkillsService(skillsData: Partial<ISkillsMaster>) {
     const skills = new SkillsMaster({
       ...skillsData,
 
-      skillsTest: skillsData.skillsTest.trim(),
+      skillId: skillsData.skillId.trim(),
+      name: skillsData.name.trim(),
+      category: skillsData.category.trim(),
+      description: skillsData.description?.trim() || "",
     });
 
     return await skills.save();
@@ -43,10 +58,13 @@ export async function createSkillsService(skillsData: Partial<ISkillsMaster>) {
 
 export async function getSkillsService() {
   try {
-    return await SkillsMaster.find({
-      isActive: true,
-      isDisplay: true,
+    const skills = await SkillsMaster.find().sort({
+      name: 1,
     });
+
+    console.log("Skills from MongoDB:", skills);
+
+    return skills;
   } catch (error) {
     console.error("Error getting skills:", error);
     throw error;
@@ -63,9 +81,13 @@ export async function getSkillsByIdService(id: string) {
       _id: id,
       isActive: true,
       isDisplay: true,
+      deleteAt: null,
     });
   } catch (error) {
-    console.error(`Error getting skills with id ${id}:`, error);
+    console.error(
+      `Error getting skills with id ${id}:`,
+      error,
+    );
     throw error;
   }
 }
@@ -79,16 +101,55 @@ export async function updateSkillsService(
   updateData: Partial<ISkillsMaster>,
 ) {
   try {
-    if (updateData.skillsTest !== undefined) {
-      if (!updateData.skillsTest.trim()) {
-        throw new Error("Skills is required");
+    // ==============================
+    // Skill ID Validation
+    // ==============================
+
+    if (updateData.skillId !== undefined) {
+      if (!updateData.skillId.trim()) {
+        throw new Error("Skill ID is required");
       }
 
-      if (updateData.skillsTest.trim().length < 2) {
-        throw new Error("Skills must contain at least 2 characters");
+      updateData.skillId = updateData.skillId.trim();
+    }
+
+    // ==============================
+    // Name Validation
+    // ==============================
+
+    if (updateData.name !== undefined) {
+      if (!updateData.name.trim()) {
+        throw new Error("Skill name is required");
       }
 
-      updateData.skillsTest = updateData.skillsTest.trim();
+      if (updateData.name.trim().length < 2) {
+        throw new Error(
+          "Skill name must contain at least 2 characters",
+        );
+      }
+
+      updateData.name = updateData.name.trim();
+    }
+
+    // ==============================
+    // Category Validation
+    // ==============================
+
+    if (updateData.category !== undefined) {
+      if (!updateData.category.trim()) {
+        throw new Error("Skill category is required");
+      }
+
+      updateData.category = updateData.category.trim();
+    }
+
+    // ==============================
+    // Description
+    // ==============================
+
+    if (updateData.description !== undefined) {
+      updateData.description =
+        updateData.description.trim();
     }
 
     return await SkillsMaster.findOneAndUpdate(
@@ -96,6 +157,7 @@ export async function updateSkillsService(
         _id: id,
         isActive: true,
         isDisplay: true,
+        deleteAt: null,
       },
       updateData,
       {
@@ -104,7 +166,10 @@ export async function updateSkillsService(
       },
     );
   } catch (error) {
-    console.error(`Error updating skills with id ${id}:`, error);
+    console.error(
+      `Error updating skills with id ${id}:`,
+      error,
+    );
     throw error;
   }
 }
@@ -113,12 +178,17 @@ export async function updateSkillsService(
 // Delete Skills
 // =====================================
 
-export async function deleteSkillsService(id: string, deleteBy: string) {
+export async function deleteSkillsService(
+  id: string,
+  deleteBy: string,
+) {
   try {
     return await SkillsMaster.findOneAndUpdate(
       {
         _id: id,
         isActive: true,
+        isDisplay: true,
+        deleteAt: null,
       },
       {
         isActive: false,
@@ -131,7 +201,10 @@ export async function deleteSkillsService(id: string, deleteBy: string) {
       },
     );
   } catch (error) {
-    console.error(`Error deleting skills with id ${id}:`, error);
+    console.error(
+      `Error deleting skills with id ${id}:`,
+      error,
+    );
     throw error;
   }
 }
@@ -142,9 +215,14 @@ export async function deleteSkillsService(id: string, deleteBy: string) {
 
 export async function getAllSkillsForAdminService() {
   try {
-    return await SkillsMaster.find();
+    return await SkillsMaster.find().sort({
+      name: 1,
+    });
   } catch (error) {
-    console.error("Error getting skills for admin:", error);
+    console.error(
+      "Error getting skills for admin:",
+      error,
+    );
     throw error;
   }
 }

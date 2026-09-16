@@ -1,0 +1,63 @@
+[
+  {
+    "companyTypeId": "comp_pvt_01",
+    "code": "PVT_LTD",
+    "name": "Private Limited",
+    "description": "Privately owned commercial entity registered under the Companies Act, with restricted share transfers."
+  },
+  {
+    "companyTypeId": "comp_pub_02",
+    "code": "PUBLIC_LTD",
+    "name": "Public Limited",
+    "description": "Publicly traded company listed on a stock exchange, allowing shares to be bought and sold by the general public."
+  },
+  {
+    "companyTypeId": "comp_llp_03",
+    "code": "LLP",
+    "name": "Limited Liability Partnership",
+    "description": "A business partnership structure where some or all partners have limited liabilities and flexible internal management."
+  },
+  {
+    "companyTypeId": "comp_prop_04",
+    "code": "SOLE_PROP",
+    "name": "Sole Proprietorship",
+    "description": "An unincorporated business owned and run by a single individual with direct personal liability for all debts."
+  },
+  {
+    "companyTypeId": "comp_part_05",
+    "code": "PARTNERSHIP",
+    "name": "Partnership Firm",
+    "description": "A standard business structure where two or more individuals manage and operate a business based on a partnership deed."
+  },
+  {
+    "companyTypeId": "comp_opc_06",
+    "code": "OPC",
+    "name": "One Person Company",
+    "description": "A corporate entity formed with only one single member, combining the features of a sole proprietorship and a private limited firm."
+  },
+  {
+    "companyTypeId": "comp_ng_07",
+    "code": "NGO_NPO",
+    "name": "Non-Profit Organization",
+    "description": "An entity set up dedicated to a specific social, educational, religious, or charitable cause, with no profits distributed to members."
+  },
+  {
+    "companyTypeId": "comp_gov_08",
+    "code": "GOVT_BODY",
+    "name": "Government Enterprise / PSU",
+    "description": "State-owned or public sector undertaking where the government owns 51% or more of the corporate equity share capital."
+  },
+  {
+    "companyTypeId": "comp_mne_09",
+    "code": "MNC",
+    "name": "Multinational Corporation",
+    "description": "An enterprise operating facilities and assets in at least one country other than its home country."
+  },
+  {
+    "companyTypeId": "comp_subs_10",
+    "code": "SUBSIDIARY",
+    "name": "Subsidiary Company",
+    "description": "A corporate entity whose voting stock is more than 50% controlled by another parent or holding company."
+  }
+]	
+

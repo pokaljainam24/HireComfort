@@ -12,10 +12,52 @@ import {
 // Create Skills
 // =====================================
 
-export const createSkills = async (req: Request, res: Response) => {
+export const createSkills = async (
+  req: Request,
+  res: Response,
+) => {
   try {
+    const {
+      skillId,
+      name,
+      category,
+      description,
+    } = req.body;
+
+    // ==============================
+    // Validation
+    // ==============================
+
+    if (!skillId?.trim()) {
+      return res.status(400).json({
+        message: "Skill ID is required",
+      });
+    }
+
+    if (!name?.trim()) {
+      return res.status(400).json({
+        message: "Skill name is required",
+      });
+    }
+
+    if (name.trim().length < 2) {
+      return res.status(400).json({
+        message:
+          "Skill name must contain at least 2 characters",
+      });
+    }
+
+    if (!category?.trim()) {
+      return res.status(400).json({
+        message: "Skill category is required",
+      });
+    }
+
     const skills = await createSkillsService({
-      ...req.body,
+      skillId: skillId.trim(),
+      name: name.trim(),
+      category: category.trim(),
+      description: description?.trim() || "",
       createdBy: "admin",
     });
 
@@ -23,11 +65,12 @@ export const createSkills = async (req: Request, res: Response) => {
       message: "Skills created successfully",
       skills,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating skills:", error);
 
     return res.status(500).json({
-      message: "Error creating skills",
+      message:
+        error.message || "Error creating skills",
     });
   }
 };
@@ -36,18 +79,22 @@ export const createSkills = async (req: Request, res: Response) => {
 // Get All Skills
 // =====================================
 
-export const getSkills = async (req: Request, res: Response) => {
+export const getSkills = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const skills = await getSkillsService();
 
     return res.status(200).json({
       skills,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error getting skills:", error);
 
     return res.status(500).json({
-      message: "Error getting skills",
+      message:
+        error.message || "Error getting skills",
     });
   }
 };
@@ -56,17 +103,21 @@ export const getSkills = async (req: Request, res: Response) => {
 // Get Skills By ID
 // =====================================
 
-export const getSkill = async (req: Request, res: Response) => {
+export const getSkill = async (
+  req: Request,
+  res: Response,
+) => {
   try {
-    const skillsId = req.params.id;
+    const skillsId = String(req.params.id);
 
-    if (typeof skillsId !== "string") {
+    if (!skillsId) {
       return res.status(400).json({
         message: "Invalid skills ID",
       });
     }
 
-    const skills = await getSkillsByIdService(skillsId);
+    const skills =
+      await getSkillsByIdService(skillsId);
 
     if (!skills) {
       return res.status(404).json({
@@ -77,11 +128,12 @@ export const getSkill = async (req: Request, res: Response) => {
     return res.status(200).json({
       skills,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error getting skills:", error);
 
     return res.status(500).json({
-      message: "Error getting skills",
+      message:
+        error.message || "Error getting skills",
     });
   }
 };
@@ -90,20 +142,108 @@ export const getSkill = async (req: Request, res: Response) => {
 // Update Skills
 // =====================================
 
-export const updateSkills = async (req: Request, res: Response) => {
+export const updateSkills = async (
+  req: Request,
+  res: Response,
+) => {
   try {
-    const skillsId = req.params.id;
+    const skillsId = String(req.params.id);
 
-    if (typeof skillsId !== "string") {
+    if (!skillsId) {
       return res.status(400).json({
         message: "Invalid skills ID",
       });
     }
 
-    const skills = await updateSkillsService(skillsId, {
-      ...req.body,
-      updatedBy: "admin",
-    });
+    const {
+      skillId,
+      name,
+      category,
+      description,
+      isActive,
+      isDisplay,
+    } = req.body;
+
+    // ==============================
+    // Validation
+    // ==============================
+
+    if (
+      skillId !== undefined &&
+      !skillId?.trim()
+    ) {
+      return res.status(400).json({
+        message: "Skill ID is required",
+      });
+    }
+
+    if (
+      name !== undefined &&
+      !name?.trim()
+    ) {
+      return res.status(400).json({
+        message: "Skill name is required",
+      });
+    }
+
+    if (
+      name !== undefined &&
+      name.trim().length < 2
+    ) {
+      return res.status(400).json({
+        message:
+          "Skill name must contain at least 2 characters",
+      });
+    }
+
+    if (
+      category !== undefined &&
+      !category?.trim()
+    ) {
+      return res.status(400).json({
+        message: "Skill category is required",
+      });
+    }
+
+    // ==============================
+    // Update Data
+    // ==============================
+
+    const updateData: Record<string, any> = {};
+
+    if (skillId !== undefined) {
+      updateData.skillId = skillId.trim();
+    }
+
+    if (name !== undefined) {
+      updateData.name = name.trim();
+    }
+
+    if (category !== undefined) {
+      updateData.category = category.trim();
+    }
+
+    if (description !== undefined) {
+      updateData.description =
+        description.trim();
+    }
+
+    if (isActive !== undefined) {
+      updateData.isActive = Boolean(isActive);
+    }
+
+    if (isDisplay !== undefined) {
+      updateData.isDisplay =
+        Boolean(isDisplay);
+    }
+
+    updateData.updatedBy = "admin";
+
+    const skills =
+      await updateSkillsService(
+        skillsId,
+        updateData,
+      );
 
     if (!skills) {
       return res.status(404).json({
@@ -115,11 +255,15 @@ export const updateSkills = async (req: Request, res: Response) => {
       message: "Skills updated successfully",
       skills,
     });
-  } catch (error) {
-    console.error("Error updating skills:", error);
+  } catch (error: any) {
+    console.error(
+      "Error updating skills:",
+      error,
+    );
 
     return res.status(500).json({
-      message: "Error updating skills",
+      message:
+        error.message || "Error updating skills",
     });
   }
 };
@@ -128,11 +272,14 @@ export const updateSkills = async (req: Request, res: Response) => {
 // Delete Skills
 // =====================================
 
-export const deleteSkills = async (req: Request, res: Response) => {
+export const deleteSkills = async (
+  req: Request,
+  res: Response,
+) => {
   try {
-    const skillsId = req.params.id;
+    const skillsId = String(req.params.id);
 
-    if (typeof skillsId !== "string") {
+    if (!skillsId) {
       return res.status(400).json({
         message: "Invalid skills ID",
       });
@@ -140,7 +287,11 @@ export const deleteSkills = async (req: Request, res: Response) => {
 
     const deleteBy = "admin";
 
-    const skills = await deleteSkillsService(skillsId, deleteBy);
+    const skills =
+      await deleteSkillsService(
+        skillsId,
+        deleteBy,
+      );
 
     if (!skills) {
       return res.status(404).json({
@@ -152,11 +303,15 @@ export const deleteSkills = async (req: Request, res: Response) => {
       message: "Skills deleted successfully",
       skills,
     });
-  } catch (error) {
-    console.error("Error deleting skills:", error);
+  } catch (error: any) {
+    console.error(
+      "Error deleting skills:",
+      error,
+    );
 
     return res.status(500).json({
-      message: "Error deleting skills",
+      message:
+        error.message || "Error deleting skills",
     });
   }
 };
