@@ -90,26 +90,23 @@ const JobCategoryMaster: React.FC = () => {
   // IMAGE URL HELPER
   // =====================================
 
-  const getImageUrl = (
-    imagePath?: string | null,
-  ) => {
-    if (!imagePath) {
-      return "";
-    }
+  const getImageUrl = (image?: string) => {
+    if (!image) return "";
 
+    const value = image.trim();
+
+    // Backend already returns complete URL
     if (
-      imagePath.startsWith("http://") ||
-      imagePath.startsWith("https://")
+      value.startsWith("http://") ||
+      value.startsWith("https://")
     ) {
-      return imagePath;
+      return value;
     }
 
-    if (imagePath.startsWith("/")) {
-      return `${API_BASE_URL}${imagePath}`;
-    }
-
-    return `${API_BASE_URL}/${imagePath}`;
+    // If backend returns relative path
+    return `${API_BASE_URL}/${value.replace(/^\/+/, "")}`;
   };
+
 
   // =====================================
   // LOAD DATA

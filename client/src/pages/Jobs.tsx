@@ -15,6 +15,9 @@ function Jobs() {
   const [selectedIndustry, setSelectedIndustry] = useState<string>("");
   // const [searchKeyword, setSearchKeyword] = useState<string>("");
 
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+
   useEffect(() => {
     Promise.all([getJobCategories(), jobApi.getAll()])
       .then(([categoriesData, jobsData]) => {
@@ -38,9 +41,23 @@ function Jobs() {
 
   });
 
+  const closeFilter = () => {
+    setIsFilterOpen(false);
+  };
+
   return (
     <>
       <main className="main">
+        {/* =========================================
+          RESPONSIVE FILTER OVERLAY
+      ========================================= */}
+        {isFilterOpen && (
+          <div
+            className="company-filter-overlay"
+            onClick={closeFilter}
+          ></div>
+        )}
+
         <section className="section-box-2">
           <div className="container">
             <div className="banner-hero banner-single banner-single-bg">
@@ -71,12 +88,26 @@ function Jobs() {
                 <div className="content-page">
                   <div className="box-filters-job">
                     <div className="row">
+
                       <div className="col-xl-6 col-lg-5">
-                        <span className="text-small text-showing">
-                          Showing <strong>1-{filteredJobs.length} </strong>of{" "}
-                          <strong>{jobs.length} </strong>jobs
-                        </span>
+                        <div className="company-mobile-filter-row">
+                          {/* RESPONSIVE FILTER BUTTON */}
+                          <button
+                            type="button"
+                            className="company-mobile-filter-btn"
+                            onClick={() => setIsFilterOpen(true)}
+                            aria-label="Open filters"
+                          >
+                            <i className="fi-rr-menu-burger"></i>
+                          </button>
+
+                          <span className="text-small text-showing">
+                            Showing <strong>1-{filteredJobs.length} </strong>of{" "}
+                            <strong>{jobs.length} </strong>jobs
+                          </span>
+                        </div>
                       </div>
+
                       <div className="col-xl-6 col-lg-7 text-lg-end mt-sm-15">
                         <div className="display-flex2">
                           <div className="box-border">
@@ -181,16 +212,39 @@ function Jobs() {
                 </div>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 col-12">
-                <div className="sidebar-shadow none-shadow mb-30">
+                <div
+                  className={`sidebar-shadow none-shadow mb-30 company-filter-sidebar ${isFilterOpen ? "company-filter-sidebar-open" : ""
+                    }`}
+                >
                   <div className="sidebar-filters">
-                    <div className="filter-block head-border mb-30">
+                    {/* MOBILE FILTER HEADER */}
+                    <div className="company-mobile-filter-header">
+                      <h5>Advance Filter</h5>
+
+                      <button
+                        type="button"
+                        className="company-filter-close"
+                        onClick={closeFilter}
+                        aria-label="Close filters"
+                      >
+                        <i className="fi-rr-cross-small"></i>
+                      </button>
+                    </div>
+
+                    {/* DESKTOP FILTER HEADER */}
+                    <div className="filter-block head-border mb-30 company-desktop-filter-header">
                       <h5>
                         Advance Filter{" "}
-                        <a className="link-reset" href="#">
+                        <a
+                          className="link-reset"
+                          href="#"
+                          onClick={(e) => e.preventDefault()}
+                        >
                           Reset
                         </a>
                       </h5>
                     </div>
+
                     <div className="filter-block mb-30">
                       <div className="form-group select-style select-style-icon">
                         <select className="form-control form-icons select-active">
@@ -202,6 +256,7 @@ function Jobs() {
                         <i className="fi-rr-marker"></i>
                       </div>
                     </div>
+
                     <div className="filter-block mb-20">
                       <h5 className="medium-heading mb-15">Industry</h5>
                       <div className="form-group">

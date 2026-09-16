@@ -177,7 +177,7 @@ async function sendCustomerConfirmationEmail(
           letter-spacing:2px;
         "
       >
-        Amitaujas
+        HireComfort
       </div>
 
       <div
@@ -282,7 +282,7 @@ async function sendCustomerConfirmationEmail(
           color:#102a43;
         "
       >
-        Amitaujas LLP
+        HireComfort
       </p>
 
     </div>
@@ -299,7 +299,7 @@ async function sendCustomerConfirmationEmail(
         font-size:14px;
       "
     >
-      Thank you for choosing Amitaujas LLP.
+      Thank you for choosing HireComfort.
     </div>
 
   </div>
@@ -401,7 +401,7 @@ async function sendAdminNotificationEmail(
           letter-spacing:2px;
         "
       >
-        Amitaujas
+        HireComfort
       </div>
 
       <div
@@ -631,7 +631,7 @@ async function sendAdminNotificationEmail(
         font-size:14px;
       "
     >
-      Amitaujas LLP | New Website Query
+      HireComfort | New Website Query
     </div>
 
   </div>

@@ -28,6 +28,8 @@ import VisitorTracker from "./components/VisitorCount.tsx";
 import RecruiterApp from "./recruiterDashboard/RecruiterApp.tsx";
 import ApplicantApp from "./ApplicantDashboard/ApplicantApp.tsx";
 import JobDetails from "./pages/JobDetails.tsx";
+import Services from "./pages/Services.tsx";
+import ServiceResumeWriting from "./pages/ServiceResumeWriting.tsx";
 
 function App() {
   const location = useLocation();
@@ -60,6 +62,9 @@ function App() {
         <Route path="/job-details/:id" element={<JobDetails />} />
         <Route path="/recruiter-panel/*" element={<RecruiterApp />} />
         <Route path="/applicant-panel/*" element={<ApplicantApp />} />
+        
+        <Route path="/service" element={<Services />} />
+        <Route path="/service-resume-writing" element={<ServiceResumeWriting />} />
       </Routes>
       {isHomeRoute && <Footer />}
     </>

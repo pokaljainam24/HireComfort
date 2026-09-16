@@ -1,20 +1,13 @@
 import BlogLatestPostCard from "../components/BlogLatestPostCard";
-import trendingImg from "../assets/imgs/page/blog/img-trending.png";
-import gallery1 from "../assets/imgs/page/blog/gallery1.png";
-import gallery2 from "../assets/imgs/page/blog/gallery2.png";
-import gallery4 from "../assets/imgs/page/blog/gallery4.png";
-import gallery5 from "../assets/imgs/page/blog/gallery5.png";
+
 import newsletterLeft from "../assets/imgs/template/newsletter-left.png";
 import newsletterRight from "../assets/imgs/template/newsletter-right.png";
-
-import user1 from "../assets/imgs/page/homepage1/user1.png";
-import user2 from "../assets/imgs/page/homepage1/user2.png";
-import user3 from "../assets/imgs/page/homepage1/user3.png";
 
 import { getBlogsApi } from "../api/blog/blogApi";
 
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
+
 import BlogBigCard from "../components/BlogBigCard.tsx";
 
 function Blog() {
@@ -144,6 +137,35 @@ function Blog() {
   };
 
   // =====================================
+  // TRENDING NOW
+  // Latest 5 Blogs Dynamic
+  // =====================================
+
+  const trendingBlogs = [...blogs]
+    .sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+
+      return dateB - dateA;
+    })
+    .slice(0, 5);
+
+  // ======================================
+  // BLOG IMAGES
+  // ======================================
+
+  const getImageUrl = (image: string) => {
+    if (!image) return "";
+
+    if (image.startsWith("http://") || image.startsWith("https://")) {
+      return image;
+    }
+
+    return `http://localhost:5000${image.startsWith("/") ? image : `/${image}`
+      }`;
+  };
+
+  // =====================================
   // LOADING
   // =====================================
 
@@ -239,6 +261,7 @@ function Blog() {
                   <div className="paginations">
                     <ul className="pager">
                       {/* PREVIOUS */}
+
                       <li>
                         <button
                           type="button"
@@ -249,6 +272,7 @@ function Blog() {
                       </li>
 
                       {/* NEXT */}
+
                       <li>
                         <button
                           type="button"
@@ -270,23 +294,10 @@ function Blog() {
               ===================================== */}
 
               <div className="col-lg-4 col-md-12 col-sm-12 col-12 pl-40 pl-lg-15 mt-lg-30">
-                <div className="widget_search mb-40">
-                  <div className="search-form">
-                    <form action="#">
-                      <input
-                        type="text"
-                        placeholder="Search…"
-                      />
-
-                      <button type="submit">
-                        <i className="fi-rr-search"></i>
-                      </button>
-                    </form>
-                  </div>
-                </div>
 
                 {/* =====================================
                     TRENDING NOW
+                    DYNAMIC LATEST 5 BLOGS
                 ===================================== */}
 
                 <div className="sidebar-shadow sidebar-news-small">
@@ -295,78 +306,52 @@ function Blog() {
                   </h5>
 
                   <div className="post-list-small">
-                    {[
-                      {
-                        thumbnail: trendingImg,
-                        title:
-                          "How to get better agents in New York, USA",
-                        authorImg: user1,
-                        authorName: "Sugar Rosie",
-                      },
-
-                      {
-                        thumbnail: gallery1,
-                        title:
-                          "How To Create a Resume for a Job in Social",
-                        authorImg: user3,
-                        authorName: "Harding",
-                        date: "17 Sep",
-                      },
-
-                      {
-                        thumbnail: gallery2,
-                        title:
-                          "10 Ways to Avoid a Referee Disaster Zone",
-                        authorImg: user2,
-                        authorName: "Steven",
-                        date: "23 Sep",
-                      },
-
-                      {
-                        thumbnail: gallery4,
-                        title:
-                          "How To Set Work-Life Boundaries From Any Location",
-                        authorImg: user3,
-                        authorName: "Merias",
-                        date: "14 Sep",
-                      },
-
-                      {
-                        thumbnail: gallery5,
-                        title:
-                          "How to Land Your Dream Marketing Job",
-                        authorImg: user1,
-                        authorName: "Rosie",
-                        date: "12 Sep",
-                      },
-                    ].map((post) => (
+                    {trendingBlogs.map((post) => (
                       <div
-                        key={post.title}
+                        key={post._id}
                         className="post-list-small-item d-flex align-items-center"
                       >
                         <figure className="thumb mr-15">
                           <img
-                            src={post.thumbnail}
+                            src={getImageUrl(post.blogImg)}
                             alt={post.title}
                           />
                         </figure>
 
                         <div className="content">
-                          <h5>{post.title}</h5>
+                          <h5>
+                            {post.title}
+                          </h5>
 
                           <div className="post-meta text-muted d-flex align-items-center mb-15">
                             <div className="author d-flex align-items-center mr-20">
                               <img
-                                src={post.authorImg}
-                                alt={post.authorName}
+                                src={getImageUrl(post.authorImg)}
+                                alt={
+                                  post.authorName ||
+                                  "Author"
+                                }
                               />
 
-                              <span>{post.authorName}</span>
+                              <span>
+                                {post.authorName ||
+                                  "Admin"}
+                              </span>
                             </div>
 
                             {post.date && (
                               <div className="date">
-                                <span>{post.date}</span>
+                                <span>
+                                  {new Date(
+                                    post.date,
+                                  ).toLocaleDateString(
+                                    "en-GB",
+                                    {
+                                      day: "2-digit",
+                                      month: "short",
+                                    },
+                                  )}
+                                </span>
                               </div>
                             )}
                           </div>
@@ -390,7 +375,10 @@ function Blog() {
           <div className="box-newsletter">
             <div className="row">
               <div className="col-xl-3 col-12 text-center d-none d-xl-block">
-                <img src={newsletterLeft} alt="joxBox" />
+                <img
+                  src={newsletterLeft}
+                  alt="joxBox"
+                />
               </div>
 
               <div className="col-lg-12 col-xl-6 col-12">
@@ -417,7 +405,10 @@ function Blog() {
               </div>
 
               <div className="col-xl-3 col-12 text-center d-none d-xl-block">
-                <img src={newsletterRight} alt="joxBox" />
+                <img
+                  src={newsletterRight}
+                  alt="joxBox"
+                />
               </div>
             </div>
           </div>

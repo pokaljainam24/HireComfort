@@ -337,16 +337,6 @@ function Navbar() {
                     </Link>
 
                     <ul className="sub-menu">
-                      <li>
-                        <Link
-                          to="/service"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
-                        >
-                          Recruitment Services
-                        </Link>
-                      </li>
 
                       <li>
                         <Link
@@ -361,7 +351,7 @@ function Navbar() {
 
                       <li>
                         <Link
-                          to="/service-career-guidance"
+                          to="/service-resume-writing"
                           onClick={() =>
                             window.scrollTo(0, 0)
                           }
