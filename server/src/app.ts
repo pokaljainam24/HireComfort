@@ -24,8 +24,12 @@ import notificationRoutes from "./routes/notification/notification.js";
 import jobMasterRoutes from "./routes/RecruiterRoutes/JobMasterRoutes.js";
 import jobApplicationMasterRoutes from "./routes/RecruiterRoutes/JobapplicationMasterRoutes.js";
 import chatMessageRoutes from "./routes/Chat-MessageRoutes/MessageRoute.js";
-import interviewMasterRoutes from "./routes/RecruiterRoutes/InterviewMasterRoutes.js";
+
+// routes for interview
+import interviewRoundRoutes from "./routes/InterviewRoutes/InterviewRoutes.js";
+
 import authRouter from "./routes/adminRoutes.js";
+
 
 
 // Website routes
@@ -99,7 +103,7 @@ app.use("/api/notification", notificationRoutes);
 app.use("/api/job_master", jobMasterRoutes);
 app.use("/api/job_application_master", jobApplicationMasterRoutes);
 app.use("/api/messages", chatMessageRoutes);
-app.use("/api/interview_master", interviewMasterRoutes);
+
 
 // Website routes
 // Industry Routes
@@ -121,6 +125,8 @@ app.use("/api/auth", loginRoutes);
 app.use("/api/visitor", visitorRoutes);
 
 app.use("/api/company-types", companyTypeRoutes);
+
+app.use("/api/interview-rounds",interviewRoundRoutes);
 export default app;
 
 
