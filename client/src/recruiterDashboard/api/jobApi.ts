@@ -35,6 +35,10 @@ export const jobApi = {
         }
         return response.data;
     },
+    getAllJobsByRecruiter: async (params?: GetJobsQuery): Promise<JobsResponse> => {
+        const response = await http.get(`${API_URL}/recruiter`, { params });       
+        return response.data;
+    },
     getOne: async (id: string): Promise<Job> => {
         const response = await http.get(`${API_URL}/${id}`);
         return response.data.jobMaster;

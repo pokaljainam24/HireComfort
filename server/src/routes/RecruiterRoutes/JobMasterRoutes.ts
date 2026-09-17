@@ -1,8 +1,10 @@
 import express from "express";
+import { authMiddleware } from "../../middleware/authMiddleware.js";
 
 import {
   createJobMaster,
   getJobMasters,
+  getJobMastersByRecruiter,
   getJobMaster,
   updateJobMaster,
   deleteJobMaster,
@@ -16,9 +18,11 @@ router.post("/", createJobMaster);
 
 router.post("/recruiter", createJobMasterByRecruiterId);
 
-
 // Get All Jobs
 router.get("/", getJobMasters);
+
+// Get Jobs for recruiter
+router.get("/recruiter", authMiddleware, getJobMastersByRecruiter);
 
 // Get Job By ID
 router.get("/:id", getJobMaster);
