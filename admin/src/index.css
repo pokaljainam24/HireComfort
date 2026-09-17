@@ -70,6 +70,7 @@ button {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #cfd6e2;
   border-radius: 8px;
@@ -103,9 +104,11 @@ button {
   .main-area {
     margin-left: 0;
   }
+
   .app-shell.collapsed .main-area {
     margin-left: 0;
   }
+
   .page-content {
     padding: 16px;
   }
@@ -143,6 +146,11 @@ button {
   flex-shrink: 0;
 }
 
+/* Hide scrollbar but keep scrolling */
+::-webkit-scrollbar {
+  display: none;
+}
+
 .sidebar-brand-mark img {
   width: 77%;
   height: 100%;
@@ -178,7 +186,7 @@ button {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 15px;
+  padding: 10px 18px;
   border-radius: 10px;
   font-size: 14px;
   color: #37507a;
@@ -285,10 +293,12 @@ button {
   .sidebar {
     transform: translateX(-100%);
   }
+
   .sidebar.mobile-open {
     transform: translateX(0);
     width: 264px;
   }
+
   .sidebar-overlay.show {
     display: block;
     position: fixed;
@@ -323,6 +333,7 @@ button {
   .app-header {
     left: 0;
   }
+
   .app-shell.collapsed .app-header {
     left: 0;
   }
@@ -403,7 +414,7 @@ button {
   border-radius: 14px;
 }
 
-.card-panel + .card-panel {
+.card-panel+.card-panel {
   margin-top: 20px;
 }
 
@@ -486,6 +497,7 @@ button {
   background: var(--bs-primary);
   color: #fff;
 }
+
 .btn-primary:hover {
   background: #0b5ed7;
 }
@@ -495,6 +507,7 @@ button {
   border-color: var(--border-c);
   color: var(--text-strong);
 }
+
 .btn-outline:hover {
   background: var(--surface);
 }
@@ -503,6 +516,7 @@ button {
   background: var(--bs-success);
   color: #fff;
 }
+
 .btn-success:hover {
   background: #157347;
 }
@@ -511,6 +525,7 @@ button {
   background: #fdecee;
   color: var(--bs-danger);
 }
+
 .btn-danger-soft:hover {
   background: #fbd7db;
 }
@@ -519,6 +534,7 @@ button {
   background: transparent;
   color: var(--text-muted);
 }
+
 .btn-ghost:hover {
   background: var(--surface);
   color: var(--text-strong);
@@ -731,10 +747,12 @@ table.data-table {
   background: #e8f0fe;
   color: var(--bs-primary);
 }
+
 .badge-green {
   background: #e6f4ec;
   color: var(--bs-success);
 }
+
 .badge-gray {
   background: #eef0f3;
   color: var(--bs-secondary);
@@ -858,10 +876,12 @@ table.data-table {
 .only-mobile {
   display: none;
 }
+
 @media (max-width: 900px) {
   .only-desktop {
     display: none;
   }
+
   .only-mobile {
     display: flex;
   }
@@ -904,13 +924,11 @@ table.data-table {
   top: -160px;
   left: -120px;
 
-  background: radial-gradient(
-    circle,
-    rgba(59, 130, 246, 0.45) 0%,
-    rgba(59, 130, 246, 0.2) 35%,
-    rgba(59, 130, 246, 0.05) 60%,
-    transparent 75%
-  );
+  background: radial-gradient(circle,
+      rgba(59, 130, 246, 0.45) 0%,
+      rgba(59, 130, 246, 0.2) 35%,
+      rgba(59, 130, 246, 0.05) 60%,
+      transparent 75%);
 
   filter: blur(8px);
 
@@ -925,13 +943,11 @@ table.data-table {
   right: -180px;
   bottom: -200px;
 
-  background: radial-gradient(
-    circle,
-    rgba(139, 92, 246, 0.4) 0%,
-    rgba(139, 92, 246, 0.18) 35%,
-    rgba(139, 92, 246, 0.05) 60%,
-    transparent 75%
-  );
+  background: radial-gradient(circle,
+      rgba(139, 92, 246, 0.4) 0%,
+      rgba(139, 92, 246, 0.18) 35%,
+      rgba(139, 92, 246, 0.05) 60%,
+      transparent 75%);
 
   filter: blur(10px);
 
@@ -947,12 +963,10 @@ table.data-table {
   border-radius: 50%;
   pointer-events: none;
 
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255, 255, 255, 0.2),
-    rgba(255, 255, 255, 0.05) 40%,
-    transparent 70%
-  );
+  background: radial-gradient(circle at 30% 30%,
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.05) 40%,
+      transparent 70%);
 
   backdrop-filter: blur(2px);
 
@@ -967,12 +981,10 @@ table.data-table {
   top: 12%;
   right: 18%;
 
-  background: radial-gradient(
-    circle,
-    rgba(34, 211, 238, 0.22),
-    rgba(34, 211, 238, 0.05) 55%,
-    transparent 75%
-  );
+  background: radial-gradient(circle,
+      rgba(34, 211, 238, 0.22),
+      rgba(34, 211, 238, 0.05) 55%,
+      transparent 75%);
 
   filter: blur(3px);
 
@@ -987,12 +999,10 @@ table.data-table {
   bottom: 18%;
   left: 12%;
 
-  background: radial-gradient(
-    circle,
-    rgba(96, 165, 250, 0.25),
-    rgba(96, 165, 250, 0.05) 60%,
-    transparent 75%
-  );
+  background: radial-gradient(circle,
+      rgba(96, 165, 250, 0.25),
+      rgba(96, 165, 250, 0.05) 60%,
+      transparent 75%);
 
   filter: blur(2px);
 
@@ -1007,12 +1017,10 @@ table.data-table {
   top: 45%;
   left: 28%;
 
-  background: radial-gradient(
-    circle,
-    rgba(167, 139, 250, 0.25),
-    rgba(167, 139, 250, 0.05) 60%,
-    transparent 75%
-  );
+  background: radial-gradient(circle,
+      rgba(167, 139, 250, 0.25),
+      rgba(167, 139, 250, 0.05) 60%,
+      transparent 75%);
 
   animation: floatThree 7s ease-in-out infinite;
 }
@@ -1170,5 +1178,3 @@ table.data-table {
   left: 6px;
   top: -4px;
 }
-
-

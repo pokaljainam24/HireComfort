@@ -16,6 +16,75 @@
   object-position: center;
 }
 
+.login-toast {
+  width: 370px !important;
+  padding: 14px 18px !important;
+  border-radius: 12px !important;
+
+  background: #ffffff !important;
+
+  border: 1px solid #dbeafe !important;
+
+  border-left: 4px solid #71aaff !important;
+
+  box-shadow:
+    0 8px 25px rgba(13, 110, 253, 0.16),
+    0 2px 8px rgba(13, 110, 253, 0.08) !important;
+}
+
+/* Blue Info Icon */
+.login-toast .swal2-icon.swal2-info {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+
+  margin: 0 12px 0 0 !important;
+
+  border: 2px solid #0d6efd !important;
+
+  color: #0d6efd !important;
+
+  font-size: 22px !important;
+}
+
+/* Title */
+.login-toast-title {
+  margin: 0 0 3px 0 !important;
+  padding: 0 !important;
+
+  color: #0d47a1 !important;
+
+  font-size: 17px !important;
+  font-weight: 700 !important;
+
+  line-height: 1.25 !important;
+}
+
+/* Message */
+.login-toast-text {
+  margin: 0 !important;
+  padding: 0 !important;
+
+  color: #64748b !important;
+
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+/* Timer */
+.login-toast-progress {
+  background: #0d6dfd91 !important;
+  height: 3px !important;
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .login-toast {
+    width: calc(100% - 20px) !important;
+    margin: 10px !important;
+  }
+}
+
 /* =====================================
    BLOG CONTENT
 ===================================== */
