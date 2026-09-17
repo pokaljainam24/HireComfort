@@ -1,0 +1,278 @@
+/* =====================================
+   SUCCESS TOAST
+===================================== */
+
+.hc-toast-success {
+    width: 420px !important;
+    max-width: calc(100vw - 30px) !important;
+    min-height: 70px !important;
+
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    padding: 16px 20px !important;
+}
+
+
+/* Success Title */
+
+.hc-toast-success-title {
+    width: auto !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    font-weight: 600 !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+
+    text-align: left !important;
+}
+
+
+/* Success Icon */
+
+.hc-toast-success-icon {
+    flex-shrink: 0 !important;
+}
+
+
+/* Success Progress */
+
+.hc-toast-success-progress {
+    height: 4px !important;
+}
+
+
+/* =====================================
+   ERROR TOAST
+===================================== */
+
+.hc-toast-error {
+    width: 420px !important;
+    max-width: calc(100vw - 30px) !important;
+    min-height: 70px !important;
+
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    padding: 16px 20px !important;
+}
+
+
+/* Error Title */
+
+.hc-toast-error-title {
+    width: auto !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    font-weight: 600 !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+
+    text-align: left !important;
+}
+
+
+/* Error Icon */
+
+.hc-toast-error-icon {
+    flex-shrink: 0 !important;
+}
+
+
+/* Error Progress */
+
+.hc-toast-error-progress {
+    height: 4px !important;
+}
+
+
+/* =====================================
+   WARNING TOAST
+===================================== */
+
+.hc-toast-warning {
+    width: 420px !important;
+    max-width: calc(100vw - 30px) !important;
+    min-height: 70px !important;
+
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    padding: 16px 20px !important;
+}
+
+
+/* Warning Title */
+
+.hc-toast-warning-title {
+    width: auto !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    font-weight: 600 !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+
+    text-align: left !important;
+}
+
+
+/* Warning Icon */
+
+.hc-toast-warning-icon {
+    flex-shrink: 0 !important;
+}
+
+
+/* Warning Progress */
+
+.hc-toast-warning-progress {
+    height: 4px !important;
+}
+
+
+/* =====================================
+   INFO TOAST
+===================================== */
+
+.hc-toast-info {
+    width: 420px !important;
+    max-width: calc(100vw - 30px) !important;
+    min-height: 70px !important;
+
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    padding: 16px 20px !important;
+}
+
+
+/* Info Title */
+
+.hc-toast-info-title {
+    width: auto !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    font-weight: 600 !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+
+    text-align: left !important;
+}
+
+
+/* Info Icon */
+
+.hc-toast-info-icon {
+    flex-shrink: 0 !important;
+}
+
+
+/* Info Progress */
+
+.hc-toast-info-progress {
+    height: 4px !important;
+}
+
+
+/* =====================================
+   MOBILE - SUCCESS
+===================================== */
+
+@media (max-width: 575px) {
+
+    .hc-toast-success {
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px) !important;
+        min-height: 60px !important;
+        padding: 14px 16px !important;
+    }
+
+    .hc-toast-success-title {
+        font-size: 14px !important;
+        line-height: 1.45 !important;
+    }
+}
+
+
+/* =====================================
+   MOBILE - ERROR
+===================================== */
+
+@media (max-width: 575px) {
+
+    .hc-toast-error {
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px) !important;
+        min-height: 60px !important;
+        padding: 14px 16px !important;
+    }
+
+    .hc-toast-error-title {
+        font-size: 14px !important;
+        line-height: 1.45 !important;
+    }
+}
+
+
+/* =====================================
+   MOBILE - WARNING
+===================================== */
+
+@media (max-width: 575px) {
+
+    .hc-toast-warning {
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px) !important;
+        min-height: 60px !important;
+        padding: 14px 16px !important;
+    }
+
+    .hc-toast-warning-title {
+        font-size: 14px !important;
+        line-height: 1.45 !important;
+    }
+}
+
+
+/* =====================================
+   MOBILE - INFO
+===================================== */
+
+@media (max-width: 575px) {
+
+    .hc-toast-info {
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px) !important;
+        min-height: 60px !important;
+        padding: 14px 16px !important;
+    }
+
+    .hc-toast-info-title {
+        font-size: 14px !important;
+        line-height: 1.45 !important;
+    }
+}

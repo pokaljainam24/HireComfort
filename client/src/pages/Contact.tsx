@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import Swal from "sweetalert2";
 
-import logo from "../assets/imgs/page/contact/logo.svg";
 import contactImg from "../assets/imgs/page/contact/img.png";
 import newsletterLeft from "../assets/imgs/template/newsletter-left.png";
 import newsletterRight from "../assets/imgs/template/newsletter-right.png";
@@ -11,6 +9,9 @@ import {
   sendContactOtpApi,
   verifyContactOtpApi,
 } from "../api/contact/contactApi.ts";
+import toast from "../components/SweetAlert/Toast.ts";
+
+
 
 
 // =====================================
@@ -25,6 +26,7 @@ interface ContactForm {
   message: string;
 }
 
+
 // =====================================
 // Initial Form
 // =====================================
@@ -37,17 +39,20 @@ const initialForm: ContactForm = {
   message: "",
 };
 
+
 // =====================================
 // Contact Component
 // =====================================
 
 function Contact() {
+
   // =====================================
   // Form State
   // =====================================
 
   const [form, setForm] =
     useState<ContactForm>(initialForm);
+
 
   // =====================================
   // Terms State
@@ -56,12 +61,14 @@ function Contact() {
   const [agree, setAgree] =
     useState(false);
 
+
   // =====================================
   // Loading State
   // =====================================
 
   const [loading, setLoading] =
     useState(false);
+
 
   // =====================================
   // OTP States
@@ -82,96 +89,13 @@ function Contact() {
   const [resendSeconds, setResendSeconds] =
     useState(0);
 
-  const [showMap, setShowMap] = useState(false);
-
-  // =====================================
-  // SweetAlert Success Toast
-  // =====================================
-
-  const showSuccess = (message: string) => {
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-
-      icon: "success",
-
-      title: message,
-
-      showConfirmButton: false,
-
-      timer: 5000,
-
-      timerProgressBar: true,
-
-      background: "#a5dc86",
-
-      color: "#ffffff",
-
-      customClass: {
-        popup: "custom-success-toast",
-        title: "custom-success-title",
-        icon: "custom-success-icon",
-      },
-    });
-  };
-
-  // =====================================
-  // SweetAlert Error Toast
-  // =====================================
-
-  const showError = (message: string) => {
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-
-      icon: "error",
-
-      title: message,
-
-      showConfirmButton: false,
-
-      timer: 5000,
-
-      timerProgressBar: true,
-
-      customClass: {
-        popup: "custom-error-toast",
-        title: "custom-error-title",
-      },
-    });
-  };
-
-  // =====================================
-  // SweetAlert Warning Toast
-  // =====================================
-
-  const showWarning = (message: string) => {
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-
-      icon: "warning",
-
-      title: message,
-
-      showConfirmButton: false,
-
-      timer: 5000,
-
-      timerProgressBar: true,
-
-      customClass: {
-        popup: "custom-warning-toast",
-        title: "custom-warning-title",
-      },
-    });
-  };
 
   // =====================================
   // Reset Form
   // =====================================
 
   const resetContactForm = () => {
+
     setForm(initialForm);
 
     setAgree(false);
@@ -189,6 +113,7 @@ function Contact() {
     setResendSeconds(0);
   };
 
+
   // =====================================
   // Handle Form Change
   // =====================================
@@ -198,6 +123,7 @@ function Contact() {
       HTMLInputElement | HTMLTextAreaElement
     >
   ) => {
+
     const {
       name,
       value,
@@ -208,12 +134,14 @@ function Contact() {
       [name]: value,
     }));
 
+
     // =====================================
     // If Email Changes
     // Previous OTP becomes invalid
     // =====================================
 
     if (name === "email") {
+
       setOtp("");
 
       setOtpSent(false);
@@ -226,15 +154,19 @@ function Contact() {
     }
   };
 
+
   // =====================================
   // Start Resend Timer
   // =====================================
 
   const beginResendTimer = () => {
+
     setResendSeconds(60);
 
     const countdown = () => {
+
       setResendSeconds((prev) => {
+
         if (prev <= 1) {
           return 0;
         }
@@ -254,27 +186,32 @@ function Contact() {
     );
   };
 
+
   // =====================================
   // Send OTP
   // =====================================
 
   const handleSendOtp = async () => {
+
     const email =
       form.email
         .trim()
         .toLowerCase();
+
 
     // =====================================
     // Email Required
     // =====================================
 
     if (!email) {
-      showError(
+
+      toast.error(
         "Email is required."
       );
 
       return false;
     }
+
 
     // =====================================
     // Email Validation
@@ -284,27 +221,33 @@ function Contact() {
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
-      showError(
+
+      toast.error(
         "Please enter a valid email address."
       );
 
       return false;
     }
 
+
     // =====================================
     // Resend Timer
     // =====================================
 
     if (resendSeconds > 0) {
-      showWarning(
+
+      toast.warning(
         `Please wait ${resendSeconds} seconds before requesting another OTP.`
       );
 
       return false;
     }
 
+
     try {
+
       setLoading(true);
+
 
       // =====================================
       // API Call
@@ -320,6 +263,7 @@ function Contact() {
         response
       );
 
+
       // =====================================
       // OTP State
       // =====================================
@@ -332,37 +276,45 @@ function Contact() {
 
       setOtp("");
 
+
       // =====================================
       // Start 60 Seconds Timer
       // =====================================
 
       beginResendTimer();
 
+
       // =====================================
       // Success Toast
       // =====================================
 
-      showSuccess(
+      toast.success(
         "A 6-digit OTP has been sent to your email address."
       );
 
+
       return true;
+
     } catch (error: any) {
+
       console.error(
         "SEND OTP ERROR:",
         error
       );
 
-      showError(
+      toast.error(
         error?.response?.data?.message ||
         "Failed to send OTP. Please try again."
       );
 
       return false;
+
     } finally {
+
       setLoading(false);
     }
   };
+
 
   // =====================================
   // Verify OTP + Send Message
@@ -370,6 +322,7 @@ function Contact() {
 
   const handleVerifyAndSubmit =
     async () => {
+
       const email =
         form.email
           .trim()
@@ -378,68 +331,83 @@ function Contact() {
       const cleanOtp =
         otp.trim();
 
+
       // =====================================
       // OTP Validation
       // =====================================
 
       if (!cleanOtp) {
-        showError(
+
+        toast.error(
           "Please enter the 6-digit OTP."
         );
 
         return;
       }
 
+
       if (
         !/^\d{6}$/.test(
           cleanOtp
         )
       ) {
-        showError(
+
+        toast.error(
           "OTP must be exactly 6 digits."
         );
 
         return;
       }
 
+
       // =====================================
       // Form Validation
       // =====================================
 
       if (!form.name.trim()) {
-        showError(
+
+        toast.error(
           "Name is required."
         );
 
         return;
       }
 
+
       if (!form.phone.trim()) {
-        showError(
+
+        toast.error(
           "Phone number is required."
         );
 
         return;
       }
 
+
       if (!form.message.trim()) {
-        showError(
+
+        toast.error(
           "Message is required."
         );
 
         return;
       }
 
+
       if (!agree) {
-        showWarning(
+
+        toast.warning(
           "Please agree to our terms and policy."
         );
 
         return;
       }
 
+
       try {
+
         setLoading(true);
+
 
         // =====================================
         // STEP 1
@@ -457,6 +425,7 @@ function Contact() {
           verifyResponse
         );
 
+
         // =====================================
         // Get Verification Token
         // =====================================
@@ -465,11 +434,14 @@ function Contact() {
           verifyResponse?.verificationToken ||
           verifyResponse?.token;
 
+
         if (!token) {
+
           throw new Error(
             "Verification token was not returned by server."
           );
         }
+
 
         // =====================================
         // Email Verified
@@ -483,6 +455,7 @@ function Contact() {
           true
         );
 
+
         // =====================================
         // STEP 2
         // Send Contact Message
@@ -490,6 +463,7 @@ function Contact() {
 
         const contactResponse =
           await createContactApi({
+
             name:
               form.name.trim(),
 
@@ -508,29 +482,35 @@ function Contact() {
               token,
           });
 
+
         console.log(
           "CONTACT CREATE RESPONSE:",
           contactResponse
         );
 
+
         // =====================================
         // Success Toast
         // =====================================
 
-        showSuccess(
+        toast.success(
           "Your message has been sent successfully. Thank you for contacting us!"
         );
+
 
         // =====================================
         // Reset Form
         // =====================================
 
         resetContactForm();
+
       } catch (error: any) {
+
         console.error(
           "VERIFY / CONTACT ERROR:",
           error
         );
+
 
         setEmailVerified(
           false
@@ -540,15 +520,19 @@ function Contact() {
           ""
         );
 
-        showError(
+
+        toast.error(
           error?.response?.data?.message ||
           error?.message ||
           "Invalid or expired OTP. Please try again."
         );
+
       } finally {
+
         setLoading(false);
       }
     };
+
 
   // =====================================
   // Main Submit
@@ -557,82 +541,97 @@ function Contact() {
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
+
     e.preventDefault();
+
 
     // =====================================
     // Name
     // =====================================
 
     if (!form.name.trim()) {
-      showError(
+
+      toast.error(
         "Name is required."
       );
 
       return;
     }
 
+
     // =====================================
     // Email
     // =====================================
 
     if (!form.email.trim()) {
-      showError(
+
+      toast.error(
         "Email is required."
       );
 
       return;
     }
 
+
     const emailRegex =
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
     if (
       !emailRegex.test(
         form.email.trim()
       )
     ) {
-      showError(
+
+      toast.error(
         "Please enter a valid email address."
       );
 
       return;
     }
 
+
     // =====================================
     // Phone
     // =====================================
 
     if (!form.phone.trim()) {
-      showError(
+
+      toast.error(
         "Phone number is required."
       );
 
       return;
     }
 
+
     // =====================================
     // Message
     // =====================================
 
     if (!form.message.trim()) {
-      showError(
+
+      toast.error(
         "Message is required."
       );
 
       return;
     }
 
+
     // =====================================
     // Terms
     // =====================================
 
     if (!agree) {
-      showWarning(
+
+      toast.warning(
         "Please agree to our terms and policy."
       );
 
       return;
     }
+
 
     // =====================================
     // FIRST CLICK
@@ -640,10 +639,12 @@ function Contact() {
     // =====================================
 
     if (!otpSent) {
+
       await handleSendOtp();
 
       return;
     }
+
 
     // =====================================
     // SECOND CLICK
@@ -651,23 +652,27 @@ function Contact() {
     // =====================================
 
     if (!emailVerified) {
+
       await handleVerifyAndSubmit();
 
       return;
     }
+
 
     // =====================================
     // Safety
     // =====================================
 
     if (!verificationToken) {
-      showError(
+
+      toast.error(
         "Please verify your email with OTP."
       );
 
       return;
     }
   };
+
 
   return (
     <>
@@ -697,17 +702,20 @@ function Contact() {
 
                 </div>
 
+
                 <div className="col-lg-6 text-lg-end">
 
                   <ul className="breadcrumbs mt-40">
 
                     <li>
+
                       <a
                         href="/"
                         className="home-icon"
                       >
                         Home
                       </a>
+
                     </li>
 
                     <li>
@@ -726,230 +734,127 @@ function Contact() {
 
         </section>
 
-        {/* =====================================
-            Contact Information
-        ===================================== */}
 
         <section className="section-box mt-80">
-
           <div className="container">
-
             <div className="box-info-contact">
+              <div className="row align-items-stretch">
 
-              <div className="row">
+                {/* Address */}
+                <div className="col-lg-4 col-md-6 col-sm-12">
+                  <div className="contact-info-item h-100 d-flex align-items-center">
+                    <div className="contact-info-icon">
+                      <i className="bi bi-geo-alt-fill"></i>
+                    </div>
 
-                {/* =====================================
-                    Main Office
-                ===================================== */}
+                    <div className="contact-info-content">
+                      <h6 className="mb-5">Address</h6>
 
-                <div className="col-lg-3 col-md-6 col-sm-12 mb-30">
-
-                  <a href="/">
-                    <img
-                      src={logo}
-                      alt="HireComfort"
-                    />
-                  </a>
-
-                  <div className="font-sm color-text-paragraph mt-20">
-
-                    <strong>
-                      HireComfort
-                    </strong>
-
-                    <br />
-
-                    205 North Michigan Avenue,
-                    Suite 810
-
-                    <br />
-
-                    Chicago, 60601, USA
-
-                    <br />
-                    <br />
-
-                    <strong>
-                      Phone:
-                    </strong>{" "}
-                    (123) 456-7890
-
-                    <br />
-
-                    <strong>
-                      Email:
-                    </strong>{" "}
-                    contact@jobbox.com
-
+                      <p className="font-sm color-text-paragraph mb-0">
+                        205 North Michigan Avenue, Suite 810
+                        <br />
+                        Chicago, 60601, USA
+                      </p>
+                    </div>
                   </div>
-
-                  <button
-                    type="button"
-                    className="btn btn-link fw-bold fs-6 text-uppercase color-brand-2 link-map mt-15 d-inline-block p-0 text-decoration-none"
-                    onClick={() => setShowMap(true)}
-                  >
-                    View map
-                  </button>
-
                 </div>
 
-                {/* =====================================
-                    London / New York
-                ===================================== */}
+                {/* Phone */}
+                <div className="col-lg-4 col-md-6 col-sm-12">
+                  <div className="contact-info-item h-100 d-flex align-items-center">
+                    <div className="contact-info-icon">
+                      <i className="bi bi-telephone-fill"></i>
+                    </div>
 
-                <div className="col-lg-3 col-md-6 col-sm-12 mb-30">
+                    <div className="contact-info-content">
+                      <h6 className="mb-5">Phone</h6>
 
-                  <h6>
-                    London
-                  </h6>
-
-                  <p className="font-sm color-text-paragraph mb-20">
-                    2118 Thornridge Cir.
-                    Syracuse,
-
-                    <br />
-
-                    Connecticut 35624
-                  </p>
-
-                  <h6>
-                    New York
-                  </h6>
-
-                  <p className="font-sm color-text-paragraph mb-20">
-                    4517 Washington Ave.
-
-                    <br />
-
-                    Manchester,
-                    Kentucky 39495
-                  </p>
-
+                      <p className="font-sm color-text-paragraph mb-0">
+                        (123) 456-7890
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                {/* =====================================
-                    Chicago / San Francisco
-                ===================================== */}
+                {/* Email */}
+                <div className="col-lg-4 col-md-6 col-sm-12">
+                  <div className="contact-info-item h-100 d-flex align-items-center">
+                    <div className="contact-info-icon">
+                      <i className="bi bi-envelope-fill"></i>
+                    </div>
 
-                <div className="col-lg-3 col-md-6 col-sm-12 mb-30">
+                    <div className="contact-info-content">
+                      <h6 className="mb-5">Email</h6>
 
-                  <h6>
-                    Chicago
-                  </h6>
-
-                  <p className="font-sm color-text-paragraph mb-20">
-                    3891 Ranchview Dr.
-                    Richardson,
-
-                    <br />
-
-                    California 62639
-                  </p>
-
-                  <h6>
-                    San Francisco
-                  </h6>
-
-                  <p className="font-sm color-text-paragraph mb-20">
-                    4140 Parker Rd.
-                    Allentown,
-
-                    <br />
-
-                    New Mexico 31134
-                  </p>
-
-                </div>
-
-                {/* =====================================
-                    Sydney / Singapore
-                ===================================== */}
-
-                <div className="col-lg-3 col-md-6 col-sm-12 mb-30">
-
-                  <h6>
-                    Sydney
-                  </h6>
-
-                  <p className="font-sm color-text-paragraph mb-20">
-                    3891 Ranchview Dr.
-                    Richardson,
-
-                    <br />
-
-                    California 62639
-                  </p>
-
-                  <h6>
-                    Singapore
-                  </h6>
-
-                  <p className="font-sm color-text-paragraph mb-20">
-                    4140 Parker Rd.
-                    Allentown,
-
-                    <br />
-
-                    New Mexico 31134
-                  </p>
-
+                      <p className="font-sm color-text-paragraph mb-0">
+                        contact@jobbox.com
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
               </div>
-
             </div>
-
           </div>
-
         </section>
 
+
         {/* =====================================
-            Contact Form
+            Contact Form + Map
         ===================================== */}
 
         <section className="section-box mt-70 mb-5">
 
           <div className="container">
-            {showMap && (
-              <div className="contact-map-box mb-50">
-                <div className="d-flex justify-content-between align-items-center mb-20">
-                  <h3 className="mb-0">Our Location</h3>
 
-                  <button
-                    type="button"
-                    className="btn contact-map-close"
-                    onClick={() => setShowMap(false)}
-                    aria-label="Close map"
-                    title="Close map"
-                  >
-                    <i className="bi bi-x-lg"></i>
-                  </button>
-                </div>
 
-                <div
-                  className="ratio ratio-21x9"
-                  style={{
-                    borderRadius: "12px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <iframe
-                    src="https://www.google.com/maps?q=205+North+Michigan+Avenue+Suite+810+Chicago+60601+USA&output=embed"
-                    style={{
-                      border: 0,
-                      width: "100%",
-                      height: "100%",
-                    }}
-                    loading="lazy"
-                    allowFullScreen
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="HireComfort Location"
-                  ></iframe>
-                </div>
+            {/* =====================================
+                Contact Map
+            ===================================== */}
+
+            <div className="contact-map-box mb-50">
+
+              <div className="mb-20">
+
+                <h3 className="mb-0">
+                  Our Location
+                </h3>
+
               </div>
-            )}
+
+
+              <div
+                className="ratio ratio-21x9"
+                style={{
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                }}
+              >
+
+                <iframe
+                  src="https://www.google.com/maps?q=205+North+Michigan+Avenue+Suite+810+Chicago+60601+USA&output=embed"
+                  style={{
+                    border: 0,
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="HireComfort Location"
+                ></iframe>
+
+              </div>
+
+            </div>
+
+
+            {/* =====================================
+                Contact Form
+            ===================================== */}
 
             <div className="row">
+
 
               {/* =====================================
                   Form
@@ -966,13 +871,16 @@ function Contact() {
                 </h2>
 
                 <p className="font-md color-text-paragraph-2">
+
                   The right move at the right time saves
                   your investment.
 
                   <br className="d-none d-lg-block" />
 
                   Live the dream of expanding your business.
+
                 </p>
+
 
                 <form
                   className="contact-form-style mt-30"
@@ -984,6 +892,7 @@ function Contact() {
                     className="row wow animate__animated animate__fadeInUp"
                     data-wow-delay=".1s"
                   >
+
 
                     {/* =====================================
                         Name
@@ -1007,6 +916,7 @@ function Contact() {
 
                     </div>
 
+
                     {/* =====================================
                         Company
                     ===================================== */}
@@ -1028,6 +938,7 @@ function Contact() {
                       </div>
 
                     </div>
+
 
                     {/* =====================================
                         Email
@@ -1054,6 +965,7 @@ function Contact() {
 
                     </div>
 
+
                     {/* =====================================
                         Phone
                     ===================================== */}
@@ -1076,6 +988,7 @@ function Contact() {
 
                     </div>
 
+
                     {/* =====================================
                         Message
                     ===================================== */}
@@ -1097,12 +1010,14 @@ function Contact() {
 
                     </div>
 
+
                     {/* =====================================
                         OTP
                     ===================================== */}
 
                     {otpSent &&
                       !emailVerified && (
+
                         <div className="col-lg-6 col-md-6">
 
                           <div className="input-style mb-20">
@@ -1115,14 +1030,8 @@ function Contact() {
 
                                 const value =
                                   e.target.value
-                                    .replace(
-                                      /\D/g,
-                                      ""
-                                    )
-                                    .slice(
-                                      0,
-                                      6
-                                    );
+                                    .replace(/\D/g, "")
+                                    .slice(0, 6);
 
                                 setOtp(value);
 
@@ -1137,7 +1046,9 @@ function Contact() {
                           </div>
 
                         </div>
+
                       )}
+
 
                     {/* =====================================
                         OTP Information
@@ -1145,6 +1056,7 @@ function Contact() {
 
                     {otpSent &&
                       !emailVerified && (
+
                         <div className="col-lg-6 col-md-6">
 
                           <div className="contact-otp-info mb-20">
@@ -1160,27 +1072,35 @@ function Contact() {
                               enter the 6-digit OTP.
                             </span>
 
+
                             {resendSeconds > 0 && (
+
                               <>
+
                                 <br />
 
                                 <small>
                                   Resend available in{" "}
                                   {resendSeconds}s
                                 </small>
+
                               </>
+
                             )}
 
                           </div>
 
                         </div>
+
                       )}
+
 
                     {/* =====================================
                         Email Verified
                     ===================================== */}
 
                     {emailVerified && (
+
                       <div className="col-lg-12">
 
                         <div className="contact-email-verified mb-20">
@@ -1195,7 +1115,9 @@ function Contact() {
                         </div>
 
                       </div>
+
                     )}
+
 
                     {/* =====================================
                         Submit Button
@@ -1217,14 +1139,17 @@ function Contact() {
                       >
 
                         {loading
+
                           ? otpSent
                             ? "Verifying & Sending..."
                             : "Sending OTP..."
+
                           : !otpSent
                             ? "Send OTP"
                             : "Verify OTP & Send Message"}
 
                       </button>
+
 
                       {/* =====================================
                           Resend OTP
@@ -1237,15 +1162,16 @@ function Contact() {
                           <button
                             type="button"
                             className="btn contact-resend-btn ms-3"
-                            onClick={
-                              handleSendOtp
-                            }
+                            onClick={handleSendOtp}
                             disabled={loading}
                           >
+
                             Resend OTP
+
                           </button>
 
                         )}
+
 
                       {/* =====================================
                           Terms
@@ -1258,9 +1184,7 @@ function Contact() {
                           type="checkbox"
                           checked={agree}
                           onChange={(e) =>
-                            setAgree(
-                              e.target.checked
-                            )
+                            setAgree(e.target.checked)
                           }
                           disabled={loading}
                         />{" "}
@@ -1277,6 +1201,7 @@ function Contact() {
                 </form>
 
               </div>
+
 
               {/* =====================================
                   Contact Image
@@ -1297,6 +1222,7 @@ function Contact() {
 
         </section>
 
+
         {/* =====================================
             Newsletter
         ===================================== */}
@@ -1308,6 +1234,7 @@ function Contact() {
             <div className="box-newsletter">
 
               <div className="row">
+
 
                 {/* =====================================
                     Left Image
@@ -1321,6 +1248,7 @@ function Contact() {
                   />
 
                 </div>
+
 
                 {/* =====================================
                     Newsletter
@@ -1337,6 +1265,7 @@ function Contact() {
                     Update Regularly
 
                   </h2>
+
 
                   <div className="box-form-newsletter mt-40">
 
@@ -1360,6 +1289,7 @@ function Contact() {
                   </div>
 
                 </div>
+
 
                 {/* =====================================
                     Right Image
