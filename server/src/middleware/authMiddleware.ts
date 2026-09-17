@@ -51,7 +51,7 @@ export const authMiddleware = (
 
     req.user = {
       id: decoded.id,
-      username: decoded.username,
+      username: decoded?.username,
     };
 
     next();

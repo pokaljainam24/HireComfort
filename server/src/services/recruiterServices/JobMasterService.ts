@@ -90,18 +90,6 @@ export const createJobMasterService = async (data: Partial<IJobMaster>) => {
       throw new Error("Job type is required");
     }
 
-    const allowedJobTypes = [
-      "Full Time",
-      "Part Time",
-      "Contract",
-      "Internship",
-      "Freelance",
-    ];
-
-    if (!allowedJobTypes.includes(data.jobType.trim())) {
-      throw new Error(`Job type must be one of: ${allowedJobTypes.join(", ")}`);
-    }
-
     // =====================================
     // Number of Positions Validation
     // =====================================

@@ -11,6 +11,7 @@ export interface ICompanyMaster {
   website: string;
   gstNumber: string;
   companyLogo: string;
+  bannerImage?: string;
   aboutCompany: string;
   city: number;
   state: number;
@@ -93,6 +94,11 @@ const companyMasterSchema = new Schema<ICompanyMaster>(
     },
 
     companyLogo: {
+      type: String,
+      default: "",
+    },
+
+    bannerImage: {
       type: String,
       default: "",
     },

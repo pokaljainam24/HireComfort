@@ -24,6 +24,7 @@ const empty: CompanyProfileType = {
   website: "",
   gstNumber: "",
   companyLogo: "",
+  bannerImage: "",
   aboutCompany: "",
   address: "",
   countryId: "",
@@ -517,6 +518,112 @@ const CompanyProfile: React.FC = () => {
                         }}
                       >
                         Remove Logo
+                      </button>
+                    </div>
+                  )}
+                </Field>
+
+                {/* Banner Image */}
+                <Field
+                  label="Banner Image"
+                  error={errors.bannerImage}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+
+                      if (file) {
+                        const maxSize = 1024 * 1024;
+
+                        if (file.size > maxSize) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            bannerImage:
+                              "Image size must be less than 1 MB",
+                          }));
+
+                          e.target.value = "";
+
+                          return;
+                        }
+
+                        setErrors((prev) => {
+                          const copy = { ...prev };
+
+                          delete copy.bannerImage;
+
+                          return copy;
+                        });
+
+                        const reader = new FileReader();
+
+                        reader.onloadend = () => {
+                          setForm((prev) => ({
+                            ...prev,
+                            bannerImage:
+                              reader.result as string,
+                          }));
+                        };
+
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+
+                  {form.bannerImage && (
+                    <div
+                      style={{
+                        marginTop: 10,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 120,
+                          height: 64,
+                          borderRadius: 8,
+                          border: "1px solid #e5e7eb",
+                          padding: 4,
+                          backgroundColor: "#f9fafb",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <img
+                          src={form.bannerImage}
+                          alt="Banner Image Preview"
+                          style={{
+                            maxWidth: "100%",
+                            maxHeight: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setForm((prev) => ({
+                            ...prev,
+                            bannerImage: "",
+                          }))
+                        }
+                        style={{
+                          fontSize: 12,
+                          color: "#dc2626",
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        Remove Banner
                       </button>
                     </div>
                   )}

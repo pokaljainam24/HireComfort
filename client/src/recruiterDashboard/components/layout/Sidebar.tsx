@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext.tsx";
 import { navConfig } from "../../data/navConfig.ts";
 import { Icon } from "../common/Icon.tsx";
@@ -31,9 +31,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, mobileOpen, onCloseMobile 
           mobileOpen ? "mobile-open" : "",
         ].join(" ")}
       >
-        <div className="sidebar-brand">
+        <Link to="/" className="sidebar-brand">
           <img src={collapsed ? logo : logoWithText} className="sidebar-brand-image" alt="Logo" />
-        </div>
+        </Link>
 
         <nav className="sidebar-nav">
           {navConfig.map((group) => (
