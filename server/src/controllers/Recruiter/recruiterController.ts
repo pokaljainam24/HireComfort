@@ -33,7 +33,16 @@ export const createRecruiter = async (req: Request, res: Response) => {
 
 export const getRecruiterAnalytics = async (req: Request, res: Response) => {
   try {
-    const analytics = await getRecruiterAnalyticsService();
+    const { user } = req;
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const analytics = await getRecruiterAnalyticsService(user);
     return res.status(200).json({
       success: true,
       analytics,

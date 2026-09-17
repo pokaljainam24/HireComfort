@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 // Create Job
-// router.post("/", createJobMaster);
+router.post("/", createJobMaster);
 
 router.post("/recruiter", createJobMasterByRecruiterId);
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Editor } from "@tinymce/tinymce-react";
 import type { Country } from "../../types/country.ts";
 import type { StateItem } from "../../types/state.ts";
 import type { City } from "../../types/city.ts";
@@ -59,34 +60,28 @@ const CompanyProfile: React.FC = () => {
       getStates().catch(() => []),
       getCities().catch(() => []),
       getCompanyTypes().catch(() => []),
-    ]).then(
-      ([profile, countries, states, cities, companyTypes]) => {
-        if (profile) {
-          setForm((prev) => ({
-            ...prev,
-            ...profile,
-          }));
-        }
-
-        setCountries(countries);
-        setStates(states);
-        setCities(cities);
-        setCompanyTypes(companyTypes);
-
-        console.log("Company Types:", companyTypes);
-
-        setLoading(false);
+    ]).then(([profile, countries, states, cities, companyTypes]) => {
+      if (profile) {
+        setForm((prev) => ({
+          ...prev,
+          ...profile,
+        }));
       }
-    );
+
+      setCountries(countries);
+      setStates(states);
+      setCities(cities);
+      setCompanyTypes(companyTypes);
+
+      console.log("Company Types:", companyTypes);
+
+      setLoading(false);
+    });
   }, []);
 
-  const filteredStates = states.filter(
-    (s) => s.country_id == form.countryId
-  );
+  const filteredStates = states.filter((s) => s.country_id == form.countryId);
 
-  const filteredCities = cities.filter(
-    (c) => c.state_id == form.stateId
-  );
+  const filteredCities = cities.filter((c) => c.state_id == form.stateId);
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -97,21 +92,14 @@ const CompanyProfile: React.FC = () => {
 
     if (!form.companyEmail?.trim()) {
       e.companyEmail = "Company email is required";
-    } else if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-        form.companyEmail.trim()
-      )
-    ) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.companyEmail.trim())) {
       e.companyEmail = "Enter a valid email address";
     }
 
     if (!form.contactNumber?.trim()) {
       e.contactNumber = "Contact number is required";
-    } else if (
-      !/^[6-9]\d{9}$/.test(form.contactNumber.trim())
-    ) {
-      e.contactNumber =
-        "Enter a valid 10-digit mobile number";
+    } else if (!/^[6-9]\d{9}$/.test(form.contactNumber.trim())) {
+      e.contactNumber = "Enter a valid 10-digit mobile number";
     }
 
     if (!form.companyType?.trim()) {
@@ -119,26 +107,25 @@ const CompanyProfile: React.FC = () => {
     }
 
     if (!form.numberOfEmployee?.trim()) {
-      e.numberOfEmployee =
-        "Number of employees is required";
+      e.numberOfEmployee = "Number of employees is required";
     }
 
     if (!form.gstNumber?.trim()) {
       e.gstNumber = "GST number is required";
     } else if (
       !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(
-        form.gstNumber.trim().toUpperCase()
+        form.gstNumber.trim().toUpperCase(),
       )
     ) {
-      e.gstNumber =
-        "Enter a valid 15-character GSTIN (e.g. 22AAAAA0000A1Z5)";
+      e.gstNumber = "Enter a valid 15-character GSTIN (e.g. 22AAAAA0000A1Z5)";
     }
 
     if (!form.address?.trim()) {
       e.address = "Company address is required";
     }
 
-    if (!form.aboutCompany?.trim()) {
+    const plainAboutCompany = form.aboutCompany?.replace(/<[^>]*>/g, "").trim();
+    if (!plainAboutCompany) {
       e.aboutCompany = "About company is required";
     }
 
@@ -169,11 +156,7 @@ const CompanyProfile: React.FC = () => {
     setSaved(false);
 
     try {
-      const updated = await companyProfileApi.save(
-        user._id,
-        form._id,
-        form
-      );
+      const updated = await companyProfileApi.save(user._id, form._id, form);
 
       if (updated) {
         setForm((prev) => ({
@@ -181,20 +164,17 @@ const CompanyProfile: React.FC = () => {
           ...updated,
 
           countryId:
-            updated.country !== undefined &&
-            updated.country !== null
+            updated.country !== undefined && updated.country !== null
               ? String(updated.country)
               : updated.countryId || prev.countryId,
 
           stateId:
-            updated.state !== undefined &&
-            updated.state !== null
+            updated.state !== undefined && updated.state !== null
               ? String(updated.state)
               : updated.stateId || prev.stateId,
 
           cityId:
-            updated.city !== undefined &&
-            updated.city !== null
+            updated.city !== undefined && updated.city !== null
               ? String(updated.city)
               : updated.cityId || prev.cityId,
         }));
@@ -206,7 +186,7 @@ const CompanyProfile: React.FC = () => {
         err?.response?.data?.message ||
           err?.response?.data?.error ||
           err?.message ||
-          "Something went wrong. Please try again."
+          "Something went wrong. Please try again.",
       );
     } finally {
       setSaving(false);
@@ -215,10 +195,7 @@ const CompanyProfile: React.FC = () => {
 
   return (
     <>
-      <PageHeader
-        title="Company Profile"
-        section="Profile"
-      />
+      <PageHeader title="Company Profile" section="Profile" />
 
       <div className="card-panel">
         <div className="card-panel-head">
@@ -226,24 +203,18 @@ const CompanyProfile: React.FC = () => {
             <h2>Company Details</h2>
 
             <p>
-              This information is shown to candidates on
-              every job you post.
+              This information is shown to candidates on every job you post.
             </p>
           </div>
         </div>
 
         <div className="card-panel-body">
           {loading ? (
-            <div className="empty-state">
-              Loading company profile...
-            </div>
+            <div className="empty-state">Loading company profile...</div>
           ) : (
             <form onSubmit={handleSubmit}>
               {formError && (
-                <p
-                  className="err"
-                  style={{ marginBottom: 12 }}
-                >
+                <p className="err" style={{ marginBottom: 12 }}>
                   {formError}
                 </p>
               )}
@@ -262,11 +233,7 @@ const CompanyProfile: React.FC = () => {
 
               <div className="form-grid">
                 {/* Company Name */}
-                <Field
-                  label="Company Name"
-                  required
-                  error={errors.companyName}
-                >
+                <Field label="Company Name" required error={errors.companyName}>
                   <input
                     value={form.companyName}
                     onChange={(e) =>
@@ -318,11 +285,7 @@ const CompanyProfile: React.FC = () => {
                 </Field>
 
                 {/* Company Type */}
-                <Field
-                  label="Company Type"
-                  required
-                  error={errors.companyType}
-                >
+                <Field label="Company Type" required error={errors.companyType}>
                   <select
                     value={form.companyType}
                     onChange={(e) =>
@@ -332,15 +295,10 @@ const CompanyProfile: React.FC = () => {
                       })
                     }
                   >
-                    <option value="">
-                      Select company type
-                    </option>
+                    <option value="">Select company type</option>
 
                     {companyTypes.map((companyType) => (
-                      <option
-                        key={companyType._id}
-                        value={companyType._id}
-                      >
+                      <option key={companyType._id} value={companyType._id}>
                         {companyType.name}
                       </option>
                     ))}
@@ -362,41 +320,26 @@ const CompanyProfile: React.FC = () => {
                       })
                     }
                   >
-                    <option value="1-10">
-                      1-10 employees
-                    </option>
+                    <option value="1-10">1-10 employees</option>
 
-                    <option value="11-50">
-                      11-50 employees
-                    </option>
+                    <option value="11-50">11-50 employees</option>
 
-                    <option value="51-200">
-                      51-200 employees
-                    </option>
+                    <option value="51-200">51-200 employees</option>
 
-                    <option value="201-500">
-                      201-500 employees
-                    </option>
+                    <option value="201-500">201-500 employees</option>
 
-                    <option value="500+">
-                      500+ employees
-                    </option>
+                    <option value="500+">500+ employees</option>
                   </select>
                 </Field>
 
                 {/* GST Number */}
-                <Field
-                  label="GST Number"
-                  required
-                  error={errors.gstNumber}
-                >
+                <Field label="GST Number" required error={errors.gstNumber}>
                   <input
                     value={form.gstNumber}
                     onChange={(e) =>
                       setForm({
                         ...form,
-                        gstNumber:
-                          e.target.value.toUpperCase(),
+                        gstNumber: e.target.value.toUpperCase(),
                       })
                     }
                     placeholder="e.g. 22AAAAA0000A1Z5"
@@ -418,10 +361,7 @@ const CompanyProfile: React.FC = () => {
                 </Field>
 
                 {/* Company Logo */}
-                <Field
-                  label="Company Logo"
-                  error={errors.companyLogo}
-                >
+                <Field label="Company Logo" error={errors.companyLogo}>
                   <input
                     type="file"
                     accept="image/*"
@@ -434,8 +374,7 @@ const CompanyProfile: React.FC = () => {
                         if (file.size > maxSize) {
                           setErrors((prev) => ({
                             ...prev,
-                            companyLogo:
-                              "Image size must be less than 500 KB",
+                            companyLogo: "Image size must be less than 500 KB",
                           }));
 
                           e.target.value = "";
@@ -456,8 +395,7 @@ const CompanyProfile: React.FC = () => {
                         reader.onloadend = () => {
                           setForm((prev) => ({
                             ...prev,
-                            companyLogo:
-                              reader.result as string,
+                            companyLogo: reader.result as string,
                           }));
                         };
 
@@ -524,10 +462,7 @@ const CompanyProfile: React.FC = () => {
                 </Field>
 
                 {/* Banner Image */}
-                <Field
-                  label="Banner Image"
-                  error={errors.bannerImage}
-                >
+                <Field label="Banner Image" error={errors.bannerImage}>
                   <input
                     type="file"
                     accept="image/*"
@@ -540,8 +475,7 @@ const CompanyProfile: React.FC = () => {
                         if (file.size > maxSize) {
                           setErrors((prev) => ({
                             ...prev,
-                            bannerImage:
-                              "Image size must be less than 1 MB",
+                            bannerImage: "Image size must be less than 1 MB",
                           }));
 
                           e.target.value = "";
@@ -562,8 +496,7 @@ const CompanyProfile: React.FC = () => {
                         reader.onloadend = () => {
                           setForm((prev) => ({
                             ...prev,
-                            bannerImage:
-                              reader.result as string,
+                            bannerImage: reader.result as string,
                           }));
                         };
 
@@ -630,11 +563,7 @@ const CompanyProfile: React.FC = () => {
                 </Field>
 
                 {/* Country */}
-                <Field
-                  label="Country"
-                  required
-                  error={errors.countryId}
-                >
+                <Field label="Country" required error={errors.countryId}>
                   <select
                     value={form.countryId}
                     onChange={(e) =>
@@ -646,15 +575,10 @@ const CompanyProfile: React.FC = () => {
                       })
                     }
                   >
-                    <option value="">
-                      Select country
-                    </option>
+                    <option value="">Select country</option>
 
                     {countries.map((c) => (
-                      <option
-                        key={c._id}
-                        value={c.id}
-                      >
+                      <option key={c._id} value={c.id}>
                         {c.name}
                       </option>
                     ))}
@@ -666,11 +590,7 @@ const CompanyProfile: React.FC = () => {
                   label="State"
                   required
                   error={errors.stateId}
-                  hint={
-                    !form.countryId
-                      ? "Please select a country first"
-                      : ""
-                  }
+                  hint={!form.countryId ? "Please select a country first" : ""}
                 >
                   <select
                     value={form.stateId}
@@ -692,15 +612,10 @@ const CompanyProfile: React.FC = () => {
                         : {}
                     }
                   >
-                    <option value="">
-                      Select state
-                    </option>
+                    <option value="">Select state</option>
 
                     {filteredStates.map((s) => (
-                      <option
-                        key={s._id}
-                        value={s.id}
-                      >
+                      <option key={s._id} value={s.id}>
                         {s.name}
                       </option>
                     ))}
@@ -716,8 +631,8 @@ const CompanyProfile: React.FC = () => {
                     !form.countryId
                       ? "Please select a state first"
                       : !form.stateId
-                      ? "Please select a state first"
-                      : ""
+                        ? "Please select a state first"
+                        : ""
                   }
                 >
                   <select
@@ -739,15 +654,10 @@ const CompanyProfile: React.FC = () => {
                         : {}
                     }
                   >
-                    <option value="">
-                      Select city
-                    </option>
+                    <option value="">Select city</option>
 
                     {filteredCities.map((c) => (
-                      <option
-                        key={c._id}
-                        value={c.id}
-                      >
+                      <option key={c._id} value={c.id}>
                         {c.name}
                       </option>
                     ))}
@@ -811,14 +721,11 @@ const CompanyProfile: React.FC = () => {
                 </Field>
 
                 {/* Address */}
-                <Field
-                  label="Address"
-                  required
-                  error={errors.address}
-                >
+                <Field label="Address" span2 required error={errors.address}>
                   <textarea
                     rows={5}
                     value={form.address}
+                    style={{ minHeight: "100px" }}
                     onChange={(e) =>
                       setForm({
                         ...form,
@@ -835,17 +742,53 @@ const CompanyProfile: React.FC = () => {
                   required
                   error={errors.aboutCompany}
                   hint="Shown to candidates on job listings"
+                  span3
                 >
-                  <textarea
-                    rows={5}
+                  <Editor
+                    apiKey={
+                      (
+                        import.meta as ImportMeta & {
+                          env: {
+                            VITE_TINYMCE_API_KEY?: string;
+                          };
+                        }
+                      ).env.VITE_TINYMCE_API_KEY
+                    }
                     value={form.aboutCompany}
-                    onChange={(e) =>
+                    onEditorChange={(content: string) =>
                       setForm({
                         ...form,
-                        aboutCompany: e.target.value,
+                        aboutCompany: content,
                       })
                     }
-                    placeholder="Tell candidates about your company..."
+                    init={{
+                      height: 350,
+                      menubar: false,
+                      plugins: [
+                        "advlist",
+                        "autolink",
+                        "lists",
+                        "link",
+                        "charmap",
+                        "searchreplace",
+                        "visualblocks",
+                        "code",
+                        "fullscreen",
+                        "insertdatetime",
+                        "table",
+                        "help",
+                        "wordcount",
+                      ],
+                      toolbar:
+                        "undo redo | blocks | " +
+                        "bold italic underline | " +
+                        "alignleft aligncenter alignright alignjustify | " +
+                        "bullist numlist outdent indent | " +
+                        "link table | " +
+                        "removeformat | code fullscreen",
+                      content_style:
+                        "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; }",
+                    }}
                   />
                 </Field>
               </div>

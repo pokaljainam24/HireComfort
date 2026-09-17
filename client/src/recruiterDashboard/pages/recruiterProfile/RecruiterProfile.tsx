@@ -11,7 +11,7 @@ const empty: RecruiterProfileType = {
   address: "",
   userName: "",
   department: "",
-  designation: ""
+  designation: "",
 };
 
 const RecruiterProfile: React.FC = () => {
@@ -30,7 +30,7 @@ const RecruiterProfile: React.FC = () => {
         .then((profile) => {
           setForm({ ...empty, ...profile });
         })
-        .catch(() => { })
+        .catch(() => {})
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
@@ -73,7 +73,8 @@ const RecruiterProfile: React.FC = () => {
     } else if (form.userName.trim().length < 3) {
       e.userName = "Username must be at least 3 characters long";
     } else if (!usernameRegex.test(form.userName.trim())) {
-      e.userName = "Username can only contain letters, numbers, underscores, and dots";
+      e.userName =
+        "Username can only contain letters, numbers, underscores, and dots";
     }
 
     if (form.password && form.password.length < 6) {
@@ -101,16 +102,23 @@ const RecruiterProfile: React.FC = () => {
     setFormError("");
     setSaved(false);
 
-
     try {
       const updated = await recruiterProfileApi.update(user._id, form);
       setForm({ ...empty, ...updated });
-      const currentStoredUser = JSON.parse(localStorage.getItem("user") || "{}");
-      localStorage.setItem("user", JSON.stringify({ ...currentStoredUser, ...updated }));
+      const currentStoredUser = JSON.parse(
+        localStorage.getItem("user") || "{}",
+      );
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ ...currentStoredUser, ...updated }),
+      );
       window.dispatchEvent(new Event("storage"));
       setSaved(true);
     } catch (err: any) {
-      setFormError(err?.response?.data?.message || "Something went wrong. Please try again.");
+      setFormError(
+        err?.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
     } finally {
       setSaving(false);
     }
@@ -130,15 +138,36 @@ const RecruiterProfile: React.FC = () => {
             <div className="empty-state">Loading profile...</div>
           ) : (
             <form onSubmit={handleSubmit}>
-              {formError && <p className="err" style={{ marginBottom: 12 }}>{formError}</p>}
+              {formError && (
+                <p className="err" style={{ marginBottom: 12 }}>
+                  {formError}
+                </p>
+              )}
               {saved && (
-                <p style={{ color: "var(--bs-success, #198754)", fontSize: 13, marginBottom: 12 }}>
+                <p
+                  style={{
+                    color: "var(--bs-success, #198754)",
+                    fontSize: 13,
+                    marginBottom: 12,
+                  }}
+                >
                   Profile saved.
                 </p>
               )}
               <div className="form-grid">
-                <Field label="Profile Picture" error={errors.profilePic} hint="Max size 500KB (JPEG, PNG, WebP)">
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
+                <Field
+                  label="Profile Picture"
+                  error={errors.profilePic}
+                  hint="Max size 500KB (JPEG, PNG, WebP)"
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "16px",
+                      marginTop: "4px",
+                    }}
+                  >
                     <div
                       style={{
                         width: "64px",
@@ -150,22 +179,40 @@ const RecruiterProfile: React.FC = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         overflow: "hidden",
-                        flexShrink: 0
+                        flexShrink: 0,
                       }}
                     >
                       {form.profilePic ? (
                         <img
                           src={form.profilePic}
                           alt="Profile"
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
                         />
                       ) : (
-                        <span style={{ fontSize: "20px", color: "#94a3b8", fontWeight: 600 }}>
-                          {form.firstName ? form.firstName.charAt(0).toUpperCase() : "U"}
+                        <span
+                          style={{
+                            fontSize: "20px",
+                            color: "#94a3b8",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {form.firstName
+                            ? form.firstName.charAt(0).toUpperCase()
+                            : "U"}
                         </span>
                       )}
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "6px",
+                      }}
+                    >
                       <input
                         type="file"
                         accept="image/*"
@@ -173,7 +220,10 @@ const RecruiterProfile: React.FC = () => {
                           const file = e.target.files?.[0];
                           if (!file) return;
                           if (file.size > 500 * 1024) {
-                            setErrors((prev) => ({ ...prev, profilePic: "File size must be 500KB or less" }));
+                            setErrors((prev) => ({
+                              ...prev,
+                              profilePic: "File size must be 500KB or less",
+                            }));
                             return;
                           }
                           setErrors((prev) => {
@@ -183,7 +233,10 @@ const RecruiterProfile: React.FC = () => {
                           });
                           const reader = new FileReader();
                           reader.onloadend = () => {
-                            setForm((prev) => ({ ...prev, profilePic: reader.result as string }));
+                            setForm((prev) => ({
+                              ...prev,
+                              profilePic: reader.result as string,
+                            }));
                           };
                           reader.readAsDataURL(file);
                         }}
@@ -193,8 +246,14 @@ const RecruiterProfile: React.FC = () => {
                         <button
                           type="button"
                           className="btn btn-sm btn-outline-danger"
-                          onClick={() => setForm((prev) => ({ ...prev, profilePic: "" }))}
-                          style={{ width: "fit-content", padding: "2px 8px", fontSize: "12px" }}
+                          onClick={() =>
+                            setForm((prev) => ({ ...prev, profilePic: "" }))
+                          }
+                          style={{
+                            width: "fit-content",
+                            padding: "2px 8px",
+                            fontSize: "12px",
+                          }}
                         >
                           Remove Photo
                         </button>
@@ -205,14 +264,18 @@ const RecruiterProfile: React.FC = () => {
                 <Field label="First Name" required error={errors.firstName}>
                   <input
                     value={form.firstName}
-                    onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, firstName: e.target.value })
+                    }
                     placeholder="e.g. Priya"
                   />
                 </Field>
                 <Field label="Last Name" required error={errors.lastName}>
                   <input
                     value={form.lastName}
-                    onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, lastName: e.target.value })
+                    }
                     placeholder="e.g. Sharma"
                   />
                 </Field>
@@ -220,49 +283,70 @@ const RecruiterProfile: React.FC = () => {
                   <input
                     type="email"
                     value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
                     placeholder="you@company.com"
                   />
                 </Field>
-                <Field label="Mobile Number" required error={errors.mobileNumber}>
+                <Field
+                  label="Mobile Number"
+                  required
+                  error={errors.mobileNumber}
+                >
                   <input
                     value={form.mobileNumber}
-                    onChange={(e) => setForm({ ...form, mobileNumber: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, mobileNumber: e.target.value })
+                    }
                     placeholder="+91 9xxxxxxxxx"
                   />
                 </Field>
                 <Field label="Username" required error={errors.userName}>
                   <input
                     value={form.userName}
-                    onChange={(e) => setForm({ ...form, userName: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, userName: e.target.value })
+                    }
                     placeholder="e.g. priya.hr"
                   />
                 </Field>
                 <Field label="Designation" required error={errors.designation}>
                   <input
                     value={form.designation}
-                    onChange={(e) => setForm({ ...form, designation: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, designation: e.target.value })
+                    }
                     placeholder="e.g. HR Manager"
                   />
                 </Field>
                 <Field label="Department" required error={errors.department}>
                   <input
                     value={form.department}
-                    onChange={(e) => setForm({ ...form, department: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, department: e.target.value })
+                    }
                     placeholder="e.g. Human Resources"
                   />
                 </Field>
                 <Field label="Address">
                   <textarea
                     rows={5}
+                    style={{ minHeight: "100px" }}
                     value={form.address}
-                    onChange={(e) => setForm({ ...form, address: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, address: e.target.value })
+                    }
                     placeholder="Your address"
                   />
                 </Field>
               </div>
               <div className="form-actions">
-                <button type="submit" className="btn btn-primary" disabled={saving}>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={saving}
+                >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
               </div>
@@ -275,4 +359,3 @@ const RecruiterProfile: React.FC = () => {
 };
 
 export default RecruiterProfile;
-
