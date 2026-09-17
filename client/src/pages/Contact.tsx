@@ -82,6 +82,8 @@ function Contact() {
   const [resendSeconds, setResendSeconds] =
     useState(0);
 
+  const [showMap, setShowMap] = useState(false);
+
   // =====================================
   // SweetAlert Success Toast
   // =====================================
@@ -781,12 +783,13 @@ function Contact() {
 
                   </div>
 
-                  <a
-                    className="text-uppercase color-brand-2 link-map mt-15 d-inline-block"
-                    href="#"
+                  <button
+                    type="button"
+                    className="btn btn-link fw-bold fs-6 text-uppercase color-brand-2 link-map mt-15 d-inline-block p-0 text-decoration-none"
+                    onClick={() => setShowMap(true)}
                   >
                     View map
-                  </a>
+                  </button>
 
                 </div>
 
@@ -907,6 +910,44 @@ function Contact() {
         <section className="section-box mt-70 mb-5">
 
           <div className="container">
+            {showMap && (
+              <div className="contact-map-box mb-50">
+                <div className="d-flex justify-content-between align-items-center mb-20">
+                  <h3 className="mb-0">Our Location</h3>
+
+                  <button
+                    type="button"
+                    className="btn contact-map-close"
+                    onClick={() => setShowMap(false)}
+                    aria-label="Close map"
+                    title="Close map"
+                  >
+                    <i className="bi bi-x-lg"></i>
+                  </button>
+                </div>
+
+                <div
+                  className="ratio ratio-21x9"
+                  style={{
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <iframe
+                    src="https://www.google.com/maps?q=205+North+Michigan+Avenue+Suite+810+Chicago+60601+USA&output=embed"
+                    style={{
+                      border: 0,
+                      width: "100%",
+                      height: "100%",
+                    }}
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="HireComfort Location"
+                  ></iframe>
+                </div>
+              </div>
+            )}
 
             <div className="row">
 

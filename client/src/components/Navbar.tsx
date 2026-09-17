@@ -346,17 +346,6 @@ function Navbar() {
                           Career Guidance
                         </Link>
                       </li>
-
-                      <li>
-                        <Link
-                          to="/service-executive-search"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
-                        >
-                          Executive Search
-                        </Link>
-                      </li>
                     </ul>
                   </li>
 

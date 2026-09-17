@@ -78,11 +78,6 @@ function About() {
                     sit nostra, per inceptos himenaeos.
                   </p>
                 </div>
-                <div className="mt-30">
-                  <a className="btn btn-brand-1" href="#">
-                    Read More
-                  </a>
-                </div>
               </div>
             </div>
           </div>

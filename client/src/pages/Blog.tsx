@@ -295,69 +295,71 @@ function Blog() {
 
               <div className="col-lg-4 col-md-12 col-sm-12 col-12 pl-20 pl-lg-15 mt-lg-30">
 
-                {/* =====================================
+                <div className="trending-sticky">
+                  {/* =====================================
                     TRENDING NOW
                     DYNAMIC LATEST 5 BLOGS
                 ===================================== */}
 
-                <div className="sidebar-shadow sidebar-news-small">
-                  <h5 className="sidebar-title">
-                    Trending Now
-                  </h5>
+                  <div className="sidebar-shadow sidebar-news-small">
+                    <h5 className="sidebar-title">
+                      Trending Now
+                    </h5>
 
-                  <div className="post-list-small">
-                    {trendingBlogs.map((post) => (
-                      <div
-                        key={post._id}
-                        className="post-list-small-item d-flex align-items-center"
-                      >
-                        <figure className="thumb mr-15">
-                          <img
-                            src={getImageUrl(post.blogImg)}
-                            alt={post.title}
-                          />
-                        </figure>
+                    <div className="post-list-small">
+                      {trendingBlogs.map((post) => (
+                        <div
+                          key={post._id}
+                          className="post-list-small-item d-flex align-items-center"
+                        >
+                          <figure className="thumb mr-15">
+                            <img
+                              src={getImageUrl(post.blogImg)}
+                              alt={post.title}
+                            />
+                          </figure>
 
-                        <div className="content">
-                          <h5 className="trending-post-title">
-                            {post.title}
-                          </h5>
+                          <div className="content">
+                            <h5 className="trending-post-title">
+                              {post.title}
+                            </h5>
 
-                          <div className="post-meta text-muted d-flex align-items-center mb-15">
-                            <div className="author d-flex align-items-center mr-20">
-                              <img
-                                src={getImageUrl(post.authorImg)}
-                                alt={
-                                  post.authorName ||
-                                  "Author"
-                                }
-                              />
+                            <div className="post-meta text-muted d-flex align-items-center mb-15">
+                              <div className="author d-flex align-items-center mr-20">
+                                <img
+                                  src={getImageUrl(post.authorImg)}
+                                  alt={
+                                    post.authorName ||
+                                    "Author"
+                                  }
+                                />
 
-                              <span className="trending-post-title">
-                                {post.authorName ||
-                                  "Admin"}
-                              </span>
-                            </div>
-
-                            {post.date && (
-                              <div className="date">
-                                <span>
-                                  {new Date(
-                                    post.date,
-                                  ).toLocaleDateString(
-                                    "en-GB",
-                                    {
-                                      day: "2-digit",
-                                      month: "short",
-                                    },
-                                  )}
+                                <span className="trending-post-title">
+                                  {post.authorName ||
+                                    "Admin"}
                                 </span>
                               </div>
-                            )}
+
+                              {post.date && (
+                                <div className="date">
+                                  <span>
+                                    {new Date(
+                                      post.date,
+                                    ).toLocaleDateString(
+                                      "en-GB",
+                                      {
+                                        day: "2-digit",
+                                        month: "short",
+                                      },
+                                    )}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

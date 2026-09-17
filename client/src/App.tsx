@@ -27,6 +27,7 @@ import ApplicantApp from "./ApplicantDashboard/ApplicantApp.tsx";
 import JobDetails from "./pages/JobDetails.tsx";
 import Services from "./pages/Services.tsx";
 import ServiceResumeWriting from "./pages/ServiceResumeWriting.tsx";
+import CompanyDetails from "./pages/CompanyDetails.tsx";
 
 function App() {
   const location = useLocation();
@@ -43,6 +44,7 @@ function App() {
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/companies" element={<Companies />} />
         <Route path="/companies-featured" element={<CompaniesFeatured />} />
+        <Route path="/Companies/Details" element={<CompanyDetails />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog-career-tips" element={<BlogCareerTips />} />

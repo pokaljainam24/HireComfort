@@ -545,6 +545,43 @@
   background: #f5f5f5;
 }
 
+.contact-map-close {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid #dceaff;
+  border-radius: 50%;
+  background: #eaf3ff;
+  color: #1967d2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.contact-map-close:hover {
+  background: #dceaff;
+  color: #0d5bb5;
+  border-color: #c5dcfa;
+}
+
+.contact-map-close i {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.trending-sticky {
+  position: sticky;
+  top: 90px;
+  z-index: 10;
+}
+
+@media (max-width: 991.98px) {
+  .trending-sticky {
+    position: static;
+  }
+}
+
 /* =====================================
    SweetAlert Success Toast
 ===================================== */
