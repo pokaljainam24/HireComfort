@@ -9,6 +9,7 @@ export interface CompanyProfileType {
   website: string;
   gstNumber: string;
   companyLogo: string;
+  bannerImage?: string;
   aboutCompany: string;
   address: string;
   countryId: string;

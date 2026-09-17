@@ -9,6 +9,7 @@ import {
   getRecruiterAnalytics,
   updatePassword
 } from "../../controllers/Recruiter/recruiterController.js";
+import { authMiddleware } from "../../middleware/authMiddleware.js";
 
 const recruiterRouter = express.Router();
 
@@ -16,7 +17,7 @@ recruiterRouter.post("/", createRecruiter);
 
 recruiterRouter.get("/", getRecruiters);
 
-recruiterRouter.get("/analytics", getRecruiterAnalytics)
+recruiterRouter.get("/analytics", authMiddleware, getRecruiterAnalytics)
 
 recruiterRouter.get("/:id", getRecruiter);
 

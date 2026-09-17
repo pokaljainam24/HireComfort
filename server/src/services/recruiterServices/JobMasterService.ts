@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import JobMaster from "../../models/RecruiterModel/JobMasterModel.js";
-import City from "../../models/CityModel/CityModel.js";
+import CompanyMaster from "../../models/RecruiterModel/Companymodel.js";
+import Recruiter from "../../models/RecruiterModel/Recruitermodel.js";
 
 export type IJobMaster = InstanceType<typeof JobMaster>;
 
@@ -88,18 +89,6 @@ export const createJobMasterService = async (data: Partial<IJobMaster>) => {
     // =====================================
     if (!data.jobType?.trim()) {
       throw new Error("Job type is required");
-    }
-
-    const allowedJobTypes = [
-      "Full Time",
-      "Part Time",
-      "Contract",
-      "Internship",
-      "Freelance",
-    ];
-
-    if (!allowedJobTypes.includes(data.jobType.trim())) {
-      throw new Error(`Job type must be one of: ${allowedJobTypes.join(", ")}`);
     }
 
     // =====================================
@@ -428,6 +417,134 @@ export async function getAllJobMasterForAdminService() {
   } catch (error) {
     console.error("Error getting jobs for admin:", error);
 
+    throw error;
+  }
+}
+
+// Get Jobs By Recruiter ID
+export async function getJobMastersByRecruiterService(
+  recruiterId: string,
+  params: GetJobMastersParams = {}
+) {
+  try {
+    const page = Math.max(1, Number(params.page) || 1);
+    const limit = Math.max(1, Number(params.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    const recruiterObjId = mongoose.Types.ObjectId.isValid(recruiterId)
+      ? new mongoose.Types.ObjectId(recruiterId)
+      : null;
+
+    const company = recruiterObjId
+      ? await CompanyMaster.findOne({ recruiterId: recruiterObjId }).lean()
+      : null;
+    const recruiter = recruiterObjId
+      ? await Recruiter.findById(recruiterObjId).lean()
+      : null;
+
+    const matchStage: any = {
+      isActive: true,
+      isDisplay: true,
+    };
+
+    const $or: any[] = [{ createdBy: recruiterId }];
+    if (recruiter?.userName) {
+      $or.push({ createdBy: recruiter.userName });
+    }
+    if (company?._id) {
+      $or.push({ companyId: company._id });
+    }
+    matchStage.$or = $or;
+
+    if (params.categoryId && mongoose.Types.ObjectId.isValid(params.categoryId)) {
+      matchStage.categoryId = new mongoose.Types.ObjectId(params.categoryId);
+    }
+
+    if (params.jobType && params.jobType.trim() !== "") {
+      matchStage.jobType = { $regex: params.jobType.trim(), $options: "i" };
+    }
+
+    if (params.search && params.search.trim() !== "") {
+      const searchRegex = new RegExp(params.search.trim(), "i");
+      matchStage.$and = [
+        {
+          $or: [
+            { title: searchRegex },
+            { description: searchRegex },
+            { skills: { $elemMatch: { $regex: searchRegex } } },
+          ],
+        },
+      ];
+    }
+
+    const sortOrder = params.sort === "oldest" ? 1 : -1;
+    const sortStage: any = {
+      _id: sortOrder,
+      createdAt: sortOrder,
+    };
+
+    const pipeline: any[] = [
+      { $match: matchStage },
+      { $sort: sortStage },
+      {
+        $lookup: {
+          from: "companymasters",
+          localField: "companyId",
+          foreignField: "_id",
+          as: "companyId",
+        },
+      },
+      {
+        $unwind: {
+          path: "$companyId",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "city",
+          localField: "city",
+          foreignField: "id",
+          as: "cityDetails",
+        },
+      },
+      {
+        $addFields: {
+          city: {
+            $ifNull: [
+              { $arrayElemAt: ["$cityDetails.name", 0] },
+              "$city",
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          cityDetails: 0,
+        },
+      },
+      {
+        $facet: {
+          jobs: [{ $skip: skip }, { $limit: limit }],
+          totalCount: [{ $count: "count" }],
+        },
+      },
+    ];
+
+    const result = await JobMaster.aggregate(pipeline);
+    const jobs = result[0]?.jobs || [];
+    const totalJobs = result[0]?.totalCount[0]?.count || 0;
+    const totalPages = Math.ceil(totalJobs / limit) || 1;
+
+    return {
+      jobs,
+      totalJobs,
+      totalPages,
+      currentPage: page,
+      limit,
+    };
+  } catch (error) {
+    console.error("Error in getJobMastersByRecruiterService:", error);
     throw error;
   }
 }

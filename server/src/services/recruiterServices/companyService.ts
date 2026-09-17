@@ -151,11 +151,11 @@ export async function createCompanyService(
     // ==============================
     // Fetch Recruiter for CreatedBy
     // ==============================
-    let createdBy = companyData.createdBy;
+    let createdBy = "";
     if (!createdBy) {
       const recruiter = await Recruiter.findById(companyData.recruiterId).lean();
       if (recruiter) {
-        createdBy = `${recruiter.firstName}`;
+        createdBy = `${recruiter.userName}`;
       }
     }
 

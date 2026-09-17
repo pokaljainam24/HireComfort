@@ -1,7 +1,9 @@
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import Recruiter from "../../models/RecruiterModel/Recruitermodel.js";
 import JobMaster from "../../models/RecruiterModel/JobMasterModel.js";
 import JobApplicationMaster from "../../models/RecruiterModel/JobapplicationMasterModel.js";
+import CompanyMaster from "../../models/RecruiterModel/Companymodel.js";
 
 export type IRecruiter = InstanceType<typeof Recruiter>;
 
@@ -284,14 +286,26 @@ export async function getAllRecruitersForAdminService() {
   }
 }
 
-export async function getRecruiterAnalyticsService() {
+export async function getRecruiterAnalyticsService({ id, username }: { id: string, username: string }) {
   try {
-    const totalJobs = await JobMaster.countDocuments({
+    const recruiterObjId = new mongoose.Types.ObjectId(id);
+
+    const company = await CompanyMaster.findOne({ recruiterId: recruiterObjId }).lean();
+
+    const jobFilter: any = {
       isActive: true,
       isDisplay: true,
-    });
+    };
+
+    if (company) {
+      jobFilter.$or = [{ createdBy: id }, { companyId: company._id }];
+    } else {
+      jobFilter.createdBy = id;
+    }
+    const totalJobs = await JobMaster.countDocuments(jobFilter);
 
     const totalApplications = await JobApplicationMaster.countDocuments({
+      recruiterId: recruiterObjId,
       isActive: true,
       isDisplay: true,
     });
