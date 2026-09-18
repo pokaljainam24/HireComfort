@@ -28,6 +28,9 @@ import JobDetails from "./pages/JobDetails.tsx";
 import Services from "./pages/Services.tsx";
 import ServiceResumeWriting from "./pages/ServiceResumeWriting.tsx";
 import CompanyDetails from "./pages/CompanyDetails.tsx";
+import ServiceCareerGuidance from "./pages/ServiceCareerGuidance.tsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
+import TermsConditions from "./pages/TermsConditions.tsx";
 
 function App() {
   const location = useLocation();
@@ -60,6 +63,9 @@ function App() {
         
         <Route path="/service" element={<Services />} />
         <Route path="/service-resume-writing" element={<ServiceResumeWriting />} />
+        <Route path="/service-Career-Guidance" element={<ServiceCareerGuidance />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsConditions />} />
       </Routes>
       {isHomeRoute && <Footer />}
     </>

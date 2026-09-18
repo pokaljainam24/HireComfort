@@ -4283,12 +4283,14 @@ ul li:last-child .card-list-4 {
 
 .footer .footer-col-2 {
   flex: 0 0 auto;
-  width: 14%;
+  width: 18%;
+  text-align: center;
 }
 
 .footer .footer-col-3 {
   flex: 0 0 auto;
-  width: 14%;
+  width: 18%;
+  text-align: center;
 }
 
 .footer .footer-col-4 {
@@ -4298,7 +4300,8 @@ ul li:last-child .card-list-4 {
 
 .footer .footer-col-5 {
   flex: 0 0 auto;
-  width: 14%;
+  width: 18%;
+  text-align: center;
 }
 
 .footer .footer-col-6 {
@@ -7240,7 +7243,7 @@ ul li:last-child .card-list-4 {
   line-height: 22px;
   display: inline-block;
   width: 50%;
-  min-width: 120px;
+  min-width: 180px;
   max-width: 120px;
 }
 
@@ -9246,6 +9249,7 @@ ul li:last-child .card-list-4 {
   .footer .footer-col-5,
   .footer .footer-col-6 {
     width: 100%;
+    text-align: start;
   }
 
   .btn.btn-default {

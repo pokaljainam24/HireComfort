@@ -50,36 +50,14 @@ function Footer() {
               <li>
                 <a href="#">Credit</a>
               </li>
-              <li>
-                <a href="/faq">FAQ</a>
-              </li>
             </ul>
           </div>
-          <div className="footer-col-4 col-md-2 col-xs-6">
-            <h6 className="mb-20">Quick links</h6>
-            <ul className="menu-footer">
-              <li>
-                <a href="#">iOS</a>
-              </li>
-              <li>
-                <a href="#">Android</a>
-              </li>
-              <li>
-                <a href="#">Microsoft</a>
-              </li>
-              <li>
-                <a href="#">Desktop</a>
-              </li>
-            </ul>
-          </div>
+
           <div className="footer-col-5 col-md-2 col-xs-6">
             <h6 className="mb-20">More</h6>
             <ul className="menu-footer">
               <li>
                 <a href="/privacy">Privacy</a>
-              </li>
-              <li>
-                <a href="#">Help</a>
               </li>
               <li>
                 <a href="/terms">Terms</a>

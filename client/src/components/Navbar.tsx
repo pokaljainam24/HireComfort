@@ -338,7 +338,7 @@ function Navbar() {
 
                       <li>
                         <Link
-                          to="/service-resume-writing"
+                          to="/service-Career-Guidance"
                           onClick={() =>
                             window.scrollTo(0, 0)
                           }

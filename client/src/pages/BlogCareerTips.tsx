@@ -18,210 +18,257 @@ function BlogCareerTips() {
               <div className="box-border-single">
                 <div className="row mt-10">
                   <div className="col-lg-8 col-md-12">
-                    <h3>
-                      Senior Full Stack Engineer, Creator Success Full Time
-                    </h3>
+                    <h3>Career Tips</h3>
+
                     <div className="mt-0 mb-15">
-                      <span className="card-briefcase">Fulltime</span>
-                      <span className="card-time">3 mins ago</span>
+                      <span className="card-briefcase">Career Guide</span>
+                      <span className="card-time">5 mins read</span>
                     </div>
                   </div>
                 </div>
+
                 <div className="border-bottom pt-10 pb-10"></div>
+
                 <div className="banner-hero banner-image-single mt-10 mb-20">
-                  <img src={bannerImage} alt="jobBox" />
+                  <img src={bannerImage} alt="Career Tips" />
                 </div>
+
                 <div className="job-overview">
                   <h5 className="border-bottom pb-15 mb-30">Overview</h5>
+
                   <div className="row">
                     <div className="col-md-6 d-flex">
                       <div className="sidebar-icon-item">
-                        <img src={industryIcon} alt="jobBox" />
+                        <img src={industryIcon} alt="Topic" />
                       </div>
                       <div className="sidebar-text-info ml-10">
                         <span className="text-description industry-icon mb-10">
-                          Industry
+                          Topic
                         </span>
                         <strong className="small-heading">
-                          {" "}
-                          Mechanical / Auto / Automotive, Civil / Construction
+                          Career Development
                         </strong>
                       </div>
                     </div>
+
                     <div className="col-md-6 d-flex mt-sm-15">
                       <div className="sidebar-icon-item">
-                        <img src={jobLevelIcon} alt="jobBox" />
+                        <img src={jobLevelIcon} alt="Level" />
                       </div>
                       <div className="sidebar-text-info ml-10">
                         <span className="text-description joblevel-icon mb-10">
-                          Job level
+                          Level
                         </span>
                         <strong className="small-heading">
-                          Experienced (Non - Manager)
+                          All Professionals
                         </strong>
                       </div>
                     </div>
                   </div>
+
                   <div className="row mt-25">
                     <div className="col-md-6 d-flex mt-sm-15">
                       <div className="sidebar-icon-item">
-                        <img src={salaryIcon} alt="jobBox" />
+                        <img src={salaryIcon} alt="Focus" />
                       </div>
                       <div className="sidebar-text-info ml-10">
                         <span className="text-description salary-icon mb-10">
-                          Salary
+                          Focus
                         </span>
-                        <strong className="small-heading">$800 - $1000</strong>
+                        <strong className="small-heading">Career Growth</strong>
                       </div>
                     </div>
+
                     <div className="col-md-6 d-flex">
                       <div className="sidebar-icon-item">
-                        <img src={experienceIcon} alt="jobBox" />
+                        <img src={experienceIcon} alt="Experience" />
                       </div>
                       <div className="sidebar-text-info ml-10">
                         <span className="text-description experience-icon mb-10">
                           Experience
                         </span>
-                        <strong className="small-heading">1 - 2 years</strong>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row mt-25">
-                    <div className="col-md-6 d-flex mt-sm-15">
-                      <div className="sidebar-icon-item">
-                        <img src={jobTypeIcon} alt="jobBox" />
-                      </div>
-                      <div className="sidebar-text-info ml-10">
-                        <span className="text-description jobtype-icon mb-10">
-                          Job type
-                        </span>
-                        <strong className="small-heading">Permanent</strong>
-                      </div>
-                    </div>
-                    <div className="col-md-6 d-flex mt-sm-15">
-                      <div className="sidebar-icon-item">
-                        <img src={deadlineIcon} alt="jobBox" />
-                      </div>
-                      <div className="sidebar-text-info ml-10">
-                        <span className="text-description mb-10">Deadline</span>
-                        <strong className="small-heading">10/08/2026</strong>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row mt-25">
-                    <div className="col-md-6 d-flex mt-sm-15">
-                      <div className="sidebar-icon-item">
-                        <img src={updatedIcon} alt="jobBox" />
-                      </div>
-                      <div className="sidebar-text-info ml-10">
-                        <span className="text-description jobtype-icon mb-10">
-                          Updated
-                        </span>
-                        <strong className="small-heading">10/07/2026</strong>
-                      </div>
-                    </div>
-                    <div className="col-md-6 d-flex mt-sm-15">
-                      <div className="sidebar-icon-item">
-                        <img src={locationIcon} alt="jobBox" />
-                      </div>
-                      <div className="sidebar-text-info ml-10">
-                        <span className="text-description mb-10">Location</span>
                         <strong className="small-heading">
-                          Dallas, Texas Remote Friendly
+                          All Experience Levels
                         </strong>
                       </div>
                     </div>
                   </div>
+
+                  <div className="row mt-25">
+                    <div className="col-md-6 d-flex mt-sm-15">
+                      <div className="sidebar-icon-item">
+                        <img src={jobTypeIcon} alt="Type" />
+                      </div>
+                      <div className="sidebar-text-info ml-10">
+                        <span className="text-description jobtype-icon mb-10">
+                          Type
+                        </span>
+                        <strong className="small-heading">Career Guide</strong>
+                      </div>
+                    </div>
+
+                    <div className="col-md-6 d-flex mt-sm-15">
+                      <div className="sidebar-icon-item">
+                        <img src={deadlineIcon} alt="Updated" />
+                      </div>
+                      <div className="sidebar-text-info ml-10">
+                        <span className="text-description mb-10">Updated</span>
+                        <strong className="small-heading">18/09/2026</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row mt-25">
+                    <div className="col-md-6 d-flex mt-sm-15">
+                      <div className="sidebar-icon-item">
+                        <img src={updatedIcon} alt="Content" />
+                      </div>
+                      <div className="sidebar-text-info ml-10">
+                        <span className="text-description jobtype-icon mb-10">
+                          Content
+                        </span>
+                        <strong className="small-heading">
+                          Career Development
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className="col-md-6 d-flex mt-sm-15">
+                      <div className="sidebar-icon-item">
+                        <img src={locationIcon} alt="Audience" />
+                      </div>
+                      <div className="sidebar-text-info ml-10">
+                        <span className="text-description mb-10">Audience</span>
+                        <strong className="small-heading">Job Seekers</strong>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
                 <div className="content-single">
-                  <h4>Welcome to AliStudio Team</h4>
+                  <h4>Build a Career That Moves Forward</h4>
                   <p>
-                    The AliStudio Design team has a vision to establish a
-                    trusted platform that enables productive and healthy
-                    enterprises in a world of digital and remote everything,
-                    constantly changing work patterns and norms, and the need
-                    for organizational resiliency.
+                    Your career journey is a continuous process of learning,
+                    improving your skills, building professional relationships,
+                    and making informed career decisions. Whether you are
+                    starting your first job or looking for your next
+                    opportunity, having a clear direction can help you make
+                    better choices.
                   </p>
+
+                  <h4>Know Your Career Goals</h4>
                   <p>
-                    The ideal candidate will have strong creative skills and a
-                    portfolio of work which demonstrates their passion for
-                    illustrative design and typography. This candidate will have
-                    experiences in working with numerous different design
-                    platforms such as digital and print forms.
+                    Start by understanding what you want from your career. Think
+                    about the type of work you enjoy, the skills you want to
+                    develop, the industries that interest you, and the kind of
+                    professional growth you are looking for.
                   </p>
-                  <h4>Essential Knowledge, Skills, and Experience</h4>
+
+                  <p>
+                    Set both short-term and long-term goals and review them
+                    regularly as your interests and experience develop.
+                  </p>
+
+                  <h4>Build the Right Skills</h4>
+                  <p>
+                    Employers look for candidates who can demonstrate relevant
+                    skills and practical knowledge. Identify the skills required
+                    for your target roles and continuously work on improving
+                    them.
+                  </p>
+
+                  <p>Consider developing:</p>
+
                   <ul>
-                    <li>
-                      A portfolio demonstrating well thought through and
-                      polished end to end customer journeys
-                    </li>
-                    <li>
-                      5+ years of industry experience in interactive design and
-                      / or visual design
-                    </li>
-                    <li>Excellent interpersonal skills</li>
-                    <li>
-                      Aware of trends in&#x202F;mobile, communications, and
-                      collaboration
-                    </li>
-                    <li>
-                      Ability to create highly polished design prototypes,
-                      mockups, and other communication artifacts
-                    </li>
-                    <li>
-                      The ability to scope and estimate efforts accurately and
-                      prioritize tasks and goals independently
-                    </li>
-                    <li>
-                      History of impacting shipping products with your work
-                    </li>
-                    <li>
-                      A Bachelor&rsquo;s Degree in Design (or related field) or
-                      equivalent professional experience
-                    </li>
-                    <li>
-                      Proficiency in a variety of design tools such as Figma,
-                      Photoshop, Illustrator, and Sketch
-                    </li>
+                    <li>Technical and job-specific skills</li>
+                    <li>Communication skills</li>
+                    <li>Problem-solving abilities</li>
+                    <li>Teamwork and collaboration</li>
+                    <li>Leadership skills</li>
+                    <li>Time management</li>
+                    <li>Digital and technology skills</li>
                   </ul>
-                  <h4>Preferred Experience</h4>
+
+                  <h4>Keep Learning</h4>
+                  <p>
+                    The job market continues to evolve, and new technologies and
+                    working practices can change the skills employers need. Make
+                    learning part of your regular career routine.
+                  </p>
+
+                  <p>
+                    Online courses, certifications, workshops, projects,
+                    professional communities, and practical experience can all
+                    help you strengthen your profile.
+                  </p>
+
+                  <h4>Build Your Professional Network</h4>
+                  <p>
+                    Networking can help you discover opportunities, learn about
+                    different industries, and connect with professionals who can
+                    share valuable experiences.
+                  </p>
+
+                  <p>
+                    Maintain professional relationships with colleagues,
+                    mentors, recruiters, industry professionals, and people you
+                    meet through professional events or online platforms.
+                  </p>
+
+                  <h4>Gain Practical Experience</h4>
+                  <p>
+                    Practical experience helps you demonstrate what you can
+                    actually do. Internships, freelance assignments, projects,
+                    volunteering, part-time work, and personal projects can all
+                    contribute to your professional profile.
+                  </p>
+
+                  <p>
+                    Whenever possible, focus on measurable outcomes rather than
+                    simply listing responsibilities.
+                  </p>
+
+                  <h4>Review Your Career Progress</h4>
+                  <p>
+                    Take time to review your career regularly. Ask yourself:
+                  </p>
+
                   <ul>
-                    <li>
-                      Designing user experiences for enterprise software /
-                      services
-                    </li>
-                    <li>
-                      Creating and applying established design principles and
-                      interaction patterns
-                    </li>
-                    <li>
-                      Aligning or influencing design thinking with teams working
-                      in other geographies
-                    </li>
+                    <li>What skills have I developed?</li>
+                    <li>What type of work do I enjoy?</li>
+                    <li>What achievements can I demonstrate?</li>
+                    <li>Which areas do I need to improve?</li>
+                    <li>What type of role should I target next?</li>
                   </ul>
-                  <h4>Product Designer</h4>
+
                   <p>
-                    <strong>Product knowledge:</strong> Deeply understand the
-                    technology and features of the product area to which you are
-                    assigned.
+                    A regular career review can help you identify opportunities
+                    and plan your next steps.
                   </p>
+
+                  <h4>Stay Professional</h4>
                   <p>
-                    <strong>Research:</strong> Provide human and business impact
-                    and insights for products.
+                    Your professional reputation is built through your everyday
+                    actions. Be reliable, communicate clearly, respect
+                    deadlines, and maintain positive relationships with
+                    colleagues and clients.
                   </p>
+
                   <p>
-                    <strong>Deliverables:</strong> Create deliverables for your
-                    product area (for example competitive analyses, user flows,
-                    low fidelity wireframes, high fidelity mockups, prototypes,
-                    etc.) that solve real user problems through the user
-                    experience.
+                    A strong professional reputation can support your career
+                    development over time.
                   </p>
+
+                  <h4>Keep Your Job Search Focused</h4>
                   <p>
-                    <strong>Communication:</strong> Communicate the results of
-                    UX activities within your product area to the design team
-                    department, cross-functional partners within your product
-                    area, and other interested Superformula team members using
-                    clear language that simplifies complexity.
+                    Instead of applying randomly to every available position,
+                    identify roles that match your experience, skills,
+                    interests, and career goals.
+                  </p>
+
+                  <p>
+                    Customize your resume and application according to the
+                    requirements of each relevant position.
                   </p>
                 </div>
               </div>
