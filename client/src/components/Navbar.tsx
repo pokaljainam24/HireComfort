@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 
 import logo from "../assets/imgs/logo.png";
@@ -18,22 +17,17 @@ function Navbar() {
   const [loading, setLoading] = useState(true);
   const userType = localStorage.getItem("role") ?? "";
 
-  const [user, setUser] =
-    useState<LoggedInUser | null>(null);
+  const [user, setUser] = useState<LoggedInUser | null>(null);
 
-  const [token, setToken] =
-    useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   // =====================================
   // PROFILE DROPDOWN
   // =====================================
 
-  const [profileOpen, setProfileOpen] =
-    useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
-  const profileMenuRef = useRef<HTMLDivElement | null>(
-    null,
-  );
+  const profileMenuRef = useRef<HTMLDivElement | null>(null);
 
   // =====================================
   // PRELOADER
@@ -53,24 +47,18 @@ function Navbar() {
 
   useEffect(() => {
     const checkLogin = () => {
-      const storedToken =
-        localStorage.getItem("token");
+      const storedToken = localStorage.getItem("token");
 
-      const storedUser =
-        localStorage.getItem("user");
+      const storedUser = localStorage.getItem("user");
 
       if (storedToken && storedUser) {
         try {
-          const parsedUser =
-            JSON.parse(storedUser);
+          const parsedUser = JSON.parse(storedUser);
 
           setToken(storedToken);
           setUser(parsedUser);
         } catch (error) {
-          console.error(
-            "Failed to parse logged-in user:",
-            error,
-          );
+          console.error("Failed to parse logged-in user:", error);
 
           localStorage.removeItem("token");
           localStorage.removeItem("role");
@@ -87,16 +75,10 @@ function Navbar() {
 
     checkLogin();
 
-    window.addEventListener(
-      "storage",
-      checkLogin,
-    );
+    window.addEventListener("storage", checkLogin);
 
     return () => {
-      window.removeEventListener(
-        "storage",
-        checkLogin,
-      );
+      window.removeEventListener("storage", checkLogin);
     };
   }, []);
 
@@ -105,29 +87,19 @@ function Navbar() {
   // =====================================
 
   useEffect(() => {
-    const handleClickOutside = (
-      event: MouseEvent,
-    ) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         profileMenuRef.current &&
-        !profileMenuRef.current.contains(
-          event.target as Node,
-        )
+        !profileMenuRef.current.contains(event.target as Node)
       ) {
         setProfileOpen(false);
       }
     };
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside,
-    );
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside,
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -148,10 +120,7 @@ function Navbar() {
       return user.profilePic;
     }
 
-    return `http://localhost:5000/${user.profilePic.replace(
-      /^\/+/,
-      "",
-    )}`;
+    return `http://localhost:5000/${user.profilePic.replace(/^\/+/, "")}`;
   };
 
   // =====================================
@@ -197,10 +166,7 @@ function Navbar() {
           <div className="preloader d-flex align-items-center justify-content-center">
             <div className="preloader-inner position-relative">
               <div className="text-center">
-                <img
-                  src={loadingGif}
-                  alt="HireComfort"
-                />
+                <img src={loadingGif} alt="HireComfort" />
               </div>
             </div>
           </div>
@@ -214,26 +180,20 @@ function Navbar() {
       <header className="header sticky-bar">
         <div className="container">
           <div className="main-header">
-
             {/* =====================================
                 LOGO
             ===================================== */}
 
             <div className="header-left">
               <div className="header-logo">
-                <Link
-                  className="d-flex"
-                  to="/"
-                >
+                <Link className="d-flex" to="/">
                   <img
                     src={logo}
                     alt="HireComfort"
                     style={{
                       width: "320px",
                     }}
-                    onClick={() =>
-                      window.scrollTo(0, 0)
-                    }
+                    onClick={() => window.scrollTo(0, 0)}
                   />
                 </Link>
               </div>
@@ -246,16 +206,13 @@ function Navbar() {
             <div className="header-nav">
               <nav className="nav-main-menu">
                 <ul className="main-menu">
-
                   {/* HOME */}
 
                   <li>
                     <Link
                       className="active"
                       to="/"
-                      onClick={() =>
-                        window.scrollTo(0, 0)
-                      }
+                      onClick={() => window.scrollTo(0, 0)}
                     >
                       Home
                     </Link>
@@ -264,73 +221,31 @@ function Navbar() {
                   {/* JOBS */}
 
                   <li>
-                    <Link
-                      to="/jobs"
-                      onClick={() =>
-                        window.scrollTo(0, 0)
-                      }
-                    >
+                    <Link to="/jobs" onClick={() => window.scrollTo(0, 0)}>
                       Jobs
                     </Link>
                   </li>
 
                   {/* COMPANIES */}
 
-                  <li className="has-children">
-                    <Link
-                      to="/companies"
-                      onClick={() =>
-                        window.scrollTo(0, 0)
-                      }
-                    >
+                  <li>
+                    <Link to="/companies" onClick={() => window.scrollTo(0, 0)}>
                       Companies
                     </Link>
-
-                    <ul className="sub-menu">
-                      <li>
-                        <Link
-                          to="/companies"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
-                        >
-                          Browse Companies
-                        </Link>
-                      </li>
-
-                      <li>
-                        <Link
-                          to="/companies-featured"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
-                        >
-                          Featured Companies
-                        </Link>
-                      </li>
-                    </ul>
                   </li>
 
                   {/* SERVICES */}
 
                   <li className="has-children">
-                    <Link
-                      to="/service"
-                      onClick={() =>
-                        window.scrollTo(0, 0)
-                      }
-                    >
+                    <Link to="/service" onClick={() => window.scrollTo(0, 0)}>
                       Services
                     </Link>
 
                     <ul className="sub-menu">
-
                       <li>
                         <Link
                           to="/service-resume-writing"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
+                          onClick={() => window.scrollTo(0, 0)}
                         >
                           Resume Writing
                         </Link>
@@ -339,9 +254,7 @@ function Navbar() {
                       <li>
                         <Link
                           to="/service-Career-Guidance"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
+                          onClick={() => window.scrollTo(0, 0)}
                         >
                           Career Guidance
                         </Link>
@@ -352,23 +265,13 @@ function Navbar() {
                   {/* BLOGS */}
 
                   <li className="has-children">
-                    <Link
-                      to="/blog"
-                      onClick={() =>
-                        window.scrollTo(0, 0)
-                      }
-                    >
+                    <Link to="/blog" onClick={() => window.scrollTo(0, 0)}>
                       Blogs
                     </Link>
 
                     <ul className="sub-menu">
                       <li>
-                        <Link
-                          to="/blog"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
-                        >
+                        <Link to="/blog" onClick={() => window.scrollTo(0, 0)}>
                           Latest Blogs
                         </Link>
                       </li>
@@ -376,9 +279,7 @@ function Navbar() {
                       <li>
                         <Link
                           to="/blog-career-tips"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
+                          onClick={() => window.scrollTo(0, 0)}
                         >
                           Career Tips
                         </Link>
@@ -387,9 +288,7 @@ function Navbar() {
                       <li>
                         <Link
                           to="/blog-interview-tips"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
+                          onClick={() => window.scrollTo(0, 0)}
                         >
                           Interview Tips
                         </Link>
@@ -398,9 +297,7 @@ function Navbar() {
                       <li>
                         <Link
                           to="/blog-resume-tips"
-                          onClick={() =>
-                            window.scrollTo(0, 0)
-                          }
+                          onClick={() => window.scrollTo(0, 0)}
                         >
                           Resume Tips
                         </Link>
@@ -411,12 +308,7 @@ function Navbar() {
                   {/* ABOUT */}
 
                   <li>
-                    <Link
-                      to="/about"
-                      onClick={() =>
-                        window.scrollTo(0, 0)
-                      }
-                    >
+                    <Link to="/about" onClick={() => window.scrollTo(0, 0)}>
                       About Us
                     </Link>
                   </li>
@@ -424,16 +316,10 @@ function Navbar() {
                   {/* CONTACT */}
 
                   <li>
-                    <Link
-                      to="/contact"
-                      onClick={() =>
-                        window.scrollTo(0, 0)
-                      }
-                    >
+                    <Link to="/contact" onClick={() => window.scrollTo(0, 0)}>
                       Contact
                     </Link>
                   </li>
-
                 </ul>
               </nav>
 
@@ -457,7 +343,6 @@ function Navbar() {
                   gap: "12px",
                 }}
               >
-
                 {/* LOGGED OUT */}
 
                 {!token ? (
@@ -465,22 +350,16 @@ function Navbar() {
                     <Link
                       className="btn btn-default btn-shadow hover-up"
                       to="/login"
-                      onClick={() =>
-                        window.scrollTo(0, 0)
-                      }
+                      onClick={() => window.scrollTo(0, 0)}
                     >
                       Login / Register
                     </Link>
 
-                    <Link
-                      to="/signup"
-                      className="btn btn-brand-1"
-                    >
+                    <Link to="/signup" className="btn btn-brand-1">
                       Post a Job
                     </Link>
                   </>
                 ) : (
-
                   /* LOGGED IN */
 
                   <div
@@ -490,7 +369,6 @@ function Navbar() {
                       position: "relative",
                     }}
                   >
-
                     {/* PROFILE TRIGGER */}
 
                     <div
@@ -499,11 +377,8 @@ function Navbar() {
                         gap: "10px",
                         cursor: "pointer",
                       }}
-                      onClick={
-                        toggleProfileDropdown
-                      }
+                      onClick={toggleProfileDropdown}
                     >
-
                       {/* PROFILE PHOTO */}
 
                       <img
@@ -527,14 +402,12 @@ function Navbar() {
                       ></i>
                     </div>
 
-                 
-
                     {/* PROFILE DROPDOWN */}
-                    
 
                     <div
-                      className={`profile-dropdown ${profileOpen ? "profile-dropdown-open" : ""
-                        }`}
+                      className={`profile-dropdown ${
+                        profileOpen ? "profile-dropdown-open" : ""
+                      }`}
                     >
                       <Link
                         to={userType ? `${userType}-panel/profile` : "/login"}
@@ -556,7 +429,7 @@ function Navbar() {
                           <span>My Application List</span>
                         </Link>
                       )}
-        
+
                       <button
                         type="button"
                         className="profile-dropdown-item"
@@ -568,10 +441,8 @@ function Navbar() {
                     </div>
                   </div>
                 )}
-
               </div>
             </div>
-
           </div>
         </div>
       </header>
@@ -584,55 +455,29 @@ function Navbar() {
         <div className="mobile-header-wrapper-inner">
           <div className="mobile-header-content-area">
             <div className="perfect-scroll">
-
               {/* MOBILE MENU */}
 
               <div className="mobile-menu-wrap mobile-header-border">
                 <nav>
                   <ul className="mobile-menu font-heading">
-
                     <li>
-                      <Link to="/">
-                        Home
-                      </Link>
+                      <Link to="/">Home</Link>
                     </li>
 
                     <li>
-                      <Link to="/jobs">
-                        Jobs
-                      </Link>
+                      <Link to="/jobs">Jobs</Link>
+                    </li>
+
+                    <li>
+                      <Link to="/companies">Companies</Link>
                     </li>
 
                     <li className="has-children">
-                      <Link to="/companies">
-                        Companies
-                      </Link>
+                      <Link to="/service">Services</Link>
 
                       <ul className="sub-menu">
                         <li>
-                          <Link to="/companies">
-                            Browse Companies
-                          </Link>
-                        </li>
-
-                        <li>
-                          <Link to="/companies-featured">
-                            Featured Companies
-                          </Link>
-                        </li>
-                      </ul>
-                    </li>
-
-                    <li className="has-children">
-                      <Link to="/service">
-                        Services
-                      </Link>
-
-                      <ul className="sub-menu">
-                        <li>
-                          <Link to="/service">
-                            Recruitment Services
-                          </Link>
+                          <Link to="/service">Recruitment Services</Link>
                         </li>
 
                         <li>
@@ -656,49 +501,34 @@ function Navbar() {
                     </li>
 
                     <li className="has-children">
-                      <Link to="/blog">
-                        Blogs
-                      </Link>
+                      <Link to="/blog">Blogs</Link>
 
                       <ul className="sub-menu">
                         <li>
-                          <Link to="/blog">
-                            Latest Blogs
-                          </Link>
+                          <Link to="/blog">Latest Blogs</Link>
                         </li>
 
                         <li>
-                          <Link to="/blog-career-tips">
-                            Career Tips
-                          </Link>
+                          <Link to="/blog-career-tips">Career Tips</Link>
                         </li>
 
                         <li>
-                          <Link to="/blog-interview-tips">
-                            Interview Tips
-                          </Link>
+                          <Link to="/blog-interview-tips">Interview Tips</Link>
                         </li>
 
                         <li>
-                          <Link to="/blog-resume-tips">
-                            Resume Tips
-                          </Link>
+                          <Link to="/blog-resume-tips">Resume Tips</Link>
                         </li>
                       </ul>
                     </li>
 
                     <li>
-                      <Link to="/about">
-                        About Us
-                      </Link>
+                      <Link to="/about">About Us</Link>
                     </li>
 
                     <li>
-                      <Link to="/contact">
-                        Contact Us
-                      </Link>
+                      <Link to="/contact">Contact Us</Link>
                     </li>
-
                   </ul>
                 </nav>
               </div>
@@ -706,32 +536,20 @@ function Navbar() {
               {/* MOBILE ACCOUNT */}
 
               <div className="mobile-account">
-                <h6 className="mb-15">
-                  Account
-                </h6>
+                <h6 className="mb-15">Account</h6>
 
                 {!token ? (
                   <div className="d-grid gap-2">
-
-                    <Link
-                      to="/login"
-                      className="btn btn-default btn-sm"
-                    >
+                    <Link to="/login" className="btn btn-default btn-sm">
                       Login / Register
                     </Link>
 
-                    <Link
-                      to="/signup"
-                      className="btn btn-brand-1 btn-sm mt-10"
-                    >
+                    <Link to="/signup" className="btn btn-brand-1 btn-sm mt-10">
                       Post a Job
                     </Link>
-
                   </div>
                 ) : (
-
                   <div className="d-grid gap-2">
-
                     {/* MOBILE PROFILE */}
 
                     <div
@@ -740,7 +558,6 @@ function Navbar() {
                         position: "relative",
                       }}
                     >
-
                       {/* MOBILE PROFILE TRIGGER */}
 
                       <div
@@ -750,11 +567,8 @@ function Navbar() {
                           cursor: "pointer",
                           padding: "10px 0",
                         }}
-                        onClick={
-                          toggleProfileDropdown
-                        }
+                        onClick={toggleProfileDropdown}
                       >
-
                         {/* PROFILE PHOTO */}
 
                         <img
@@ -775,24 +589,19 @@ function Navbar() {
                               : "bi bi-chevron-down"
                           }
                         ></i>
-
                       </div>
 
                       {/* MOBILE PROFILE DROPDOWN */}
 
                       <div
-                        className={`profile-dropdown ${profileOpen
-                          ? "profile-dropdown-open"
-                          : ""
-                          }`}
+                        className={`profile-dropdown ${
+                          profileOpen ? "profile-dropdown-open" : ""
+                        }`}
                       >
-
                         <Link
                           to={`${userType}-panel/profile`}
                           className="profile-dropdown-item"
-                          onClick={
-                            closeProfileDropdown
-                          }
+                          onClick={closeProfileDropdown}
                         >
                           <i className="bi bi-person"></i>
                           <span>My Profile</span>
@@ -806,11 +615,8 @@ function Navbar() {
                           <i className="bi bi-box-arrow-right"></i>
                           <span>Logout</span>
                         </button>
-
                       </div>
-
                     </div>
-
                   </div>
                 )}
               </div>
@@ -820,7 +626,6 @@ function Navbar() {
               <div className="site-copyright text-center mt-30">
                 © 2026 HireComfort. All Rights Reserved.
               </div>
-
             </div>
           </div>
         </div>
@@ -830,4 +635,3 @@ function Navbar() {
 }
 
 export default Navbar;
-

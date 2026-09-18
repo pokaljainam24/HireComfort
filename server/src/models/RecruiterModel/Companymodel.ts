@@ -2,6 +2,7 @@ import mongoose, { Schema, Types } from "mongoose";
 
 export interface ICompanyMaster {
   recruiterId: Types.ObjectId;
+  industry?: Types.ObjectId | string;
   companyName: string;
   address: string;
   contactNumber: string;
@@ -40,6 +41,13 @@ const companyMasterSchema = new Schema<ICompanyMaster>(
       type: Schema.Types.ObjectId,
       ref: "Recruiter",
       required: true,
+    },
+
+    industry: {
+      type: Schema.Types.ObjectId,
+      ref: "JobCategory",
+      required: false,
+      default: null,
     },
 
     companyName: {

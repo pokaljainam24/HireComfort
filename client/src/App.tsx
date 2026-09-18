@@ -33,10 +33,11 @@ import ServiceCareerGuidance from "./pages/ServiceCareerGuidance.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 import TermsConditions from "./pages/TermsConditions.tsx";
 
-
 function App() {
   const location = useLocation();
-  const isHomeRoute = !location.pathname.startsWith("/recruiter-panel") && !location.pathname.startsWith("/applicant-panel");
+  const isHomeRoute =
+    !location.pathname.startsWith("/recruiter-panel") &&
+    !location.pathname.startsWith("/applicant-panel");
 
   return (
     <>
@@ -49,7 +50,7 @@ function App() {
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/companies" element={<Companies />} />
         <Route path="/companies-featured" element={<CompaniesFeatured />} />
-        <Route path="/Companies/Details" element={<CompanyDetails />} />
+        <Route path="/companies/details/:id" element={<CompanyDetails />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog-career-tips" element={<BlogCareerTips />} />
@@ -64,8 +65,14 @@ function App() {
         <Route path="/applicant-panel/*" element={<ApplicantApp />} />
 
         <Route path="/service" element={<Services />} />
-        <Route path="/service-resume-writing" element={<ServiceResumeWriting />} />
-        <Route path="/service-Career-Guidance" element={<ServiceCareerGuidance />} />
+        <Route
+          path="/service-resume-writing"
+          element={<ServiceResumeWriting />}
+        />
+        <Route
+          path="/service-Career-Guidance"
+          element={<ServiceCareerGuidance />}
+        />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsConditions />} />
         <Route

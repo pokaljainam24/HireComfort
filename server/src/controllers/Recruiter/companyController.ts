@@ -37,10 +37,26 @@ export const createCompany = async (req: Request, res: Response) => {
 
 export const getCompanys = async (req: Request, res: Response) => {
   try {
-    const companies = await getCompanyService();
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 12;
+    const searchQuery = (req.query.searchQuery as string) || (req.query.search as string) || "";
+    const category = (req.query.category as string) || "";
+    const sortBy = (req.query.sortBy as string) || "newest";
+
+    const result = await getCompanyService({
+      page,
+      limit,
+      searchQuery,
+      category,
+      sortBy,
+    });
 
     return res.status(200).json({
-      companies,
+      companies: result.companies,
+      totalCompanies: result.totalCompanies,
+      totalPages: result.totalPages,
+      currentPage: result.currentPage,
+      limit: result.limit,
     });
   } catch (error) {
     console.error("Error getting companies:", error);

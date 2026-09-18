@@ -9,12 +9,14 @@ import { getCountries } from "../../api/countryApi.ts";
 import { getStates } from "../../api/stateApi.ts";
 import { getCities } from "../../api/cityApi.ts";
 import { getCompanyTypes } from "../../api/CompanyTypeApi.ts";
+import { getJobCategories } from "../../api/jobCategoryApi.ts";
 
 import PageHeader from "../../components/common/PageHeader.tsx";
 import Field from "../../components/common/Field.tsx";
 
 import type { CompanyProfileType } from "../../types/companyProfile.ts";
 import type { CompanyType } from "../../types/companyType.ts";
+import type { JobCategory } from "../../types/jobCategory.ts";
 
 const empty: CompanyProfileType = {
   companyName: "",
@@ -22,6 +24,7 @@ const empty: CompanyProfileType = {
   contactNumber: "",
   numberOfEmployee: "1-10",
   companyType: "",
+  industry: "",
   website: "",
   gstNumber: "",
   companyLogo: "",
@@ -46,6 +49,7 @@ const CompanyProfile: React.FC = () => {
   const [states, setStates] = useState<StateItem[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [companyTypes, setCompanyTypes] = useState<CompanyType[]>([]);
+  const [jobCategories, setJobCategories] = useState<JobCategory[]>([]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -60,23 +64,33 @@ const CompanyProfile: React.FC = () => {
       getStates().catch(() => []),
       getCities().catch(() => []),
       getCompanyTypes().catch(() => []),
-    ]).then(([profile, countries, states, cities, companyTypes]) => {
-      if (profile) {
-        setForm((prev) => ({
-          ...prev,
-          ...profile,
-        }));
-      }
+      getJobCategories().catch(() => []),
+    ]).then(
+      ([profile, countries, states, cities, companyTypes, jobCategories]) => {
+        if (profile) {
+          const profileData = profile as any;
+          setForm((prev) => ({
+            ...prev,
+            ...profile,
+            industry:
+              typeof profileData.industry === "object" &&
+              profileData.industry?._id
+                ? profileData.industry._id
+                : profileData.industryDetails?._id ||
+                  profileData.industry ||
+                  "",
+          }));
+        }
 
-      setCountries(countries);
-      setStates(states);
-      setCities(cities);
-      setCompanyTypes(companyTypes);
+        setCountries(countries);
+        setStates(states);
+        setCities(cities);
+        setCompanyTypes(companyTypes);
+        setJobCategories(jobCategories);
 
-      console.log("Company Types:", companyTypes);
-
-      setLoading(false);
-    });
+        setLoading(false);
+      },
+    );
   }, []);
 
   const filteredStates = states.filter((s) => s.country_id == form.countryId);
@@ -300,6 +314,27 @@ const CompanyProfile: React.FC = () => {
                     {companyTypes.map((companyType) => (
                       <option key={companyType._id} value={companyType._id}>
                         {companyType.name}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+
+                {/* Industry (Job Category) */}
+                <Field label="Industry">
+                  <select
+                    value={form.industry || ""}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        industry: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Select Industry</option>
+
+                    {jobCategories.map((cat) => (
+                      <option key={cat._id} value={cat._id}>
+                        {cat.name}
                       </option>
                     ))}
                   </select>

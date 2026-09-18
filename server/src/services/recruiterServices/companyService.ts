@@ -187,12 +187,88 @@ export async function createCompanyService(
   }
 }
 
-export async function getCompanyService() {
+export interface FetchCompaniesParams {
+  page?: number;
+  limit?: number;
+  searchQuery?: string;
+  category?: string;
+  subCategory?: string;
+  categories?: string[];
+  subCategories?: string[];
+  sortBy?: string;
+}
+
+export async function getCompanyService(params: FetchCompaniesParams = {}) {
   try {
-    return await CompanyMaster.find({
+    const {
+      page = 1,
+      limit = 12,
+      searchQuery,
+      category,
+      sortBy = "newest",
+    } = params;
+
+    const query: any = {
       isActive: true,
       isDisplay: true,
-    }).populate("recruiterId");
+    };
+
+    if (searchQuery && searchQuery.trim()) {
+      query.$or = [
+        { companyName: { $regex: searchQuery.trim(), $options: "i" } },
+        { address: { $regex: searchQuery.trim(), $options: "i" } },
+        { companyType: { $regex: searchQuery.trim(), $options: "i" } },
+      ];
+    }
+
+    if(category && category !== "all") {
+      const catConditions: any[] = [];
+      if (mongoose.Types.ObjectId.isValid(category)) {
+        const objId = new Types.ObjectId(category);
+        catConditions.push({ industry: objId });
+      } else {
+        catConditions.push({ companyType: category });
+      }
+
+      if (catConditions.length > 0) {
+        if (query.$or) {
+          const searchOr = query.$or;
+          delete query.$or;
+          query.$and = [{ $or: searchOr }, { $or: catConditions }];
+        } else {
+          query.$or = catConditions;
+        }
+      }
+    }
+
+    const sortOptions: Record<string, any> = {};
+    if (sortBy === "oldest") {
+      sortOptions.createdAt = 1;
+    } else {
+      sortOptions.createdAt = -1;
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [companies, totalCompanies] = await Promise.all([
+      CompanyMaster.find(query)
+        .populate("recruiterId")
+        .populate("industry")
+        .skip(skip)
+        .limit(limit)
+        .sort(sortOptions),
+      CompanyMaster.countDocuments(query),
+    ]);
+
+    const totalPages = Math.ceil(totalCompanies / limit) || 1;
+
+    return {
+      companies,
+      totalCompanies,
+      totalPages,
+      currentPage: page,
+      limit,
+    };
   } catch (error) {
     console.error("Error getting companies:", error);
     throw error;
@@ -205,7 +281,9 @@ export async function getCompanyByIdService(id: string) {
       _id: id,
       isActive: true,
       isDisplay: true,
-    }).populate("recruiterId");
+    })
+      .populate("recruiterId")
+      .populate("industry");
   } catch (error) {
     console.error(`Error getting company with id ${id}:`, error);
     throw error;
@@ -251,6 +329,15 @@ export async function getCompanyByRecruiterIdService(recruiterId: string) {
       },
 
       {
+        $lookup: {
+          from: "jobcategories",
+          localField: "industry",
+          foreignField: "_id",
+          as: "industryDetails",
+        },
+      },
+
+      {
         $unwind: {
           path: "$countryDetails",
           preserveNullAndEmptyArrays: true,
@@ -270,9 +357,16 @@ export async function getCompanyByRecruiterIdService(recruiterId: string) {
           preserveNullAndEmptyArrays: true,
         },
       },
+
+      {
+        $unwind: {
+          path: "$industryDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
       {
         $project: {
-          recruiterId: 0,
           createdBy: 0,
           updatedBy: 0,
           createdAt: 0,
@@ -281,7 +375,7 @@ export async function getCompanyByRecruiterIdService(recruiterId: string) {
           deleteBy: 0,
           isActive: 0,
           isDisplay: 0,
-          __v: 0
+          __v: 0,
         },
       },
     ]);
@@ -308,7 +402,9 @@ export async function updateCompanyService(
         new: true,
         runValidators: true,
       },
-    ).populate("recruiterId");
+    )
+      .populate("recruiterId")
+      .populate("industry");
   } catch (error) {
     console.error(`Error updating company with id ${id}:`, error);
     throw error;

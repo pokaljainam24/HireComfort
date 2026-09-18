@@ -1,10 +1,10 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext.tsx";
 import { navConfig } from "../../data/navConfig.ts";
 import { Icon } from "../common/Icon.tsx";
-import logoWithText from '/assets/images/logoWithText.png'
-import logo from '/assets/images/logo.png'
+import logoWithText from "/assets/images/logoWithText.png";
+import logo from "/assets/images/logo.png";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -12,7 +12,11 @@ interface SidebarProps {
   onCloseMobile: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ collapsed, mobileOpen, onCloseMobile }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  collapsed,
+  mobileOpen,
+  onCloseMobile,
+}) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -31,9 +35,13 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, mobileOpen, onCloseMobile 
           mobileOpen ? "mobile-open" : "",
         ].join(" ")}
       >
-        <div className="sidebar-brand">
-          <img src={collapsed ? logo : logoWithText} className="sidebar-brand-image" alt="Logo" />
-        </div>
+        <Link to="/" className="sidebar-brand">
+          <img
+            src={collapsed ? logo : logoWithText}
+            className="sidebar-brand-image"
+            alt="Logo"
+          />
+        </Link>
 
         <nav className="sidebar-nav">
           {navConfig.map((group) => (
@@ -61,7 +69,11 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, mobileOpen, onCloseMobile 
         </nav>
 
         <div className="sidebar-logout">
-          <button className="sidebar-link logout-btn" data-tooltip="Logout" onClick={handleLogout}>
+          <button
+            className="sidebar-link logout-btn"
+            data-tooltip="Logout"
+            onClick={handleLogout}
+          >
             <span className="ic">
               <Icon name="logout" />
             </span>

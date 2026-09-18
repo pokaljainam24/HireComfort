@@ -1,6 +1,7 @@
 export interface CompanyProfileType {
   _id?: string;
   recruiterId?: string;
+  industry?: string;
   companyName: string;
   contactNumber: string;
   companyEmail: string;
