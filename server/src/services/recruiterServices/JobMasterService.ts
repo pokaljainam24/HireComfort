@@ -109,6 +109,27 @@ export const createJobMasterService = async (data: Partial<IJobMaster>) => {
     if (data.nop <= 0) {
       throw new Error("Number of positions must be greater than 0");
     }
+    // =====================================
+    // Number of Rounds Validation
+    // =====================================
+    if (data.noOfRounds === undefined || data.noOfRounds === null) {
+      throw new Error("Number of rounds is required");
+    }
+
+    if (
+      typeof data.noOfRounds !== "number" ||
+      isNaN(data.noOfRounds)
+    ) {
+      throw new Error("Number of rounds must be a number");
+    }
+
+    if (!Number.isInteger(data.noOfRounds)) {
+      throw new Error("Number of rounds must be a whole number");
+    }
+
+    if (data.noOfRounds < 0) {
+      throw new Error("Number of rounds cannot be negative");
+    }
 
 
     // =====================================
@@ -213,6 +234,8 @@ export const createJobMasterService = async (data: Partial<IJobMaster>) => {
       salaryRange: data.salaryRange,
 
       lastAppliedDate,
+
+      noOfRounds: data.noOfRounds,
     });
 
     return job;

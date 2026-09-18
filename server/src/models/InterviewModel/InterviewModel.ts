@@ -5,7 +5,7 @@ export interface IInterviewRound extends Document {
   jobMasterId: mongoose.Types.ObjectId;
   companyId: mongoose.Types.ObjectId;
   remark?: string;
-  status: string;
+  status: string;//pass , fail pending  
   round: number;
   createdAt: Date;
   updatedAt: Date;

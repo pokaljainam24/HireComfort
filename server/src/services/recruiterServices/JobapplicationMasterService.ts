@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
 import JobApplicationMaster from "../../models/RecruiterModel/JobapplicationMasterModel.js";
 
-export type IJobApplicationMaster = InstanceType<typeof JobApplicationMaster>;
+export type IJobApplicationMaster = InstanceType<
+  typeof JobApplicationMaster
+>;
 
+// =====================================================
 // Create Job Application
+// =====================================================
 export const createJobApplicationService = async (
   data: Partial<IJobApplicationMaster>,
 ) => {
@@ -51,56 +55,7 @@ export const createJobApplicationService = async (
     if (!mongoose.Types.ObjectId.isValid(data.companyId.toString())) {
       throw new Error("Invalid company ID");
     }
-
-    // =====================================
-    // Rating Validation
-    // =====================================
-    // if (data.rating === undefined || data.rating === null) {
-    //   throw new Error("Rating is required");
-    // }
-
-    // if (typeof data.rating !== "number" || isNaN(data.rating)) {
-    //   throw new Error("Rating must be a number");
-    // }
-
-    // if (data.rating < 0 || data.rating > 5) {
-    //   throw new Error("Rating must be between 0 and 5");
-    // }
-
-    // // =====================================
-    // // Notes Validation
-    // // =====================================
-    // if (!data.notes?.trim()) {
-    //   throw new Error("Notes are required");
-    // }
-
-    // // =====================================
-    // // Application Status Validation
-    // // =====================================
-    // if (!data.applicationStatus?.trim()) {
-    //   throw new Error("Application status is required");
-    // }
-
-    // const allowedApplicationStatus = [
-    //   "Applied",
-    //   "Shortlisted",
-    //   "Rejected",
-    //   "Interview",
-    //   "Selected",
-    //   "Hired",
-    // ];
-
-    // if (
-    //   !allowedApplicationStatus.includes(
-    //     data.applicationStatus.trim(),
-    //   )
-    // ) {
-    //   throw new Error(
-    //     `Application status must be one of: ${allowedApplicationStatus.join(
-    //       ", ",
-    //     )}`,
-    //   );
-    // }
+    
 
     // =====================================
     // Application Date Validation
@@ -128,33 +83,7 @@ export const createJobApplicationService = async (
       throw new Error("Invalid applied date");
     }
 
-    // // =====================================
-    // // Expected Salary Validation
-    // // =====================================
-    // if (
-    //   data.expectedsalary === undefined ||
-    //   data.expectedsalary === null
-    // ) {
-    //   throw new Error("Expected salary is required");
-    // }
 
-    // if (
-    //   typeof data.expectedsalary !== "number" ||
-    //   isNaN(data.expectedsalary)
-    // ) {
-    //   throw new Error("Expected salary must be a number");
-    // }
-
-    // if (data.expectedsalary < 0) {
-    //   throw new Error("Expected salary cannot be negative");
-    // }
-
-    // =====================================
-    // Notice Period Validation
-    // =====================================
-    // if (!data.noticeperiod?.trim()) {
-    //   throw new Error("Notice period is required");
-    // }
 
     // =====================================
     // Check Duplicate Application
@@ -198,12 +127,12 @@ export const createJobApplicationService = async (
           data.companyId.toString(),
         ),
 
-        // notes: data.notes?.trim() || "",
 
         applicationStatus:
-          data.applicationStatus,
+          data.applicationStatus || "Viewed",
 
-        noticeperiod: data?.noticeperiod?.trim() || "",
+        noticeperiod:
+          data.noticeperiod?.trim() || "",
 
         applicationDate,
 
@@ -221,118 +150,188 @@ export const createJobApplicationService = async (
   }
 };
 
+// =====================================================
 // Get All Job Applications
+// =====================================================
 export const getJobApplicationsService = async () => {
   try {
-    const jobApplications = await JobApplicationMaster.find({
-      isActive: true,
-      isDisplay: true,
-    })
-      .populate("applicantId")
-      .populate("recruiterId")
-      .populate("jobId")
-      .populate("companyId");
+    const jobApplications =
+      await JobApplicationMaster.find({
+        isActive: true,
+        isDisplay: true,
+      })
+        .populate("applicantId")
+        .populate("recruiterId")
+        .populate({
+          path: "jobId",
+          select: "_id title noOfRounds",
+        })
+        .populate("companyId")
+        .lean();
+
+    console.log(
+      "========== APPLICATIONS =========="
+    );
+
+    console.log(
+      JSON.stringify(jobApplications, null, 2)
+    );
 
     return jobApplications;
   } catch (error) {
-    console.error("Error in getJobApplicationsService:", error);
+    console.error(
+      "Error in getJobApplicationsService:",
+      error,
+    );
 
     throw error;
   }
 };
 
+// =====================================================
 // Get Job Application By ID
-export const getJobApplicationByIdService = async (id: string) => {
+// =====================================================
+export const getJobApplicationByIdService = async (
+  id: string,
+) => {
   try {
-    const jobApplication = await JobApplicationMaster.findOne({
-      _id: id,
-      isActive: true,
-      isDisplay: true,
-    })
-      .populate("applicantId")
-      .populate("recruiterId")
-      .populate("jobId")
-      .populate("companyId");
+    const jobApplication =
+      await JobApplicationMaster.findOne({
+        _id: id,
+        isActive: true,
+        isDisplay: true,
+      })
+        .populate("applicantId")
+        .populate("recruiterId")
+        .populate({
+          path: "jobId",
+          select: "_id title noOfRounds",
+        })
+        .populate("companyId")
+        .lean();
 
     return jobApplication;
   } catch (error) {
-    console.error("Error in getJobApplicationByIdService:", error);
+    console.error(
+      "Error in getJobApplicationByIdService:",
+      error,
+    );
 
     throw error;
   }
 };
 
+// =====================================================
 // Update Job Application
+// =====================================================
 export const updateJobApplicationService = async (
   id: string,
   data: Partial<IJobApplicationMaster>,
 ) => {
   try {
-    const jobApplication = await JobApplicationMaster.findOneAndUpdate(
-      {
-        _id: id,
-        isActive: true,
-        isDisplay: true,
-      },
-      {
-        ...data,
-        updatedAt: new Date(),
-      },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
+    const jobApplication =
+      await JobApplicationMaster.findOneAndUpdate(
+        {
+          _id: id,
+          isActive: true,
+          isDisplay: true,
+        },
+        {
+          ...data,
+          updatedAt: new Date(),
+        },
+        {
+          new: true,
+          runValidators: true,
+        },
+      )
+        .populate({
+          path: "jobId",
+          select: "_id title noOfRounds",
+        })
+        .populate("applicantId")
+        .populate("recruiterId")
+        .populate("companyId");
 
     return jobApplication;
   } catch (error) {
-    console.error("Error in updateJobApplicationService:", error);
+    console.error(
+      "Error in updateJobApplicationService:",
+      error,
+    );
 
     throw error;
   }
 };
 
+// =====================================================
 // Soft Delete Job Application
+// =====================================================
 export const deleteJobApplicationService = async (
   id: string,
   deleteBy: string,
 ) => {
   try {
-    const jobApplication = await JobApplicationMaster.findOneAndUpdate(
-      {
-        _id: id,
-        isActive: true,
-        isDisplay: true,
-      },
-      {
-        isActive: false,
-        isDisplay: false,
-        deleteAt: new Date(),
-        deleteBy: deleteBy,
-      },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
+    const jobApplication =
+      await JobApplicationMaster.findOneAndUpdate(
+        {
+          _id: id,
+          isActive: true,
+          isDisplay: true,
+        },
+        {
+          isActive: false,
+          isDisplay: false,
+          deleteAt: new Date(),
+          deleteBy: deleteBy,
+        },
+        {
+          new: true,
+          runValidators: true,
+        },
+      );
 
     return jobApplication;
   } catch (error) {
-    console.error("Error in deleteJobApplicationService:", error);
+    console.error(
+      "Error in deleteJobApplicationService:",
+      error,
+    );
 
     throw error;
   }
 };
 
+// =====================================================
+// Get All Job Applications For Admin
+// =====================================================
 export async function getAllJobApplicationForAdminService() {
   try {
-    return await JobApplicationMaster.find()
-      .populate("jobId")
-      .populate("applicantId")
-      .populate("recruiterId")
-      .populate("companyId");
+    const applications =
+      await JobApplicationMaster.find()
+        .populate({
+          path: "jobId",
+          select: "_id title noOfRounds",
+        })
+        .populate("applicantId")
+        .populate("recruiterId")
+        .populate("companyId")
+        .lean();
+
+    console.log(
+      "========== ADMIN APPLICATIONS =========="
+    );
+
+    console.log(
+      JSON.stringify(applications, null, 2)
+    );
+
+    return applications;
   } catch (error) {
-    console.error("Error getting job applications for admin:", error);
+    console.error(
+      "Error getting job applications for admin:",
+      error,
+    );
 
     throw error;
   }

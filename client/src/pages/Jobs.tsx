@@ -32,7 +32,7 @@ function Jobs() {
 
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [selectedCategory, setSelectedCategory] =
+  const [selectedCategory, setSelectedCategory] = 
     useState<string>("");
 
   const [selectedJobType, setSelectedJobType] =

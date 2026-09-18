@@ -18,6 +18,7 @@ export interface IJobMaster {
   lastAppliedDate: Date;
   qualification: string;
   icon: string;
+  noOfRounds:number;
 
   // Status
   isActive: boolean;
@@ -127,6 +128,14 @@ const jobMasterSchema = new Schema<IJobMaster>(
       default: "",
     },
 
+    noOfRounds: {
+      type: Number,
+      required:true,
+      min:0,
+     
+    },
+
+
     // Status
     isActive: {
       type: Boolean,
@@ -159,6 +168,10 @@ const jobMasterSchema = new Schema<IJobMaster>(
       type: String,
       default: null,
     },
+    
+
+
+
   },
   {
     timestamps: true,

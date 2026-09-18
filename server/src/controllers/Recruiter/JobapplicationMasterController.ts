@@ -167,6 +167,7 @@ export const updateJobApplication = async (
     });
   }
 };
+
 export const updateJobApplicationStatus = async (
   req: Request,
   res: Response
@@ -180,16 +181,37 @@ export const updateJobApplicationStatus = async (
       });
     }
 
-    const status = req.body.status;
+    const { status, rejectedAtRound } = req.body;
 
-    const updatedStatus =
-      await updateJobApplicationService(
-        jobApplicationId,
-        {
-          applicationStatus: status,
-          updatedBy: "admin",
-        }
-      );
+    // If rejecting, rejectedAtRound must be provided
+    if (status === "Rejected") {
+      if (
+        typeof rejectedAtRound !== "number" ||
+        rejectedAtRound < 1
+      ) {
+        return res.status(400).json({
+          message: "rejectedAtRound is required when rejecting an application",
+        });
+      }
+    }
+
+    const updateData: any = {
+      applicationStatus: status,
+      updatedBy: "admin",
+    };
+
+    if (status === "Rejected") {
+      updateData.rejectedAtRound = rejectedAtRound;
+    } else {
+      // Clear old rejection information if the applicant
+      // is moved back into the interview process.
+      updateData.rejectedAtRound = null;
+    }
+
+    const updatedStatus = await updateJobApplicationService(
+      jobApplicationId,
+      updateData
+    );
 
     if (!updatedStatus) {
       return res.status(404).json({
@@ -203,7 +225,7 @@ export const updateJobApplicationStatus = async (
     });
   } catch (error) {
     console.error(
-      "Error updating job application:",
+      "Error updating job application status:",
       error
     );
 
@@ -212,6 +234,7 @@ export const updateJobApplicationStatus = async (
     });
   }
 };
+
 
 
 
