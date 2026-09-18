@@ -13,6 +13,8 @@ const Header: React.FC<HeaderProps> = ({ title, onToggleSidebar, onToggleMobile 
   console.log("Header user:",user);
   const initial = user?.fullName?.trim()?.[0]?.toUpperCase() || "A";
 
+ 
+
   return (
     <header className="app-header">
       <div className="header-left">

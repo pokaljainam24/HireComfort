@@ -858,3 +858,39 @@
     white-space: nowrap !important;
   }
 }
+/* Applicantion list css */
+.my-application-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.my-application-status.applied {
+  background: #e8f0ff;
+  color: #2563eb;
+}
+
+.my-application-status.shortlisted {
+  background: #fff4e5;
+  color: #ea8a17;
+}
+
+.my-application-status.interview {
+  background: #fff4e5;
+  color: #ea8a17;
+}
+
+.my-application-status.hired {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.my-application-status.rejected {
+  background: #fee2e2;
+  color: #dc2626;
+}

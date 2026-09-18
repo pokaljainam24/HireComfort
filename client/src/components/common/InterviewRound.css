@@ -1,0 +1,334 @@
+.interview-rounds {
+  width: 100%;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+/* Header */
+
+.interview-rounds-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.interview-rounds-header h4 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f2d4a;
+}
+
+.interview-rounds-header p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.interview-rounds-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+
+  background: #f1f5f9;
+  color: #0f2d4a;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* =========================
+   HORIZONTAL TIMELINE
+========================= */
+
+.interview-rounds-timeline {
+  width: 100%;
+
+  display: flex;
+  align-items: flex-start;
+
+  overflow-x: auto;
+
+  padding: 10px 5px 20px;
+}
+
+/* Individual round */
+
+.interview-round {
+  position: relative;
+
+  flex: 0 0 auto;
+
+  width: 150px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  z-index: 2;
+}
+
+/* Circle */
+
+.interview-round-circle {
+  width: 46px;
+  height: 46px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f1f5f9;
+  border: 3px solid #cbd5e1;
+
+  color: #64748b;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  box-sizing: border-box;
+}
+
+/* Round content */
+
+.interview-round-content {
+  margin-top: 12px;
+  min-height: 48px;
+}
+
+.interview-round-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  white-space: nowrap;
+}
+
+.interview-round-status {
+  margin-top: 5px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  color: #64748b;
+}
+
+/* =========================
+   CONNECTOR
+========================= */
+
+.interview-round-connector {
+  flex: 1 1 auto;
+
+  min-width: 60px;
+  height: 3px;
+
+  margin-top: 21px;
+
+  background: #dbe2ea;
+
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================
+   PASSED
+========================= */
+
+.interview-round.passed
+  .interview-round-circle {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+}
+
+.interview-round.passed
+  .interview-round-name {
+  color: #166534;
+}
+
+.interview-round.passed
+  .interview-round-status {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.interview-round-connector.passed {
+  background: #16a34a;
+}
+
+/* =========================
+   CURRENT
+========================= */
+
+.interview-round.current
+  .interview-round-circle {
+  background: #ffffff;
+  border-color: #2563eb;
+  color: #2563eb;
+
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.1);
+}
+
+.interview-round.current
+  .interview-round-name {
+  color: #1d4ed8;
+}
+
+.interview-round.current
+  .interview-round-status {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* =========================
+   PENDING
+========================= */
+
+.interview-round.pending
+  .interview-round-circle {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #94a3b8;
+}
+
+.interview-round.pending
+  .interview-round-name {
+  color: #64748b;
+}
+
+.interview-round.pending
+  .interview-round-status {
+  color: #94a3b8;
+}
+
+/* =========================
+   EDITOR
+========================= */
+
+.interview-round-name-input {
+  width: 130px;
+  padding: 6px 8px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+
+  text-align: center;
+
+  font-size: 13px;
+}
+
+.interview-round-controls {
+  display: flex;
+  gap: 4px;
+
+  margin-top: 10px;
+}
+
+.interview-round-controls button {
+  width: 28px;
+  height: 28px;
+
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+
+  border-radius: 5px;
+
+  cursor: pointer;
+}
+
+.interview-round-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.interview-round-pass-btn {
+  margin-top: 8px;
+
+  padding: 6px 10px;
+
+  border: none;
+  border-radius: 5px;
+
+  background: #2563eb;
+  color: white;
+
+  cursor: pointer;
+
+  font-size: 12px;
+}
+
+/* Add round */
+
+.interview-add-round {
+  display: flex;
+  gap: 10px;
+
+  margin-top: 20px;
+}
+
+.interview-add-round input {
+  flex: 1;
+
+  padding: 10px 12px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+
+  outline: none;
+}
+
+.interview-add-round button {
+  padding: 10px 15px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: #2563eb;
+  color: white;
+
+  cursor: pointer;
+}
+
+.interview-add-round button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .interview-rounds {
+    padding: 18px;
+  }
+
+  .interview-rounds-timeline {
+    overflow-x: auto;
+  }
+
+  .interview-round {
+    width: 125px;
+  }
+
+  .interview-round-connector {
+    min-width: 35px;
+  }
+
+  .interview-rounds-header h4 {
+    font-size: 18px;
+  }
+}

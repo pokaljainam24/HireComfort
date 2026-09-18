@@ -11,12 +11,16 @@ export interface IJobApplicationMaster extends Document {
   noticeperiod: string;
   resume: string;
   companyId: mongoose.Types.ObjectId;
-  applicationStatus: | "Applied"
+  applicationStatus: | "Viewed"
   | "Shortlisted"
   | "Interview"
   | "Hired"
-  | "Rejected";
+  | "Rejected"
+  | `Round ${number}`;
+
   appliedAt: Date;
+  rejectedAtRound: number | null;
+
 
   // Status
   isActive: boolean;
@@ -91,9 +95,26 @@ const jobApplicationMasterSchema = new Schema<IJobApplicationMaster>(
 
     applicationStatus: {
       type: String,
-      enum: ["Applied", "Shortlisted", "Interview", "Hired", "Rejected"],
-      default: "Applied",
+      required: true,
+      default: "Viewed",
+      validate: {
+        validator: function (value: string) {
+          return (
+            ["Viewed", "Shortlisted", "Interview", "Hired", "Rejected"].includes(
+              value,
+            ) || /^Round \d+$/.test(value)
+          );
+        },
+        message: (props: { value: string }) =>
+          `${props.value} is not a valid application status`,
+      },
     },
+
+    rejectedAtRound: {
+      type: Number,
+      default: null,
+    },
+
 
     appliedAt: {
       type: Date,

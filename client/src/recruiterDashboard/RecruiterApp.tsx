@@ -12,7 +12,6 @@ import RecruiterProfile from "./pages/recruiterProfile/RecruiterProfile.tsx";
 import PostJob from "./pages/jobs/PostJob.tsx";
 import ManageJobs from "./pages/jobs/ManageJobs.tsx";
 import Applications from "./pages/applications/Applications.tsx";
-import ApplicationDetail from "./pages/applications/ApplicationDetail.tsx";
 import ChangePassword from "./pages/account/ChangePassword.tsx";
 import CompanyProfile from "./pages/company/CompanyProfile.tsx";
 
@@ -36,7 +35,7 @@ const RecruiterApp: React.FC = () => (
             <Route path="post-job/:id" element={<PostJob />} />
             <Route path="manage-jobs" element={<ManageJobs />} />
             <Route path="applications" element={<Applications />} />
-            <Route path="applications/:id" element={<ApplicationDetail />} />
+           
             <Route path="change-password" element={<ChangePassword />} />
           </Route>
         </Route>

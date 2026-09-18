@@ -527,26 +527,36 @@ function Navbar() {
                       ></i>
                     </div>
 
+                 
+
                     {/* PROFILE DROPDOWN */}
+                    
 
                     <div
-                      className={`profile-dropdown ${profileOpen
-                        ? "profile-dropdown-open"
-                        : ""
+                      className={`profile-dropdown ${profileOpen ? "profile-dropdown-open" : ""
                         }`}
                     >
-
                       <Link
                         to={userType ? `${userType}-panel/profile` : "/login"}
                         className="profile-dropdown-item"
-                        onClick={
-                          closeProfileDropdown
-                        }
+                        onClick={closeProfileDropdown}
                       >
                         <i className="bi bi-person"></i>
                         <span>My Profile</span>
                       </Link>
 
+                      {/* Only visible for Applicants */}
+                      {userType === "applicant" && (
+                        <Link
+                          to="/applicant-panel/applications"
+                          className="profile-dropdown-item"
+                          onClick={closeProfileDropdown}
+                        >
+                          <i className="bi bi-file-earmark-text"></i>
+                          <span>My Application List</span>
+                        </Link>
+                      )}
+        
                       <button
                         type="button"
                         className="profile-dropdown-item"
@@ -555,7 +565,6 @@ function Navbar() {
                         <i className="bi bi-box-arrow-right"></i>
                         <span>Logout</span>
                       </button>
-
                     </div>
                   </div>
                 )}

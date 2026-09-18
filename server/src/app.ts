@@ -126,6 +126,8 @@ app.use("/api/visitor", visitorRoutes);
 
 app.use("/api/company-types", companyTypeRoutes);
 
+
+
 app.use("/api/interview-rounds",interviewRoundRoutes);
 export default app;
 

@@ -41,7 +41,8 @@ const empty: FormState = {
   recruiterId: "",
   exp: 0,
   nop: 0,
-  qualification: ""
+  qualification: "",
+  noOfRounds: 0,
 };
 
 const PostJob: React.FC = () => {
@@ -203,7 +204,17 @@ const PostJob: React.FC = () => {
     if (!form.qualification) {
       e.qualification = "Qualification is required";
     }
-
+    if (
+      form.noOfRounds === undefined ||
+      form.noOfRounds === null ||
+      Number.isNaN(Number(form.noOfRounds))
+    ) {
+      e.noOfRounds = "Number of rounds is required";
+    } else if (Number(form.noOfRounds) < 0) {
+      e.noOfRounds = "Number of rounds cannot be negative";
+    } else if (!Number.isInteger(Number(form.noOfRounds))) {
+      e.noOfRounds = "Number of rounds must be a whole number";
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -225,7 +236,8 @@ const PostJob: React.FC = () => {
       state: Number(form.stateId),
       country: Number(form.countryId),
       lastAppliedDate: form.deadline,
-      interviewType: "Offline"
+      interviewType: "Offline",
+      noOfRounds: Number(form.noOfRounds)
     };
     try {
       if (isEdit && id) {
@@ -403,6 +415,13 @@ const PostJob: React.FC = () => {
                     min={1}
                     value={form.nop}
                     onChange={(e) => setForm({ ...form, nop: Number(e.target.value) })}
+                  />
+                </Field>
+                <Field label="Number of Rounds" required error={errors.noOfRounds}>
+                  <input
+                    type="number"
+                    value={form.noOfRounds}
+                    onChange={(e) => setForm({ ...form, noOfRounds: Number(e.target.value) })}
                   />
                 </Field>
                 <Field

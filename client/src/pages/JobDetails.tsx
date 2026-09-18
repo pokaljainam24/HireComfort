@@ -4,9 +4,25 @@ import { useParams, Link } from "react-router";
 import { jobApi } from "../recruiterDashboard/api/jobApi.ts";
 import type { Job } from "../recruiterDashboard/types/job.ts";
 
-import { getCountries } from "../recruiterDashboard/api/countryApi.ts";
-import { getStates } from "../recruiterDashboard/api/stateApi.ts";
-import { getCities } from "../recruiterDashboard/api/cityApi.ts";
+import {
+    getCountries,
+} from "../recruiterDashboard/api/countryApi.ts";
+
+import {
+    getStates,
+} from "../recruiterDashboard/api/stateApi.ts";
+
+import {
+    getCities,
+} from "../recruiterDashboard/api/cityApi.ts";
+
+// =========================================================
+// INTERVIEW TIMELINE
+// =========================================================
+
+import InterviewRounds, {
+    type InterviewRound,
+} from "../components/common/InterviewRound.tsx";
 
 // =========================================================
 // STATIC ASSETS
@@ -16,8 +32,10 @@ import shareFb from "../assets/imgs/template/icons/share-fb.svg";
 import shareTw from "../assets/imgs/template/icons/share-tw.svg";
 import shareRed from "../assets/imgs/template/icons/share-red.svg";
 import shareWhatsapp from "../assets/imgs/template/icons/share-whatsapp.svg";
+
 import newsletterLeft from "../assets/imgs/template/newsletter-left.png";
 import newsletterRight from "../assets/imgs/template/newsletter-right.png";
+
 import Swal from "sweetalert2";
 
 // =========================================================
@@ -31,13 +49,16 @@ const API_BASE_URL = "http://localhost:5000";
 // =========================================================
 
 const JobDetails: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
+
+    const { id } =
+        useParams<{ id: string }>();
 
     // =========================================================
     // STATE
     // =========================================================
 
-    const [job, setJob] = useState<Job | null>(null);
+    const [job, setJob] =
+        useState<Job | null>(null);
 
     const [loading, setLoading] =
         useState<boolean>(true);
@@ -57,15 +78,28 @@ const JobDetails: React.FC = () => {
     const [applyError, setApplyError] =
         useState<string>("");
 
+    // =========================================================
+    // APPLICATION STATUS
+    // =========================================================
+
     const [applicationStatus, setApplicationStatus] =
         useState<string | null>(null);
 
     // =========================================================
-    // COMPANY LOGO / AVATAR
+    // REJECTED ROUND
+    // =========================================================
+
+    const [rejectedAtRound, setRejectedAtRound] =
+        useState<number | null>(null);
+
+    // =========================================================
+    // COMPANY LOGO
     // =========================================================
 
     const getCompanyLogo = (): string => {
-        const company: any = job?.companyId;
+
+        const company: any =
+            job?.companyId;
 
         if (!company) {
             return "";
@@ -89,40 +123,27 @@ const JobDetails: React.FC = () => {
             return "";
         }
 
-        const logo = logoValue.trim();
-
-        console.log(
-            "RAW COMPANY LOGO:",
-            logo
-        );
-
-        // =====================================================
-        // IMPORTANT:
-        // Backend is returning Base64 image
-        // Example:
-        // data:image/avif;base64,AAAA...
-        // =====================================================
+        const logo =
+            logoValue.trim();
 
         if (
-            logo.startsWith("data:image/")
+            logo.startsWith(
+                "data:image/"
+            )
         ) {
             return logo;
         }
 
-        // =====================================================
-        // Backend already returns complete URL
-        // =====================================================
-
         if (
-            logo.startsWith("http://") ||
-            logo.startsWith("https://")
+            logo.startsWith(
+                "http://"
+            ) ||
+            logo.startsWith(
+                "https://"
+            )
         ) {
             return logo;
         }
-
-        // =====================================================
-        // Handle blob URL
-        // =====================================================
 
         if (
             logo.startsWith("blob:")
@@ -130,27 +151,18 @@ const JobDetails: React.FC = () => {
             return logo;
         }
 
-        // =====================================================
-        // Convert Windows path to URL path
-        // =====================================================
-
-        const cleanLogo = logo
-            .replace(/\\/g, "/")
-            .replace(/^\/+/, "");
-
-        // =====================================================
-        // Already uploads path
-        // =====================================================
+        const cleanLogo =
+            logo
+                .replace(/\\/g, "/")
+                .replace(/^\/+/, "");
 
         if (
-            cleanLogo.startsWith("uploads/")
+            cleanLogo.startsWith(
+                "uploads/"
+            )
         ) {
             return `${API_BASE_URL}/${cleanLogo}`;
         }
-
-        // =====================================================
-        // Normal backend company image path
-        // =====================================================
 
         return `${API_BASE_URL}/uploads/company/${cleanLogo}`;
     };
@@ -160,7 +172,9 @@ const JobDetails: React.FC = () => {
     // =========================================================
 
     const getCompanyName = (): string => {
-        const company: any = job?.companyId;
+
+        const company: any =
+            job?.companyId;
 
         return (
             company?.companyName ||
@@ -174,8 +188,10 @@ const JobDetails: React.FC = () => {
     // =========================================================
 
     const getSalary = (): string => {
+
         if (
-            typeof job?.salaryRange === "number" &&
+            typeof job?.salaryRange ===
+                "number" &&
             job.salaryRange > 0
         ) {
             return `Rs ${job.salaryRange.toLocaleString()} lacs`;
@@ -189,6 +205,7 @@ const JobDetails: React.FC = () => {
     // =========================================================
 
     const getExperience = (): string => {
+
         if (
             job?.exp !== undefined &&
             job?.exp !== null
@@ -206,6 +223,7 @@ const JobDetails: React.FC = () => {
     // =========================================================
 
     const getPostedDate = (): string => {
+
         if (!job?.createdAt) {
             return "";
         }
@@ -223,196 +241,494 @@ const JobDetails: React.FC = () => {
     };
 
     // =========================================================
-    // APPLY JOB
+    // INTERVIEW ROUNDS
     // =========================================================
 
-    const handleApplyNow = async () => {
-        setApplyMsg("");
-        setApplyError("");
+    const getInterviewRounds =
+        (): InterviewRound[] => {
 
-        const role = localStorage.getItem("role");
-        const userStr = localStorage.getItem("user");
+            const totalRounds =
+                Number(
+                    (job as any)?.noOfRounds ||
+                    0
+                );
 
-        // =====================================================
-        // LOGIN FIRST
-        // =====================================================
-
-        if (role !== "applicant" || !userStr) {
-            Swal.fire({
-                icon: "info",
-                title: "Login Required",
-                text: "Please login as an applicant to apply for this job.",
-                position: "top-end",
-                toast: true,
-                showConfirmButton: false,
-                timer: 5000,
-                timerProgressBar: true,
-                customClass: {
-                    popup: "login-toast",
-                    title: "login-toast-title",
-                    htmlContainer: "login-toast-text",
-                    timerProgressBar: "login-toast-progress",
-                },
-            });
-
-            return;
-        }
-
-        let user: any;
-
-        try {
-            user = JSON.parse(userStr);
-        } catch {
-            Swal.fire({
-                icon: "error",
-                title: "Session Expired",
-                text: "Please login again to continue.",
-                position: "top-end",
-                toast: true,
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
-
-            return;
-        }
-
-        if (!job || !user?._id) {
-            Swal.fire({
-                icon: "error",
-                title: "Something went wrong",
-                text: "Missing job or applicant information.",
-                position: "top-end",
-                toast: true,
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
-
-            return;
-        }
-
-        setApplying(true);
-
-        try {
-            const now = new Date().toISOString();
-
-            const payload = {
-                jobId: job._id,
-                applicantId: user._id,
-                applicationDate: now,
-                appliedAt: now,
-                createdBy:
-                    user.userName ||
-                    user.username ||
-                    "applicant",
-            };
-
-            console.log("Apply Payload:", payload);
-
-            const response = await fetch(
-                `${API_BASE_URL}/api/job_application_master`,
+            return Array.from(
                 {
-                    method: "POST",
+                    length:
+                        totalRounds,
+                },
+                (_, index) => ({
+                    id:
+                        `round-${index + 1}`,
 
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    name:
+                        `Round ${index + 1}`,
+                })
+            );
+        };
 
-                    body: JSON.stringify(payload),
-                }
+    // =========================================================
+    // GET PASSED ROUND COUNT
+    // =========================================================
+
+    const getRoundsPassed = (
+        status: string | null
+    ): number => {
+
+        if (!status) {
+            return 0;
+        }
+
+        /*
+         * IMPORTANT:
+         *
+         * "Round 1" means the applicant is currently
+         * in Round 1, so ZERO rounds have been passed.
+         *
+         * "Round 2" means Round 1 has been passed and
+         * the applicant is currently in Round 2.
+         *
+         * Therefore the passed count is roundNumber - 1.
+         */
+        const match =
+            status.match(
+                /^Round\s+(\d+)$/i
             );
 
-            const resData = await response.json();
-
-            // =====================================================
-            // SUCCESS
-            // =====================================================
-
-            if (response.ok) {
-                const status =
-                    resData.jobApplication?.applicationStatus ||
-                    "Applied";
-
-                setApplicationStatus(status);
-
-                Swal.fire({
-                    icon: "success",
-                    title: "Application Submitted!",
-                    text:
-                        resData.message ||
-                        "Your application has been submitted successfully.",
-                    position: "top-end",
-                    toast: true,
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                });
-
-            } else {
-                // =================================================
-                // API ERROR
-                // =================================================
-
-                Swal.fire({
-                    icon: "error",
-                    title: "Application Failed",
-                    text:
-                        resData.message ||
-                        "Failed to submit job application.",
-                    position: "top-end",
-                    toast: true,
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                });
-            }
-
-        } catch (err) {
-            console.error("Apply job error:", err);
-
-            Swal.fire({
-                icon: "error",
-                title: "Network Error",
-                text:
-                    "Unable to submit your application. Please try again.",
-                position: "top-end",
-                toast: true,
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
-
-        } finally {
-            setApplying(false);
+        if (match) {
+            return Math.max(
+                0,
+                Number(match[1]) - 1
+            );
         }
+
+        /*
+         * If applicant is hired, all rounds are passed.
+         */
+        if (
+            status === "Hired"
+        ) {
+            return Number(
+                (job as any)?.noOfRounds ||
+                    0
+            );
+        }
+
+        /*
+         * Viewed / Shortlisted / Rejected do not
+         * themselves tell us that a round was passed.
+         * For Rejected, rejectedAtRound is handled
+         * separately below.
+         */
+        return 0;
     };
 
     // =========================================================
-    // LOAD JOB
+    // LOAD APPLICATION STATUS
+    // =========================================================
+
+    const loadApplicationStatus =
+        async () => {
+
+            const role =
+                localStorage.getItem(
+                    "role"
+                );
+
+            const userStr =
+                localStorage.getItem(
+                    "user"
+                );
+
+            if (
+                role !== "applicant" ||
+                !userStr ||
+                !id
+            ) {
+                return;
+            }
+
+            try {
+
+                const user =
+                    JSON.parse(
+                        userStr
+                    );
+
+                const appRes =
+                    await fetch(
+                        `${API_BASE_URL}/api/job_application_master`
+                    );
+
+                if (!appRes.ok) {
+                    return;
+                }
+
+                const appData =
+                    await appRes.json();
+
+                const applications =
+                    appData.jobApplications ||
+                    [];
+
+                const existingApp =
+                    applications.find(
+                        (app: any) => {
+
+                            const applicantId =
+                                typeof app.applicantId ===
+                                    "object"
+                                    ? app.applicantId?._id
+                                    : app.applicantId;
+
+                            const jobId =
+                                typeof app.jobId ===
+                                    "object"
+                                    ? app.jobId?._id
+                                    : app.jobId;
+
+                            return (
+                                String(
+                                    applicantId
+                                ) ===
+                                    String(
+                                        user._id
+                                    ) &&
+                                String(
+                                    jobId
+                                ) ===
+                                    String(id)
+                            );
+                        }
+                    );
+
+                if (
+                    existingApp
+                ) {
+
+                    setApplicationStatus(
+                        existingApp.applicationStatus ||
+                            "Viewed"
+                    );
+
+                    setRejectedAtRound(
+                        existingApp.rejectedAtRound ??
+                            null
+                    );
+
+                } else {
+
+                    /*
+                     * Applicant has not applied.
+                     * Timeline will therefore be hidden.
+                     */
+
+                    setApplicationStatus(
+                        null
+                    );
+
+                    setRejectedAtRound(
+                        null
+                    );
+                }
+
+            } catch (
+                appError
+            ) {
+
+                console.error(
+                    "Failed to load application status:",
+                    appError
+                );
+            }
+        };
+
+    // =========================================================
+    // APPLY JOB
+    // =========================================================
+
+    const handleApplyNow =
+        async () => {
+
+            setApplyMsg("");
+            setApplyError("");
+
+            const role =
+                localStorage.getItem(
+                    "role"
+                );
+
+            const userStr =
+                localStorage.getItem(
+                    "user"
+                );
+
+            // =================================================
+            // LOGIN CHECK
+            // =================================================
+
+            if (
+                role !== "applicant" ||
+                !userStr
+            ) {
+
+                Swal.fire({
+                    icon: "info",
+                    title: "Login Required",
+                    text:
+                        "Please login as an applicant to apply for this job.",
+                    position: "top-end",
+                    toast: true,
+                    showConfirmButton:
+                        false,
+                    timer: 5000,
+                    timerProgressBar:
+                        true,
+                });
+
+                return;
+            }
+
+            let user: any;
+
+            try {
+
+                user =
+                    JSON.parse(
+                        userStr
+                    );
+
+            } catch {
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Session Expired",
+                    text:
+                        "Please login again to continue.",
+                    position: "top-end",
+                    toast: true,
+                    showConfirmButton:
+                        false,
+                    timer: 3000,
+                    timerProgressBar:
+                        true,
+                });
+
+                return;
+            }
+
+            // =================================================
+            // JOB / USER CHECK
+            // =================================================
+
+            if (
+                !job ||
+                !user?._id
+            ) {
+
+                Swal.fire({
+                    icon: "error",
+                    title:
+                        "Something went wrong",
+                    text:
+                        "Missing job or applicant information.",
+                    position: "top-end",
+                    toast: true,
+                    showConfirmButton:
+                        false,
+                    timer: 3000,
+                    timerProgressBar:
+                        true,
+                });
+
+                return;
+            }
+
+            setApplying(true);
+
+            try {
+
+                const now =
+                    new Date().toISOString();
+
+                const payload = {
+                    jobId:
+                        job._id,
+
+                    applicantId:
+                        user._id,
+
+                    applicationDate:
+                        now,
+
+                    appliedAt:
+                        now,
+
+                    createdBy:
+                        user.userName ||
+                        user.username ||
+                        "applicant",
+                };
+
+                console.log(
+                    "Apply Payload:",
+                    payload
+                );
+
+                const response =
+                    await fetch(
+                        `${API_BASE_URL}/api/job_application_master`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                ),
+                        }
+                    );
+
+                const resData =
+                    await response.json();
+
+                // =================================================
+                // SUCCESS
+                // =================================================
+
+                if (
+                    response.ok
+                ) {
+
+                    setApplyMsg(
+                        resData.message ||
+                            "Application submitted successfully!"
+                    );
+
+                    setApplicationStatus(
+                        resData
+                            .jobApplication
+                            ?.applicationStatus ||
+                            "Viewed"
+                    );
+
+                    setRejectedAtRound(
+                        null
+                    );
+
+                    /*
+                     * Reload application to make
+                     * sure we have the latest DB data.
+                     */
+
+                    await loadApplicationStatus();
+
+                } else {
+
+                    Swal.fire({
+                        icon: "error",
+                        title:
+                            "Application Failed",
+                        text:
+                            resData.message ||
+                            "Failed to submit job application.",
+                        position:
+                            "top-end",
+                        toast: true,
+                        showConfirmButton:
+                            false,
+                        timer: 3000,
+                        timerProgressBar:
+                            true,
+                    });
+                }
+
+            } catch (
+                err
+            ) {
+
+                console.error(
+                    "Apply job error:",
+                    err
+                );
+
+                Swal.fire({
+                    icon: "error",
+                    title:
+                        "Network Error",
+                    text:
+                        "Unable to submit your application. Please try again.",
+                    position:
+                        "top-end",
+                    toast: true,
+                    showConfirmButton:
+                        false,
+                    timer: 3000,
+                    timerProgressBar:
+                        true,
+                });
+
+            } finally {
+
+                setApplying(
+                    false
+                );
+            }
+        };
+
+    // =========================================================
+    // LOAD JOB DETAILS
     // =========================================================
 
     useEffect(() => {
+
         if (!id) {
             return;
         }
 
         const loadJobDetails =
             async () => {
-                setLoading(true);
+
+                setLoading(
+                    true
+                );
+
                 setError("");
 
                 try {
-                    // =================================================
-                    // GET JOB
-                    // =================================================
 
+                    // =============================================
+                    // GET JOB
+                    // =============================================
+
+                    const jobResponse: any =
+                        await jobApi.getOne(
+                            id
+                        );
+
+                    /*
+                     * Some API implementations return the job directly,
+                     * while others return { jobMaster: ... } or { data: ... }.
+                     * Normalize it here so noOfRounds is read correctly.
+                     */
                     const data: any =
-                        await jobApi.getOne(id);
+                        jobResponse?.jobMaster ||
+                        jobResponse?.data ||
+                        jobResponse;
 
                     console.log(
                         "FULL JOB RESPONSE:",
-                        data
+                        jobResponse
+                    );
+
+                    console.log(
+                        "NO OF ROUNDS:",
+                        data?.noOfRounds
                     );
 
                     console.log(
@@ -422,114 +738,26 @@ const JobDetails: React.FC = () => {
 
                     console.log(
                         "RAW COMPANY LOGO:",
-                        data?.companyId?.companyLogo
+                        data?.companyId
+                            ?.companyLogo
                     );
 
-                    setJob(data);
+                    setJob(
+                        data
+                    );
 
-                    // =================================================
-                    // CHECK APPLICATION STATUS
-                    // =================================================
+                    // =============================================
+                    // LOAD APPLICATION
+                    // =============================================
 
-                    const role =
-                        localStorage.getItem(
-                            "role"
-                        );
+                    await loadApplicationStatus();
 
-                    const userStr =
-                        localStorage.getItem(
-                            "user"
-                        );
-
-                    if (
-                        role === "applicant" &&
-                        userStr
-                    ) {
-                        try {
-                            const user =
-                                JSON.parse(
-                                    userStr
-                                );
-
-                            const appRes =
-                                await fetch(
-                                    `${API_BASE_URL}/api/job_application_master`
-                                );
-
-                            if (
-                                appRes.ok
-                            ) {
-                                const appData =
-                                    await appRes.json();
-
-                                const applications =
-                                    appData
-                                        .jobApplications ||
-                                    [];
-
-                                const existingApp =
-                                    applications.find(
-                                        (
-                                            app: any
-                                        ) => {
-                                            const appId =
-                                                typeof app.applicantId ===
-                                                    "object"
-                                                    ? app
-                                                        .applicantId
-                                                        ?._id
-                                                    : app.applicantId;
-
-                                            const jId =
-                                                typeof app.jobId ===
-                                                    "object"
-                                                    ? app
-                                                        .jobId
-                                                        ?._id
-                                                    : app.jobId;
-
-                                            return (
-                                                String(
-                                                    appId
-                                                ) ===
-                                                String(
-                                                    user._id
-                                                ) &&
-                                                String(
-                                                    jId
-                                                ) ===
-                                                String(
-                                                    id
-                                                )
-                                            );
-                                        }
-                                    );
-
-                                if (
-                                    existingApp
-                                ) {
-                                    setApplicationStatus(
-                                        existingApp
-                                            .applicationStatus ||
-                                        "Applied"
-                                    );
-                                }
-                            }
-                        } catch (
-                        appErr
-                        ) {
-                            console.error(
-                                "Failed to fetch application status:",
-                                appErr
-                            );
-                        }
-                    }
-
-                    // =================================================
+                    // =============================================
                     // LOCATION
-                    // =================================================
+                    // =============================================
 
                     try {
+
                         const cityId =
                             data.city ||
                             data.cityId;
@@ -542,7 +770,8 @@ const JobDetails: React.FC = () => {
                             data.country ||
                             data.countryId;
 
-                        const locParts: string[] =
+                        const locParts:
+                            string[] =
                             [];
 
                         if (
@@ -550,6 +779,7 @@ const JobDetails: React.FC = () => {
                             stateId ||
                             countryId
                         ) {
+
                             const [
                                 allCountries,
                                 allStates,
@@ -557,25 +787,31 @@ const JobDetails: React.FC = () => {
                             ] =
                                 await Promise.all(
                                     [
-                                        getCountries().catch(
-                                            () => []
-                                        ),
+                                        getCountries()
+                                            .catch(
+                                                () => []
+                                            ),
 
-                                        getStates().catch(
-                                            () => []
-                                        ),
+                                        getStates()
+                                            .catch(
+                                                () => []
+                                            ),
 
-                                        getCities().catch(
-                                            () => []
-                                        ),
+                                        getCities()
+                                            .catch(
+                                                () => []
+                                            ),
                                     ]
                                 );
 
-                            // =========================================
+                            // =====================================
                             // CITY
-                            // =========================================
+                            // =====================================
 
-                            if (cityId) {
+                            if (
+                                cityId
+                            ) {
+
                                 const city =
                                     allCities.find(
                                         (
@@ -589,18 +825,23 @@ const JobDetails: React.FC = () => {
                                             )
                                     );
 
-                                if (city) {
+                                if (
+                                    city
+                                ) {
                                     locParts.push(
                                         city.name
                                     );
                                 }
                             }
 
-                            // =========================================
+                            // =====================================
                             // STATE
-                            // =========================================
+                            // =====================================
 
-                            if (stateId) {
+                            if (
+                                stateId
+                            ) {
+
                                 const state =
                                     allStates.find(
                                         (
@@ -614,18 +855,23 @@ const JobDetails: React.FC = () => {
                                             )
                                     );
 
-                                if (state) {
+                                if (
+                                    state
+                                ) {
                                     locParts.push(
                                         state.name
                                     );
                                 }
                             }
 
-                            // =========================================
+                            // =====================================
                             // COUNTRY
-                            // =========================================
+                            // =====================================
 
-                            if (countryId) {
+                            if (
+                                countryId
+                            ) {
+
                                 const country =
                                     allCountries.find(
                                         (
@@ -639,7 +885,9 @@ const JobDetails: React.FC = () => {
                                             )
                                     );
 
-                                if (country) {
+                                if (
+                                    country
+                                ) {
                                     locParts.push(
                                         country.name
                                     );
@@ -648,29 +896,37 @@ const JobDetails: React.FC = () => {
                         }
 
                         if (
-                            locParts.length > 0
+                            locParts.length >
+                            0
                         ) {
+
                             setLocationStr(
                                 locParts.join(
                                     ", "
                                 )
                             );
+
                         } else if (
                             data.city
                         ) {
+
                             setLocationStr(
                                 String(
                                     data.city
                                 )
                             );
+
                         } else {
+
                             setLocationStr(
                                 "Remote"
                             );
                         }
+
                     } catch (
-                    locationErr
+                        locationErr
                     ) {
+
                         console.error(
                             "Failed to parse location:",
                             locationErr
@@ -679,14 +935,16 @@ const JobDetails: React.FC = () => {
                         setLocationStr(
                             data.city
                                 ? String(
-                                    data.city
-                                )
+                                      data.city
+                                  )
                                 : "Remote"
                         );
                     }
+
                 } catch (
-                err
+                    err
                 ) {
+
                     console.error(
                         "Failed to load job details:",
                         err
@@ -695,19 +953,67 @@ const JobDetails: React.FC = () => {
                     setError(
                         "Failed to load job details. Please try again."
                     );
+
                 } finally {
-                    setLoading(false);
+
+                    setLoading(
+                        false
+                    );
                 }
             };
 
         loadJobDetails();
+
+    }, [id]);
+
+    // =========================================================
+    // REFRESH APPLICATION STATUS
+    // =========================================================
+
+    useEffect(() => {
+
+        if (!id) {
+            return;
+        }
+
+        /*
+         * Load immediately.
+         */
+
+        loadApplicationStatus();
+
+        /*
+         * Check every 5 seconds.
+         *
+         * When recruiter changes the application
+         * status, applicant page will update.
+         */
+
+        const interval =
+            window.setInterval(
+                () => {
+                    loadApplicationStatus();
+                },
+                5000
+            );
+
+        return () => {
+
+            window.clearInterval(
+                interval
+            );
+        };
+
     }, [id]);
 
     // =========================================================
     // LOADING
     // =========================================================
 
-    if (loading) {
+    if (
+        loading
+    ) {
+
         return (
             <main className="main">
 
@@ -744,6 +1050,7 @@ const JobDetails: React.FC = () => {
         error ||
         !job
     ) {
+
         return (
             <main className="main">
 
@@ -787,7 +1094,8 @@ const JobDetails: React.FC = () => {
     const industry =
         jobData.industry ||
         jobData.industryName ||
-        jobData.industryId?.name;
+        jobData.industryId
+            ?.name;
 
     const jobLevel =
         jobData.jobLevel ||
@@ -802,23 +1110,71 @@ const JobDetails: React.FC = () => {
         jobData.updatedAt;
 
     const companyAddress =
-        jobData.companyId?.location ||
+        jobData.companyId
+            ?.location ||
         locationStr;
 
     const companyPhone =
-        jobData.companyId?.phone ||
-        jobData.companyId?.contactNumber;
+        jobData.companyId
+            ?.phone ||
+        jobData.companyId
+            ?.contactNumber;
 
     const companyEmail =
-        jobData.companyId?.email;
+        jobData.companyId
+            ?.email;
 
     const companyAbout =
-        job?.companyId?.aboutCompany;
+        job?.companyId
+            ?.aboutCompany;
 
     const mapLocation =
         companyAddress ||
         locationStr ||
         "";
+
+    // =========================================================
+    // INTERVIEW TIMELINE DATA
+    // =========================================================
+
+    const interviewRounds =
+        getInterviewRounds();
+
+    /*
+     * The red round must be the exact round stored in
+     * rejectedAtRound. We do NOT allow Rejected to jump
+     * to the next round.
+     *
+     * If the backend stores a status like "Round 3 Rejected",
+     * this also supports that format as a fallback.
+     */
+    const rejectedRoundFromStatus =
+        applicationStatus?.match(
+            /^Round\s+(\d+)\s+Rejected$/i
+        );
+
+    const actualRejectedRound =
+        rejectedAtRound ??
+        (rejectedRoundFromStatus
+            ? Number(
+                  rejectedRoundFromStatus[1]
+              )
+            : null);
+
+    const isRejected =
+        applicationStatus ===
+            "Rejected" ||
+        !!rejectedRoundFromStatus;
+
+    const roundsPassed =
+        isRejected
+            ? Math.max(
+                  0,
+                  (actualRejectedRound ?? 1) - 1
+              )
+            : getRoundsPassed(
+                  applicationStatus
+              );
 
     // =========================================================
     // RENDER
@@ -835,7 +1191,7 @@ const JobDetails: React.FC = () => {
 
                 <div className="container">
 
-                    {/* Banner */}
+                    {/* BANNER */}
 
                     <div className="banner-hero banner-image-single">
 
@@ -846,7 +1202,7 @@ const JobDetails: React.FC = () => {
 
                     </div>
 
-                    {/* Job Header */}
+                    {/* JOB HEADER */}
 
                     <div className="row mt-10 align-items-center">
 
@@ -859,15 +1215,19 @@ const JobDetails: React.FC = () => {
                             <div className="mt-0 mb-15">
 
                                 {job.jobType && (
+
                                     <span className="card-briefcase">
                                         {job.jobType}
                                     </span>
+
                                 )}
 
                                 {getPostedDate() && (
+
                                     <span className="card-time">
                                         {getPostedDate()}
                                     </span>
+
                                 )}
 
                             </div>
@@ -883,9 +1243,11 @@ const JobDetails: React.FC = () => {
                                 </span>
 
                                 {locationStr && (
+
                                     <span className="card-location">
                                         {locationStr}
                                     </span>
+
                                 )}
 
                             </div>
@@ -900,15 +1262,30 @@ const JobDetails: React.FC = () => {
                                     className="btn btn-apply-icon btn-apply btn-apply-big"
                                     style={{
                                         backgroundColor:
-                                            "#16a34a",
+                                            applicationStatus ===
+                                            "Rejected"
+                                                ? "#dc2626"
+                                                : applicationStatus ===
+                                                  "Hired"
+                                                    ? "#16a34a"
+                                                    : "#16a34a",
+
                                         borderColor:
-                                            "#16a34a",
+                                            applicationStatus ===
+                                            "Rejected"
+                                                ? "#dc2626"
+                                                : applicationStatus ===
+                                                  "Hired"
+                                                    ? "#16a34a"
+                                                    : "#16a34a",
                                     }}
                                 >
+
                                     Status:{" "}
                                     {
                                         applicationStatus
                                     }
+
                                 </div>
 
                             ) : (
@@ -923,9 +1300,11 @@ const JobDetails: React.FC = () => {
                                         applying
                                     }
                                 >
+
                                     {applying
                                         ? "Applying..."
                                         : "Apply now"}
+
                                 </button>
 
                             )}
@@ -1231,7 +1610,8 @@ const JobDetails: React.FC = () => {
                             {Array.isArray(
                                 job.skills
                             ) &&
-                                job.skills.length > 0 && (
+                                job.skills.length >
+                                    0 && (
 
                                     <div className="content-single mt-30">
 
@@ -1300,6 +1680,53 @@ const JobDetails: React.FC = () => {
                             </div>
 
                             {/* =================================================
+                                INTERVIEW TIMELINE
+                            ================================================== */}
+
+                            {applicationStatus &&
+                                interviewRounds.length >
+                                    0 && (
+
+                                    <div
+                                        className="interview-timeline-wrapper"
+                                        style={{
+                                            marginTop:
+                                                "50px",
+
+                                            marginBottom:
+                                                "40px",
+                                        }}
+                                    >
+
+                                        <InterviewRounds
+                                            rounds={
+                                                interviewRounds
+                                            }
+
+                                            roundsPassed={
+                                                roundsPassed
+                                            }
+
+                                            /*
+                                             * This is the exact round that should
+                                             * become red. Rounds after it stay grey.
+                                             */
+                                            rejectedRound={
+                                                isRejected
+                                                    ? actualRejectedRound
+                                                    : null
+                                            }
+
+                                            editable={
+                                                false
+                                            }
+                                        />
+
+                                    </div>
+
+                                )}
+
+                            {/* =================================================
                                 APPLY SECTION
                             ================================================== */}
 
@@ -1331,9 +1758,11 @@ const JobDetails: React.FC = () => {
                                                     applying
                                                 }
                                             >
+
                                                 {applying
                                                     ? "Applying..."
                                                     : "Apply now"}
+
                                             </button>
 
                                         )}
@@ -1348,7 +1777,7 @@ const JobDetails: React.FC = () => {
                                             Share this
                                         </h6>
 
-                                        {/* Facebook */}
+                                        {/* FACEBOOK */}
 
                                         <a
                                             href="#"
@@ -1361,21 +1790,21 @@ const JobDetails: React.FC = () => {
                                         >
 
                                             <img
-                                                src={shareFb}
+                                                src={
+                                                    shareFb
+                                                }
                                                 alt="Facebook"
-                                                width={35}
-                                                height={35}
-                                                style={{
-                                                    display:
-                                                        "inline-block",
-                                                    objectFit:
-                                                        "contain",
-                                                }}
+                                                width={
+                                                    35
+                                                }
+                                                height={
+                                                    35
+                                                }
                                             />
 
                                         </a>
 
-                                        {/* Twitter */}
+                                        {/* TWITTER */}
 
                                         <a
                                             href="#"
@@ -1388,21 +1817,21 @@ const JobDetails: React.FC = () => {
                                         >
 
                                             <img
-                                                src={shareTw}
+                                                src={
+                                                    shareTw
+                                                }
                                                 alt="Twitter"
-                                                width={35}
-                                                height={35}
-                                                style={{
-                                                    display:
-                                                        "inline-block",
-                                                    objectFit:
-                                                        "contain",
-                                                }}
+                                                width={
+                                                    35
+                                                }
+                                                height={
+                                                    35
+                                                }
                                             />
 
                                         </a>
 
-                                        {/* Pinterest */}
+                                        {/* PINTEREST */}
 
                                         <a
                                             href="#"
@@ -1415,21 +1844,21 @@ const JobDetails: React.FC = () => {
                                         >
 
                                             <img
-                                                src={shareRed}
+                                                src={
+                                                    shareRed
+                                                }
                                                 alt="Pinterest"
-                                                width={35}
-                                                height={35}
-                                                style={{
-                                                    display:
-                                                        "inline-block",
-                                                    objectFit:
-                                                        "contain",
-                                                }}
+                                                width={
+                                                    35
+                                                }
+                                                height={
+                                                    35
+                                                }
                                             />
 
                                         </a>
 
-                                        {/* WhatsApp */}
+                                        {/* WHATSAPP */}
 
                                         <a
                                             href="#"
@@ -1446,14 +1875,12 @@ const JobDetails: React.FC = () => {
                                                     shareWhatsapp
                                                 }
                                                 alt="WhatsApp"
-                                                width={35}
-                                                height={35}
-                                                style={{
-                                                    display:
-                                                        "inline-block",
-                                                    objectFit:
-                                                        "contain",
-                                                }}
+                                                width={
+                                                    35
+                                                }
+                                                height={
+                                                    35
+                                                }
                                             />
 
                                         </a>
@@ -1502,10 +1929,6 @@ const JobDetails: React.FC = () => {
 
                                     <div className="avatar-sidebar">
 
-                                        {/* =================================================
-                                            COMPANY LOGO / AVATAR
-                                        ================================================== */}
-
                                         <figure className="mb-0">
 
                                             {companyLogo ? (
@@ -1517,8 +1940,12 @@ const JobDetails: React.FC = () => {
                                                     alt={
                                                         companyName
                                                     }
-                                                    width={80}
-                                                    height={80}
+                                                    width={
+                                                        80
+                                                    }
+                                                    height={
+                                                        80
+                                                    }
                                                     style={{
                                                         width:
                                                             "80px",
@@ -1529,14 +1956,10 @@ const JobDetails: React.FC = () => {
                                                         display:
                                                             "block",
                                                     }}
-                                                    onLoad={() => {
-                                                        console.log(
-                                                            "Company logo loaded successfully"
-                                                        );
-                                                    }}
                                                     onError={(
                                                         e
                                                     ) => {
+
                                                         console.error(
                                                             "Company logo failed to load:",
                                                             companyLogo
@@ -1582,26 +2005,28 @@ const JobDetails: React.FC = () => {
                                             </span>
 
                                             {locationStr && (
+
                                                 <span className="card-location">
                                                     {
                                                         locationStr
                                                     }
                                                 </span>
+
                                             )}
 
                                             {jobData.openJobs !==
                                                 undefined && (
 
-                                                    <span className="link-underline mt-15">
+                                                <span className="link-underline mt-15">
 
-                                                        {
-                                                            jobData.openJobs
-                                                        }{" "}
-                                                        Open Jobs
+                                                    {
+                                                        jobData.openJobs
+                                                    }{" "}
+                                                    Open Jobs
 
-                                                    </span>
+                                                </span>
 
-                                                )}
+                                            )}
 
                                         </div>
 
@@ -1611,9 +2036,7 @@ const JobDetails: React.FC = () => {
 
                                 <div className="sidebar-list-job">
 
-                                    {/* =================================================
-                                        MAP
-                                    ================================================== */}
+                                    {/* MAP */}
 
                                     {mapLocation && (
 
@@ -1637,36 +2060,40 @@ const JobDetails: React.FC = () => {
 
                                     )}
 
-                                    {/* =================================================
-                                        COMPANY CONTACT
-                                    ================================================= */}
+                                    {/* COMPANY CONTACT */}
 
                                     <ul className="ul-disc mt-20">
 
                                         {companyAddress && (
+
                                             <li>
                                                 {
                                                     companyAddress
                                                 }
                                             </li>
+
                                         )}
 
                                         {companyPhone && (
+
                                             <li>
                                                 Phone:{" "}
                                                 {
                                                     companyPhone
                                                 }
                                             </li>
+
                                         )}
 
                                         {companyEmail && (
+
                                             <li>
                                                 Email:{" "}
                                                 {
                                                     companyEmail
                                                 }
                                             </li>
+
                                         )}
 
                                     </ul>
@@ -1690,56 +2117,77 @@ const JobDetails: React.FC = () => {
                                     <ul className="ul-disc">
 
                                         <li>
+
                                             <strong>
                                                 Position:
                                             </strong>{" "}
+
                                             {
                                                 job.title
                                             }
+
                                         </li>
 
                                         {job.jobType && (
+
                                             <li>
+
                                                 <strong>
                                                     Type:
                                                 </strong>{" "}
+
                                                 {
                                                     job.jobType
                                                 }
+
                                             </li>
+
                                         )}
 
                                         {locationStr && (
+
                                             <li>
+
                                                 <strong>
                                                     Location:
                                                 </strong>{" "}
+
                                                 {
                                                     locationStr
                                                 }
+
                                             </li>
+
                                         )}
 
                                         <li>
+
                                             <strong>
                                                 Salary:
                                             </strong>{" "}
+
                                             {
                                                 getSalary()
                                             }
+
                                         </li>
 
                                         <li>
+
                                             <strong>
                                                 Experience:
                                             </strong>{" "}
+
                                             {
                                                 getExperience()
                                             }
+
                                         </li>
 
                                         {job.status && (
+
                                             <li>
+
                                                 <strong>
                                                     Status:
                                                 </strong>{" "}
@@ -1751,6 +2199,7 @@ const JobDetails: React.FC = () => {
                                                 </span>
 
                                             </li>
+
                                         )}
 
                                     </ul>
@@ -1783,7 +2232,12 @@ const JobDetails: React.FC = () => {
 
                             <div className="col-xl-3 col-12 text-center d-none d-xl-block">
 
-                                <img src={newsletterLeft} alt="joxBox" />
+                                <img
+                                    src={
+                                        newsletterLeft
+                                    }
+                                    alt="joxBox"
+                                />
 
                             </div>
 
@@ -1795,6 +2249,7 @@ const JobDetails: React.FC = () => {
 
                                     New Things Will Always
                                     <br />
+
                                     Update Regularly
 
                                 </h2>
@@ -1833,7 +2288,12 @@ const JobDetails: React.FC = () => {
 
                             <div className="col-xl-3 col-12 text-center d-none d-xl-block">
 
-                                <img src={newsletterRight} alt="joxBox" />
+                                <img
+                                    src={
+                                        newsletterRight
+                                    }
+                                    alt="joxBox"
+                                />
 
                             </div>
 

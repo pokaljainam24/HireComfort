@@ -29,4 +29,5 @@ export interface Job {
   applicationCount?: number;
   createdAt?: string;
   companyId?: CompanyProfileType;
+  noOfRounds:number;
 }
